@@ -307,17 +307,12 @@ async function sendReservationEmails(datos) {
             _cc: datos.email_cliente, // Copia al cliente
             mensaje_empresa: `Nueva reserva recibida:
 
-Código de Reserva: ${datos.codigo_reserva}
-Fecha: ${datos.fecha}
-Hora: ${datos.hora}
+Código: ${datos.codigo_reserva}
+Fecha: ${datos.fecha} | Hora: ${datos.hora}
 Origen: ${datos.origen}
 Destino: ${datos.destino}
-Pasajeros: ${datos.pasajeros}
-Teléfono: ${datos.telefono}
-Equipaje: ${datos.equipaje}
-Maletas: ${datos.maletas}
-
-Cliente: ${datos.email_cliente}`
+Pasajeros: ${datos.pasajeros} | Equipaje: ${datos.maletas}
+Contacto: ${datos.telefono} | ${datos.email_cliente}`
         };
         
         // Datos para el correo al cliente
@@ -325,24 +320,18 @@ Cliente: ${datos.email_cliente}`
             ...datos,
             subject: 'Confirmación de Reserva - Altior Traslados',
             _replyto: 'altior.traslados@gmail.com',
-            mensaje_cliente: `¡Gracias por tu reserva!
+            mensaje_cliente: `¡Gracias por tu reserva con Altior Traslados!
 
-Detalles de tu reserva:
-Código de Reserva: ${datos.codigo_reserva}
-Fecha: ${datos.fecha}
-Hora: ${datos.hora}
-Origen: ${datos.origen}
-Destino: ${datos.destino}
-Pasajeros: ${datos.pasajeros}
-Equipaje: ${datos.equipaje}
-Maletas: ${datos.maletas}
+DETALLES DE TU RESERVA:
+• Código: ${datos.codigo_reserva}
+• Fecha: ${datos.fecha} | Hora: ${datos.hora}
+• Ruta: ${datos.origen} → ${datos.destino}
+• Pasajeros: ${datos.pasajeros} | Equipaje: ${datos.maletas}
 
-Para cancelar tu reserva, responde a este correo con "CANCELAR ${datos.codigo_reserva}" 
-o visita nuestra página web y usa el formulario de cancelación.
+CANCELACIÓN:
+Para cancelar, responde "CANCELAR ${datos.codigo_reserva}" o usa el formulario web.
 
 ¡Esperamos verte pronto!
-
-Atentamente,
 Equipo Altior Traslados`
         };
         
@@ -388,22 +377,15 @@ async function sendCancellationEmail(datos) {
             subject: 'Confirmación de Cancelación de Reserva - Altior Traslados',
             _replyto: 'altior.traslados@gmail.com',
             _cc: 'altior.traslados@gmail.com', // Copia a la empresa
-            mensaje_cliente: `Hola,
+            mensaje_cliente: `CONFIRMACIÓN DE CANCELACIÓN - ALTIOR TRASLADOS
 
-Hemos recibido tu solicitud de cancelación para la reserva ${datosReales.codigo_reserva}.
+Tu reserva ${datosReales.codigo_reserva} ha sido cancelada exitosamente.
 
-Confirmamos que tu reserva ha sido cancelada exitosamente.
-
-Detalles de la reserva cancelada:
-Código de Reserva: ${datosReales.codigo_reserva}
-Fecha: ${datosReales.fecha}
-Hora: ${datosReales.hora}
-Origen: ${datosReales.origen}
-Destino: ${datosReales.destino}
+DETALLES DE LA RESERVA CANCELADA:
+• Fecha: ${datosReales.fecha} | Hora: ${datosReales.hora}
+• Ruta: ${datosReales.origen} → ${datosReales.destino}
 
 Si tienes alguna pregunta, no dudes en contactarnos.
-
-¡Gracias por avisarnos!
 
 Atentamente,
 Equipo Altior Traslados`

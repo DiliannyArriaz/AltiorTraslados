@@ -94,7 +94,7 @@ nav {
     min-height: 100vh;
     display: flex;
     align-items: center;
-    padding: 120px 40px 60px;
+    padding: 60px 40px 60px;
     position: relative;
     overflow: hidden;
 }
@@ -129,9 +129,14 @@ nav {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 80px;
-    align-items: center;
+    align-items: flex-start;
     position: relative;
     z-index: 1;
+    padding-top: 70px;
+}
+
+.hero-text {
+    padding-top: 40px;
 }
 
 .hero-text h1 {
