@@ -19,7 +19,7 @@ nav {
     width: 100%;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
 }
 
@@ -171,7 +171,7 @@ nav {
     padding: 15px;
     background: white;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .feature-icon-small {
@@ -331,49 +331,6 @@ select:focus {
 
 .btn-submit:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(59, 89, 152, 0.4);
-}
-
-/* Autocompletado de direcciones */
-.suggestions-container {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    z-index: 1000;
-    max-height: 200px;
-    overflow-y: auto;
-    display: none;
-}
-
-.suggestions-container div {
-    padding: 12px 16px;
-    cursor: pointer;
-    border-bottom: 1px solid #f0f0f0;
-    transition: background-color 0.2s;
-}
-
-.suggestions-container div:hover {
-    background-color: #f5f8fc;
-}
-
-.suggestions-container div:last-child {
-    border-bottom: none;
-}
-
-/* Features Section */
-.features {
-    padding: 120px 40px;
-    background: white;
-}
-
-.features-container {
-    max-width: 1400px;
-    margin: 0 auto;
 }
 
 .section-header {
@@ -639,7 +596,7 @@ footer {
     opacity: 0.8;
     margin-top: 20px;
     padding-top: 30px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Social Media Sidebar */
@@ -745,7 +702,7 @@ footer {
     background: white;
     padding: 40px;
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* WhatsApp Contact Section */
@@ -793,17 +750,6 @@ footer {
     text-decoration: none;
     border-radius: 12px;
     font-weight: 600;
-    transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-}
-
-.btn-whatsapp:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
-}
-
-.btn-whatsapp i {
-    font-size: 1.3em;
 }
 
 @media (max-width: 1024px) {
@@ -823,44 +769,44 @@ footer {
     .hero-features {
         grid-template-columns: 1fr;
     }
-    
+
     .section-header h2 {
         font-size: 2em;
     }
-    
+
     .features,
     .fleet,
     .cta {
         padding: 60px 20px;
     }
-    
+
     /* Ajustes para tablet */
     .nav-container {
         flex-direction: row;
     }
-    
+
     .nav-right {
         gap: 15px;
     }
-    
+
     .phone-number {
         font-size: 0.9em;
     }
-    
+
     .nav-cta {
         padding: 10px 20px;
         font-size: 0.9em;
     }
-    
+
     .whatsapp-contact {
         padding: 20px 15px;
         margin-top: 25px;
     }
-    
+
     .whatsapp-header h3 {
         font-size: 1.2em;
     }
-    
+
     .btn-whatsapp {
         padding: 12px 20px;
         font-size: 0.95em;
@@ -871,29 +817,29 @@ footer {
     nav {
         padding: 15px 20px;
     }
-    
+
     .nav-container {
         flex-direction: column;
         gap: 15px;
         text-align: center;
     }
-    
+
     .logo-section {
         justify-content: center;
         width: 100%;
     }
-    
+
     .nav-right {
         width: 100%;
         justify-content: center;
         flex-direction: column;
         gap: 10px;
     }
-    
+
     .phone-number {
         font-size: 1.1em;
     }
-    
+
     .hero {
         padding: 100px 20px 40px;
     }
@@ -901,7 +847,7 @@ footer {
     .hero-text h1 {
         font-size: 2.2em;
     }
-    
+
     /* Social sidebar for mobile */
     .social-sidebar {
         right: 10px;
@@ -911,212 +857,413 @@ footer {
         transform: none;
         gap: 10px;
     }
-    
+
     .social-icon {
         width: 45px;
         height: 45px;
         font-size: 1.3em;
     }
-    
+
     /* Hero features for mobile */
     .hero-features {
         grid-template-columns: 1fr;
         gap: 15px;
     }
-    
+
     .hero-feature {
         padding: 12px;
     }
-    
+
     .feature-icon-small {
         width: 40px;
         height: 40px;
         font-size: 1.1em;
     }
-    
+
     /* Booking form for mobile */
     .booking-form {
         padding: 30px 20px;
     }
-    
+
     .form-header h2 {
         font-size: 1.6em;
     }
-    
+
     /* Features grid for mobile */
     .features-grid {
         grid-template-columns: 1fr;
         gap: 25px;
     }
-    
+
     .feature-card {
         padding: 25px;
     }
-    
+
     .feature-icon {
         width: 60px;
         height: 60px;
         font-size: 1.7em;
     }
-    
+
     /* Fleet grid for mobile */
     .fleet-grid {
         grid-template-columns: 1fr;
         gap: 25px;
     }
-    
+
     .fleet-image {
         height: 200px;
         font-size: 4em;
     }
-    
+
     .fleet-info {
         padding: 25px;
     }
-    
+
     /* CTA section for mobile */
     .cta {
         padding: 60px 20px;
     }
-    
+
     .cta h2 {
         font-size: 2em;
     }
-    
+
     .cta p {
         font-size: 1.1em;
     }
-    
+
     .cta-button {
         padding: 16px 35px;
         font-size: 1.1em;
     }
-    
+
     /* Footer for mobile */
     footer {
         padding: 40px 20px 20px;
     }
-    
+
     .footer-social {
         gap: 15px;
     }
-    
+
     .footer-social .social-icon {
         width: 50px;
         height: 50px;
         font-size: 1.5em;
     }
-    
+
     .footer-brand {
         font-size: 1.5em;
     }
-    
+
     .suggestions-container {
         max-height: 150px;
     }
-    
+
     .suggestions-container div {
         padding: 10px 14px;
         font-size: 0.9em;
     }
-    
+
     .cancel-section {
         padding: 60px 20px;
     }
-    
+
     .cancel-form-container .booking-form {
         padding: 30px 20px;
     }
-    
+
     .whatsapp-contact {
         padding: 20px 15px;
         margin-top: 25px;
     }
-    
+
     .whatsapp-header h3 {
         font-size: 1.2em;
     }
-    
+
     .btn-whatsapp {
         padding: 12px 20px;
         font-size: 0.95em;
+        gap: 8px;
+    }
+
+    .btn-whatsapp i {
+        font-size: 1.1em;
     }
 }
 
 @media (max-width: 480px) {
+
     /* Ajustes adicionales para móviles pequeños */
     .hero-text h1 {
         font-size: 1.8em;
     }
-    
+
     .hero-text .subtitle {
         font-size: 1.1em;
     }
-    
+
     .booking-form {
         padding: 25px 15px;
     }
-    
+
     .form-group {
         margin-bottom: 18px;
     }
-    
+
     .btn-submit {
         padding: 16px;
         font-size: 1em;
     }
-    
+
     .section-header h2 {
         font-size: 1.7em;
     }
-    
+
     .feature-card {
         padding: 20px;
     }
-    
+
     .feature-card h3 {
         font-size: 1.3em;
     }
-    
+
     .cta h2 {
         font-size: 1.7em;
     }
-    
+
     .cta-button {
         padding: 14px 25px;
         font-size: 1em;
     }
-    
+
     .social-icon {
         width: 40px;
         height: 40px;
         font-size: 1.2em;
     }
-    
+
     .footer-social .social-icon {
         width: 45px;
         height: 45px;
         font-size: 1.3em;
     }
-    
+
     .whatsapp-header {
         gap: 8px;
     }
-    
+
     .whatsapp-header i {
         font-size: 1.5em;
     }
-    
+
     .whatsapp-header h3 {
         font-size: 1.1em;
     }
-    
+
     .btn-whatsapp {
         padding: 10px 15px;
         font-size: 0.9em;
         gap: 8px;
     }
-    
+
+    .btn-whatsapp i {
+        font-size: 1.1em;
+    }
+}
+
+/* Estilos para popups (aunque se inyectan dinámicamente, los definimos aquí por consistencia) */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+.popup-content {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.popup-header {
+    padding: 25px 30px 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.popup-header h2 {
+    margin: 0;
+    color: #2C4A7C;
+    font-size: 1.8em;
+}
+
+.popup-close {
+    background: none;
+    border: none;
+    font-size: 2em;
+    cursor: pointer;
+    color: #999;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.popup-close:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.popup-body {
+    padding: 25px 30px;
+}
+
+.popup-body p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.reservation-details {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.reservation-details p {
+    margin: 10px 0;
+    font-size: 0.95em;
+}
+
+.popup-footer {
+    padding: 20px 30px;
+    border-top: 1px solid #eee;
+    text-align: center;
+}
+
+.popup-footer .btn-submit {
+    margin: 0;
+    padding: 12px 30px;
+    width: auto;
+    background: linear-gradient(135deg, #5B8DB8, #3B5998);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.15em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    .btn-whatsapp {
+        padding: 12px 20px;
+        font-size: 0.95em;
+        gap: 8px;
+    }
+
+    .btn-whatsapp i {
+        font-size: 1.1em;
+    }
+}
+
+@media (max-width: 480px) {
+
+    /* Ajustes adicionales para móviles pequeños */
+    .hero-text h1 {
+        font-size: 1.8em;
+    }
+
+    .hero-text .subtitle {
+        font-size: 1.1em;
+    }
+
+    .booking-form {
+        padding: 25px 15px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .btn-submit {
+        padding: 16px;
+        font-size: 1em;
+    }
+
+    .section-header h2 {
+        font-size: 1.7em;
+    }
+
+    .feature-card {
+        padding: 20px;
+    }
+
+    .feature-card h3 {
+        font-size: 1.3em;
+    }
+
+    .cta h2 {
+        font-size: 1.7em;
+    }
+
+    .cta-button {
+        padding: 14px 25px;
+        font-size: 1em;
+    }
+
+    .social-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
+    }
+
+    .footer-social .social-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3em;
+    }
+
+    .whatsapp-header {
+        gap: 8px;
+    }
+
+    .whatsapp-header i {
+        font-size: 1.5em;
+    }
+
+    .whatsapp-header h3 {
+        font-size: 1.1em;
+    }
+
+    .btn-whatsapp {
+        padding: 10px 15px;
+        font-size: 0.9em;
+        gap: 8px;
+    }
+
     .btn-whatsapp i {
         font-size: 1.1em;
     }
@@ -1231,4 +1378,47 @@ footer {
 .popup-footer .btn-submit:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 30px rgba(59, 89, 152, 0.4);
+}
+
+/* Autocomplete Styles */
+.autocomplete-suggestions {
+    border: 1px solid #e1e8ed;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    background-color: #fff;
+    z-index: 1000;
+    width: 100%;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-top: -1px;
+}
+
+.autocomplete-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 0.95em;
+    color: #2c3e50;
+    border-bottom: 1px solid #f5f8fa;
+    transition: background-color 0.2s;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover {
+    background-color: #f8f9fa;
+    color: #3498db;
+}
+
+.autocomplete-item strong {
+    color: #3498db;
+    font-weight: 600;
+}
+
+/* Ensure parent container has relative positioning */
+.form-group {
+    position: relative;
 }
