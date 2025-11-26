@@ -259,7 +259,7 @@
             baseUrl: "https://tally.so/forms/"
         };
 
-        // Función para enviar correo de cancelación usando Tally.so
+        // Función para enviar correo de cancelación usando Formspree (restaurada)
         async function sendCancellationEmail(datosReserva) {
             try {
                 // Datos para el correo al cliente
@@ -277,16 +277,11 @@ DETALLES DE LA RESERVA CANCELADA:
 Si tienes alguna pregunta, no dudes en contactarnos.
 
 Atentamente,
-Equipo Altior Traslados`,
-                    codigo_reserva: datosReserva.codigo_reserva,
-                    fecha: datosReserva.fecha,
-                    hora: datosReserva.hora,
-                    origen: datosReserva.origen,
-                    destino: datosReserva.destino
+Equipo Altior Traslados`
                 };
 
-                // Enviar correo al cliente usando Tally.so
-                const response = await fetch(`${TALLY_CONFIG.baseUrl}${TALLY_CONFIG.formId}/submit`, {
+                // Enviar correo al cliente usando Formspree
+                const response = await fetch('https://formspree.io/f/mgvrzkbd', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

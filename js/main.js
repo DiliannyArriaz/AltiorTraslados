@@ -18,12 +18,6 @@ const RESERVAS_CONFIG = {
     apiUrl: "https://altiortraslados.onrender.com/api"
 };
 
-// Configuración de Tally.so para envío de correos
-const TALLY_CONFIG = {
-    formId: "9qNQqp", // Tu ID de formulario de Tally.so
-    baseUrl: "https://tally.so/forms/"
-};
-
 // Verificar si el sistema de reservas está configurado
 const isReservasConfigured = true;
 
@@ -176,7 +170,7 @@ Equipo Altior Traslados`
     }
 }
 
-// Función para enviar correo de confirmación usando Tally.so
+// Función para enviar correo de confirmación usando Formspree (restaurada)
 async function sendConfirmationEmail(datosReserva) {
     try {
         // Datos para el correo de confirmación
@@ -196,18 +190,11 @@ Importante: Conserva este código para futuras consultas o modificaciones.
 
 ¡Gracias por elegir Altior Traslados!
 Atentamente,
-Equipo Altior Traslados`,
-            codigo_reserva: datosReserva.codigo_reserva,
-            fecha: datosReserva.fecha,
-            hora: datosReserva.hora,
-            origen: datosReserva.origen,
-            destino: datosReserva.destino,
-            tipo_vehiculo: datosReserva.tipo_vehiculo,
-            cantidad_maletas: datosReserva.cantidad_maletas
+Equipo Altior Traslados`
         };
 
-        // Enviar correo usando Tally.so
-        const response = await fetch(`${TALLY_CONFIG.baseUrl}${TALLY_CONFIG.formId}/submit`, {
+        // Enviar correo usando Formspree
+        const response = await fetch('https://formspree.io/f/mgvrzkbd', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -274,7 +261,7 @@ Equipo Altior Traslados`
     }
 }
 
-// Función para enviar correo de cancelación usando Tally.so
+// Función para enviar correo de cancelación usando Formspree (restaurada)
 async function sendCancellationEmail(datosReserva) {
     try {
         // Datos para el correo de cancelación
@@ -292,16 +279,11 @@ DETALLES DE LA RESERVA CANCELADA:
 Si tienes alguna pregunta, no dudes en contactarnos.
 
 Atentamente,
-Equipo Altior Traslados`,
-            codigo_reserva: datosReserva.codigo_reserva,
-            fecha: datosReserva.fecha,
-            hora: datosReserva.hora,
-            origen: datosReserva.origen,
-            destino: datosReserva.destino
+Equipo Altior Traslados`
         };
 
-        // Enviar correo usando Tally.so
-        const response = await fetch(`${TALLY_CONFIG.baseUrl}${TALLY_CONFIG.formId}/submit`, {
+        // Enviar correo usando Formspree
+        const response = await fetch('https://formspree.io/f/mgvrzkbd', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
