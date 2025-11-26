@@ -25,6 +25,11 @@
                 } else if (precioContainer.getAttribute('data-mostrada') === 'true') {
                     // Mantener visible si ya se mostró al menos una vez
                     precioContainer.classList.add('visible');
+                } else {
+                    // En móviles, mostrar la burbuja incluso si no hay precio aún
+                    if (window.innerWidth <= 768) {
+                        precioContainer.classList.add('visible');
+                    }
                 }
             }
 
@@ -40,6 +45,11 @@
                     } else if (precioContainer.getAttribute('data-mostrada') === 'true') {
                         // Mantener visible si ya se mostró al menos una vez
                         precioContainer.classList.add('visible');
+                    } else {
+                        // En móviles, mantener la burbuja visible
+                        if (window.innerWidth <= 768) {
+                            precioContainer.classList.add('visible');
+                        }
                     }
                 }
             });

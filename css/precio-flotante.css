@@ -13,10 +13,10 @@
     box-shadow: 0 10px 30px rgba(59, 89, 152, 0.15) !important;
     border: 1px solid rgba(91, 141, 184, 0.1) !important;
     position: fixed !important;
-    left: 532px !important;
+    right: 2% !important;
     top: 70% !important;
     transform: translateY(-50%) !important;
-    width: 280px !important;
+    width: 230px !important;
     height: auto !important;
     z-index: 999 !important;
     transition: all 0.3s ease !important;
@@ -25,6 +25,7 @@
     /* Asegurar que NO sea parte del grid */
     grid-column: unset !important;
     margin: 0 !important;
+    display: block !important;
 }
 
 #precioContainer.precio-container.visible,
@@ -65,10 +66,10 @@
 @media (max-width: 1200px) {
     .precio-container {
         position: fixed !important;
-        left: 50% !important;
+        right: 2% !important;
         top: 70% !important;
-        transform: translate(-50%, -50%) !important;
-        width: 240px !important;
+        transform: translateY(-50%) !important;
+        width: 230px !important;
         margin: 0 !important;
         opacity: 1 !important;
         pointer-events: auto !important;
@@ -85,10 +86,9 @@
     /* Posicionar la burbuja en la parte inferior en móviles para no interferir */
     @media (max-width: 768px) {
         .precio-container {
-            left: 50% !important;
-            top: auto !important;
-            bottom: 80px !important;
-            transform: translateX(-50%) !important;
+            right: 2% !important;
+            top: 70% !important;
+            transform: translateY(-50%) !important;
             width: 200px !important;
             padding: 15px !important;
             opacity: 0.95 !important;
@@ -122,10 +122,9 @@
 @media (max-width: 480px) {
     .precio-container {
         position: fixed !important;
-        left: 50% !important;
-        top: auto !important;
-        bottom: 80px !important;
-        transform: translateX(-50%) !important;
+        right: 2% !important;
+        top: 70% !important;
+        transform: translateY(-50%) !important;
         width: 180px !important;
         padding: 12px !important;
         margin: 0 !important;
