@@ -4,10 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Altior Traslados - Servicio Premium al Aeropuerto</title>
+    <title>Altior Traslados - Traslados Premium al Aeropuerto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="css/precio-flotante.css">
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+    <style>
+        .suggestions-container {
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            width: calc(100% - 2px);
+            display: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .suggestion-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-name {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .suggestion-details {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .form-group {
+            position: relative;
+        }
+    </style>
 </head>
 
 <body>
@@ -48,11 +91,13 @@
             </div>
             
             <div class="nav-right">
+                <a href="precios.html" class="nav-link">Precios</a>
+                <a href="cancelar.html" class="nav-link">Cancelar Reserva</a>
+                <a href="#reservar" class="nav-cta">Reservar Ahora</a>
                 <div class="phone-number">
                     <i class="fas fa-phone"></i>
                     <span>+54 9 11 2251-6700</span>
                 </div>
-                <a href="#reservar" class="nav-cta">Reservar Ahora</a>
             </div>
         </div>
     </nav>
@@ -119,12 +164,14 @@
                         <label>Origen</label>
                         <input type="text" id="origen" name="origen" placeholder="Dirección de recogida o aeropuerto"
                             required autocomplete="off">
+                        <div id="origen-suggestions" class="suggestions-container"></div>
                     </div>
 
                     <div class="form-group">
                         <label>Destino</label>
                         <input type="text" id="destino" name="destino" placeholder="Dirección de destino o aeropuerto"
                             required autocomplete="off">
+                        <div id="destino-suggestions" class="suggestions-container"></div>
                     </div>
 
                     <div class="form-row">
@@ -190,32 +237,6 @@
                             Chatear por WhatsApp
                         </a>
                     </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Cancel Reservation Section -->
-    <section class="cancel-section">
-        <div class="features-container">
-            <div class="section-header">
-                <h2>Cancelar Reserva</h2>
-                <p>Ingrese su código de reserva para cancelar su traslado</p>
-            </div>
-
-            <div class="cancel-form-container">
-                <form id="cancelForm" class="booking-form">
-                    <div class="form-group">
-                        <label>Código de Reserva</label>
-                        <input type="text" id="codigoReserva" name="codigoReserva" placeholder="Ej: ALT-XXXXXX-XXXXX"
-                            required>
-                    </div>
-
-                    <button type="submit" class="btn-submit"
-                        style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
-                        <i class="fas fa-times-circle"></i>
-                        Cancelar Reserva
-                    </button>
                 </form>
             </div>
         </div>
@@ -368,10 +389,10 @@
         </div>
     </footer>
 
-    <script src="js/precios.js"></script>
     <script src="js/main.js"></script>
     <script src="js/precio-flotante.js"></script>
     <script src="js/hamburger-menu.js"></script>
+    <script src="js/precios.js"></script>
 </body>
 
 </html>

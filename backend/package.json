@@ -1,0 +1,25 @@
+{
+  "name": "altior-traslados-backend",
+  "version": "1.0.0",
+  "description": "Backend para manejo de reservas y cancelaciones de Altior Traslados",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "reservas",
+    "traslados",
+    "cancelaciones",
+    "formspree"
+  ],
+  "author": "Altior Traslados",
+  "license": "MIT"
+}

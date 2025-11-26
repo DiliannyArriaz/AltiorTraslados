@@ -13,6 +13,14 @@ const AIRTABLE_CONFIG = {
 const isAirtableConfigured = AIRTABLE_CONFIG.apiKey !== "YOUR_AIRTABLE_API_KEY" && 
                              AIRTABLE_CONFIG.baseId !== "YOUR_BASE_ID";
 
+// Configuración de reservas (usando backend)
+const RESERVAS_CONFIG = {
+    apiUrl: "/api" // URL base para las APIs de reservas
+};
+
+// Verificar si el sistema de reservas está configurado
+const isReservasConfigured = true;
+
 // Lugares comunes predefinidos (aeropuertos, estaciones, etc.)
 const lugaresComunes = [
     {
@@ -298,39 +306,42 @@ document.getElementById('bookingForm').addEventListener('submit', async function
 });
 
 // Handle cancellation form submission
-document.getElementById('cancelForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const codigoReserva = document.getElementById('codigoReserva').value.trim();
-    
-    if (!codigoReserva) {
-        alert('Por favor, ingrese su código de reserva.');
-        return;
-    }
-    
-    // Verificar si el código de reserva existe
-    const reserva = await getReservationByCode(codigoReserva);
-    
-    if (!reserva) {
-        alert('Código de reserva inválido. Por favor, verifique e intente nuevamente.');
-        return;
-    }
-    
-    // Enviar correo de confirmación de cancelación a ambos destinatarios
-    sendCancellationEmail(reserva);
-    
-    // Eliminar la reserva de la nube o de localStorage
-    await removeReservation(codigoReserva);
-    
-    // Mostrar popup de confirmación de cancelación
-    showCancellationPopup();
-    
-    // Guardar en localStorage para mostrar el mensaje al regresar
-    localStorage.setItem('cancellationCompleted', 'true');
-    
-    // Limpiar el formulario
-    document.getElementById('cancelForm').reset();
-});
+const cancelForm = document.getElementById('cancelForm');
+if (cancelForm) {
+    cancelForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const codigoReserva = document.getElementById('codigoReserva').value.trim();
+        
+        if (!codigoReserva) {
+            alert('Por favor, ingrese su código de reserva.');
+            return;
+        }
+        
+        // Verificar si el código de reserva existe
+        const reserva = await getReservationByCode(codigoReserva);
+        
+        if (!reserva) {
+            alert('Código de reserva inválido. Por favor, verifique e intente nuevamente.');
+            return;
+        }
+        
+        // Enviar correo de confirmación de cancelación a ambos destinatarios
+        sendCancellationEmail(reserva);
+        
+        // Eliminar la reserva de la nube o de localStorage
+        await removeReservation(codigoReserva);
+        
+        // Mostrar popup de confirmación de cancelación
+        showCancellationPopup();
+        
+        // Guardar en localStorage para mostrar el mensaje al regresar
+        localStorage.setItem('cancellationCompleted', 'true');
+        
+        // Limpiar el formulario
+        cancelForm.reset();
+    });
+}
 
 // Función para mostrar popup de confirmación de reserva
 function showReservationPopup(codigoReserva, emailCliente) {
@@ -861,59 +872,34 @@ function formatDate(dateString) {
     return date.toLocaleDateString('es-ES', options);
 }
 
-// Función para guardar la reserva en Airtable o en localStorage como respaldo
+// Función para guardar la reserva en el backend
 async function saveReservation(datosReserva) {
     try {
-        // Si Airtable está configurado, guardar en la nube
-        if (isAirtableConfigured) {
-            const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    fields: {
-                        "Código de Reserva": datosReserva.codigo_reserva,
-                        "Email Cliente": datosReserva.email_cliente,
-                        "Fecha": datosReserva.fecha,
-                        "Hora": datosReserva.hora,
-                        "Origen": datosReserva.origen,
-                        "Destino": datosReserva.destino,
-                        "Pasajeros": datosReserva.pasajeros,
-                        "Teléfono": datosReserva.telefono,
-                        "Equipaje": datosReserva.equipaje,
-                        "Maletas": datosReserva.maletas,
-                        "Timestamp": new Date().toISOString()
-                    }
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`Error en Airtable: ${response.status}`);
-            }
-            
-            return await response.json();
-        } else {
-            // Respaldar en localStorage si Airtable no está disponible
-            let reservas = JSON.parse(localStorage.getItem('reservas') || '{}');
-            reservas[datosReserva.codigo_reserva] = {
-                ...datosReserva,
-                timestamp: new Date().toISOString()
-            };
-            localStorage.setItem('reservas', JSON.stringify(reservas));
-            return { success: true };
+        // Enviar reserva al backend
+        const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/reservas`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datosReserva)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Error al guardar reserva: ${response.status}`);
         }
+        
+        return await response.json();
     } catch (error) {
-        console.error('Error guardando reserva en Airtable:', error);
-        // Respaldar en localStorage en caso de error
+        console.error('Error guardando reserva en backend:', error);
+        // Fallback a localStorage en caso de error
         try {
-            let reservas = JSON.parse(localStorage.getItem('reservas') || '{}');
+            let reservas = JSON.parse(localStorage.getItem('reservas_backup') || '{}');
             reservas[datosReserva.codigo_reserva] = {
                 ...datosReserva,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                estado: 'activa'
             };
-            localStorage.setItem('reservas', JSON.stringify(reservas));
+            localStorage.setItem('reservas_backup', JSON.stringify(reservas));
             return { success: true, backup: true };
         } catch (backupError) {
             console.error('Error en respaldo de reserva:', backupError);
@@ -922,52 +908,35 @@ async function saveReservation(datosReserva) {
     }
 }
 
-// Función para obtener una reserva por su código desde Airtable o localStorage
+// Función para obtener una reserva por su código desde el backend
 async function getReservationByCode(codigoReserva) {
     try {
-        // Si Airtable está configurado, obtener desde la nube
-        if (isAirtableConfigured) {
-            const response = await fetch(
-                `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}?filterByFormula=({Código de Reserva} = '${codigoReserva}')`,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`
-                    }
-                }
-            );
-            
-            if (!response.ok) {
-                throw new Error(`Error en Airtable: ${response.status}`);
+        // Obtener reserva del backend
+        const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/reservas/${codigoReserva}`);
+        
+        if (!response.ok) {
+            if (response.status === 404) {
+                return null; // Reserva no encontrada
             }
-            
-            const data = await response.json();
-            if (data.records && data.records.length > 0) {
-                const record = data.records[0];
-                return {
-                    codigo_reserva: record.fields["Código de Reserva"],
-                    email_cliente: record.fields["Email Cliente"],
-                    fecha: record.fields["Fecha"],
-                    hora: record.fields["Hora"],
-                    origen: record.fields["Origen"],
-                    destino: record.fields["Destino"],
-                    pasajeros: record.fields["Pasajeros"],
-                    telefono: record.fields["Teléfono"],
-                    equipaje: record.fields["Equipaje"],
-                    maletas: record.fields["Maletas"]
-                };
-            }
-            return null;
-        } else {
-            // Obtener desde localStorage si Airtable no está disponible
-            const reservas = JSON.parse(localStorage.getItem('reservas') || '{}');
-            return reservas[codigoReserva] || null;
+            throw new Error(`Error al obtener reserva: ${response.status}`);
         }
+        
+        const reserva = await response.json();
+        // Verificar que la reserva esté activa
+        if (reserva && reserva.estado === 'activa') {
+            return reserva;
+        }
+        return null;
     } catch (error) {
-        console.error('Error obteniendo reserva de Airtable:', error);
+        console.error('Error obteniendo reserva del backend:', error);
         // Intentar obtener desde localStorage en caso de error
         try {
-            const reservas = JSON.parse(localStorage.getItem('reservas') || '{}');
-            return reservas[codigoReserva] || null;
+            const reservas = JSON.parse(localStorage.getItem('reservas_backup') || '{}');
+            const reserva = reservas[codigoReserva];
+            if (reserva && reserva.estado === 'activa') {
+                return reserva;
+            }
+            return null;
         } catch (backupError) {
             console.error('Error en respaldo de obtención de reserva:', backupError);
             return null;
@@ -975,63 +944,34 @@ async function getReservationByCode(codigoReserva) {
     }
 }
 
-// Función para eliminar una reserva en Airtable o localStorage
+// Función para eliminar una reserva (cancelar)
 async function removeReservation(codigoReserva) {
     try {
-        // Si Airtable está configurado, primero obtener el record ID y luego eliminar
-        if (isAirtableConfigured) {
-            // Primero obtener el record ID
-            const response = await fetch(
-                `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}?filterByFormula=({Código de Reserva} = '${codigoReserva}')`,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`
-                    }
-                }
-            );
-            
-            if (!response.ok) {
-                throw new Error(`Error obteniendo record de Airtable: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            if (data.records && data.records.length > 0) {
-                const recordId = data.records[0].id;
-                
-                // Eliminar el registro
-                const deleteResponse = await fetch(
-                    `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}/${recordId}`,
-                    {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`
-                        }
-                    }
-                );
-                
-                if (!deleteResponse.ok) {
-                    throw new Error(`Error eliminando de Airtable: ${deleteResponse.status}`);
-                }
-                
-                return await deleteResponse.json();
-            }
-        } else {
-            // Eliminar de localStorage si Airtable no está disponible
-            const reservas = JSON.parse(localStorage.getItem('reservas') || '{}');
-            delete reservas[codigoReserva];
-            localStorage.setItem('reservas', JSON.stringify(reservas));
-            return { success: true };
+        // Cancelar reserva en el backend
+        const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/reservas/${codigoReserva}/cancelar`, {
+            method: 'POST'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Error al cancelar reserva: ${response.status}`);
         }
+        
+        return await response.json();
     } catch (error) {
-        console.error('Error eliminando reserva de Airtable:', error);
-        // Intentar eliminar de localStorage en caso de error
+        console.error('Error cancelando reserva en backend:', error);
+        // Fallback a localStorage en caso de error
         try {
-            const reservas = JSON.parse(localStorage.getItem('reservas') || '{}');
-            delete reservas[codigoReserva];
-            localStorage.setItem('reservas', JSON.stringify(reservas));
-            return { success: true, backup: true };
+            const reservas = JSON.parse(localStorage.getItem('reservas_backup') || '{}');
+            if (reservas[codigoReserva]) {
+                reservas[codigoReserva].estado = 'cancelada';
+                reservas[codigoReserva].fechaCancelacion = new Date().toISOString();
+                localStorage.setItem('reservas_backup', JSON.stringify(reservas));
+                return { success: true, backup: true };
+            } else {
+                return { success: false, error: 'Reserva no encontrada' };
+            }
         } catch (backupError) {
-            console.error('Error en respaldo de eliminación de reserva:', backupError);
+            console.error('Error en respaldo de cancelación de reserva:', backupError);
             return { success: false, error: backupError.message };
         }
     }

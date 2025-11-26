@@ -1034,10 +1034,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const maletasInput = document.getElementById('maletas');
     const equipajeCheckbox = document.getElementById('equipaje');
 
-    console.log('Setting up autocomplete for origen');
-    setupAutocomplete('origen', 'origen-suggestions');
-    console.log('Setting up autocomplete for destino');
-    setupAutocomplete('destino', 'destino-suggestions');
+    console.log('Initializing autocomplete system...');
+    console.log('Origen input:', origenInput);
+    console.log('Destino input:', destinoInput);
+
+    if (origenInput) {
+        console.log('Setting up autocomplete for origen');
+        setupAutocomplete('origen', 'origen-suggestions');
+    }
+    
+    if (destinoInput) {
+        console.log('Setting up autocomplete for destino');
+        setupAutocomplete('destino', 'destino-suggestions');
+    }
+    
     console.log('Finished setting up autocompletes');
 
     async function actualizarPrecio() {

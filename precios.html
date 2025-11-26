@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precios - Altior Traslados</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!-- Social Media Sidebar -->
+    <div class="social-sidebar">
+        <a href="https://wa.me/5491122516700" target="_blank" class="social-icon whatsapp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="mailto:altior.traslados@gmail.com" class="social-icon email">
+            <i class="fas fa-envelope"></i>
+        </a>
+        <a href="https://www.facebook.com/p/Altior-Traslados-100075517674744" target="_blank"
+            class="social-icon facebook">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="#" class="social-icon instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo-section">
+                <svg class="logo" viewBox="0 0 100 100">
+                    <polygon points="50,15 85,75 50,60 15,75" fill="#5B8DB8" />
+                    <polygon points="50,15 50,60 85,75" fill="#3B5998" />
+                    <polygon points="50,15 15,75 50,60" fill="#2C4A7C" />
+                </svg>
+                <div class="brand-name">ALTIOR TRASLADOS</div>
+            </div>
+            
+            <!-- Hamburger Menu -->
+            <div class="hamburger-menu">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </div>
+            
+            <div class="nav-right">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <a href="cancelar.html" class="nav-link">Cancelar Reserva</a>
+                <a href="index.html#reservar" class="nav-cta">Reservar Ahora</a>
+                <div class="phone-number">
+                    <i class="fas fa-phone"></i>
+                    <span>+54 9 11 2251-6700</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Precios Section -->
+    <section class="precios-section">
+        <div class="precios-container">
+            <div class="section-header">
+                <h1>Tarifas de Nuestros Servicios</h1>
+                <p>Consulta nuestros precios por zona y tipo de vehículo</p>
+            </div>
+
+            <!-- Tabs para Ezeiza y Aeroparque -->
+            <div class="precios-tabs">
+                <button class="tab-btn active" data-tab="ezeiza">Aeropuerto Ezeiza</button>
+                <button class="tab-btn" data-tab="aeroparque">Aeropuerto Aeroparque</button>
+            </div>
+
+            <!-- Contenido de Ezeiza -->
+            <div class="tab-content active" id="ezeiza-content">
+                <div class="precios-header">
+                    <h2>Trayectos hacia y desde Ezeiza</h2>
+                    <p>Precios base por zona (incluyen peajes y estacionamiento)</p>
+                </div>
+                
+                <div class="precios-grid">
+                    <!-- Zonas Ezeiza -->
+                    <div class="precio-card">
+                        <div class="precio-title">Estándar</div>
+                        <div class="precio-amount">$49.900</div>
+                        <div class="precio-description">Vehículo cómodo para hasta 4 pasajeros</div>
+                        <div class="precio-note">Precio desde/hacia cualquier parte de CABA</div>
+                    </div>
+                    
+                    <div class="precio-card">
+                        <div class="precio-title">Extra equipaje</div>
+                        <div class="precio-amount">$65.900</div>
+                        <div class="precio-description">Vehículo amplio para equipaje adicional</div>
+                        <div class="precio-note">Precio desde/hacia cualquier parte de CABA</div>
+                    </div>
+                </div>
+                <div class="precio-connection-note">
+                    <p>Ezeiza hacia/desde Aeroparque: <span class="precio-standard">$55.000</span> (Estándar) - <span class="precio-extra">$75.000</span> (Extra equipaje)</p>
+                </div>
+                
+                <div class="precios-subtitle">
+                    <h3>Zonas específicas con precios diferenciados</h3>
+                </div>
+                
+                <div class="subzonas-grid">
+                    <!-- Zona Sur -->
+                    <div class="subzona-group">
+                        <div class="subzona-header">
+                            <h4>Zona Sur</h4>
+                            <div class="tipo-servicios">
+                                <span class="precio-label">Estándar</span>
+                                <span class="precio-label">Extra equipaje</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Avellaneda / Lanús</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$55.000</span>
+                                <span class="precio-extra">$64.900</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Wilde / Monte Chingolo</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$59.900</span>
+                                <span class="precio-extra">$75.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Quilmes / Alte Brown</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$64.900</span>
+                                <span class="precio-extra">$79.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Berazategui / Hudson</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$78.000</span>
+                                <span class="precio-extra">$89.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Lomas de Zamora</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$58.000</span>
+                                <span class="precio-extra">$74.900</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Canning / Spegazzini</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$55.000</span>
+                                <span class="precio-extra">$75.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>La Plata</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$95.000</span>
+                                <span class="precio-extra">$130.000</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Zona Oeste -->
+                    <div class="subzona-group">
+                        <div class="subzona-header">
+                            <h4>Zona Oeste</h4>
+                            <div class="tipo-servicios">
+                                <span class="precio-label">Estándar</span>
+                                <span class="precio-label">Extra equipaje</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Ramos Mejía / Ciudadela</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$49.900</span>
+                                <span class="precio-extra">$65.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Morón / Haedo</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$58.000</span>
+                                <span class="precio-extra">$69.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Caseros / El Palomar</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$55.000</span>
+                                <span class="precio-extra">$69.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Hurlingham / Loma Hermosa</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$59.900</span>
+                                <span class="precio-extra">$75.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Ituzaingó / Padua</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$65.000</span>
+                                <span class="precio-extra">$75.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>San Miguel / José C. Paz</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$75.000</span>
+                                <span class="precio-extra">$85.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Merlo / Paso del Rey</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$79.000</span>
+                                <span class="precio-extra">$90.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Moreno / Francisco Álvarez</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$95.000</span>
+                                <span class="precio-extra">$95.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Gral. Rodríguez</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$79.000</span>
+                                <span class="precio-extra">$90.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Luján</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$95.000</span>
+                                <span class="precio-extra">$120.000</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Zona Norte -->
+                    <div class="subzona-group">
+                        <div class="subzona-header">
+                            <h4>Zona Norte</h4>
+                            <div class="tipo-servicios">
+                                <span class="precio-label">Estándar</span>
+                                <span class="precio-label">Extra equipaje</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Vicente López / Olivos</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$55.000</span>
+                                <span class="precio-extra">$69.900</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>San Martín / San Andrés</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$53.000</span>
+                                <span class="precio-extra">$69.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>San Isidro / Boulogne</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$59.900</span>
+                                <span class="precio-extra">$74.900</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Villa Ballester / José León Suárez</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$65.000</span>
+                                <span class="precio-extra">$79.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Tigre Centro / Pacheco</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$69.000</span>
+                                <span class="precio-extra">$80.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Don Torcuato / Grand Bourg</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$69.000</span>
+                                <span class="precio-extra">$85.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Benavídez / Milberg / Tortuguitas</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$75.000</span>
+                                <span class="precio-extra">$89.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Ing. Maschwitz / Del Viso</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$75.000</span>
+                                <span class="precio-extra">$90.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Pilar / Escobar</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$95.000</span>
+                                <span class="precio-extra">$110.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Campana / Cardales</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$120.000</span>
+                                <span class="precio-extra">$150.000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenido de Aeroparque -->
+            <div class="tab-content" id="aeroparque-content">
+                <div class="precios-header">
+                    <h2>Trayectos hacia y desde Aeroparque</h2>
+                    <p>Precios base por zona (incluyen peajes y estacionamiento)</p>
+                </div>
+                
+                <div class="precios-grid">
+                    <!-- Zonas Aeroparque -->
+                    <div class="precio-card">
+                        <div class="precio-title">Estándar</div>
+                        <div class="precio-amount">$35.000</div>
+                        <div class="precio-description">Vehículo cómodo para hasta 4 pasajeros</div>
+                        <div class="precio-note">Precio desde/hacia cualquier parte de CABA</div>
+                    </div>
+                    
+                    <div class="precio-card">
+                        <div class="precio-title">Extra equipaje</div>
+                        <div class="precio-amount">$45.000</div>
+                        <div class="precio-description">Vehículo amplio para equipaje adicional</div>
+                        <div class="precio-note">Precio desde/hacia cualquier parte de CABA</div>
+                    </div>
+                </div>
+                <div class="precio-connection-note">
+                    <p>Aeroparque hacia/desde Ezeiza: <span class="precio-standard">$55.000</span> (Estándar) - <span class="precio-extra">$75.000</span> (Extra equipaje)</p>
+                </div>
+                
+                <div class="precios-subtitle">
+                    <h3>Zonas específicas con precios diferenciados</h3>
+                </div>
+                
+                <div class="subzonas-grid">
+                    
+                    <!-- Zona Sur -->
+                    <div class="subzona-group">
+                        <div class="subzona-header">
+                            <h4>Zona Sur</h4>
+                            <div class="tipo-servicios">
+                                <span class="precio-label">Estándar</span>
+                                <span class="precio-label">Extra equipaje</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Avellaneda / Lanús</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$45.000</span>
+                                <span class="precio-extra">$59.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Wilde / Monte Chingolo</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$49.000</span>
+                                <span class="precio-extra">$65.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Quilmes / Alte Brown</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$49.900</span>
+                                <span class="precio-extra">$65.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Berazategui / Hudson</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$55.000</span>
+                                <span class="precio-extra">$69.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Lomas de Zamora</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$55.000</span>
+                                <span class="precio-extra">$69.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Canning / Spegazzini</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$69.000</span>
+                                <span class="precio-extra">$85.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>La Plata</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$85.000</span>
+                                <span class="precio-extra">$95.000</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Zona Oeste -->
+                    <div class="subzona-group">
+                        <div class="subzona-header">
+                            <h4>Zona Oeste</h4>
+                            <div class="tipo-servicios">
+                                <span class="precio-label">Estándar</span>
+                                <span class="precio-label">Extra equipaje</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Ramos Mejía / Ciudadela</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$55.000</span>
+                                <span class="precio-extra">$69.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Morón / Haedo</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$59.000</span>
+                                <span class="precio-extra">$75.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Caseros / El Palomar</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$59.900</span>
+                                <span class="precio-extra">$75.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Hurlingham / Loma Hermosa</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$59.900</span>
+                                <span class="precio-extra">$75.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Ituzaingó / Padua</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$65.000</span>
+                                <span class="precio-extra">$79.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>San Miguel / José C. Paz</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$69.000</span>
+                                <span class="precio-extra">$79.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Merlo / Paso del Rey</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$75.000</span>
+                                <span class="precio-extra">$85.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Moreno / Francisco Álvarez</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$79.000</span>
+                                <span class="precio-extra">$89.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Gral. Rodríguez</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$79.000</span>
+                                <span class="precio-extra">$89.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Luján</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$95.000</span>
+                                <span class="precio-extra">$110.000</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Zona Norte -->
+                    <div class="subzona-group">
+                        <div class="subzona-header">
+                            <h4>Zona Norte</h4>
+                            <div class="tipo-servicios">
+                                <span class="precio-label">Estándar</span>
+                                <span class="precio-label">Extra equipaje</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Vicente López / Olivos</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$35.000</span>
+                                <span class="precio-extra">$45.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>San Martín / San Andrés</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$45.000</span>
+                                <span class="precio-extra">$55.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>San Isidro / Boulogne</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$45.000</span>
+                                <span class="precio-extra">$55.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Villa Ballester / José León Suárez</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$49.000</span>
+                                <span class="precio-extra">$59.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Tigre Centro / Pacheco</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$49.000</span>
+                                <span class="precio-extra">$59.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Don Torcuato / Grand Bourg</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$55.000</span>
+                                <span class="precio-extra">$65.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Benavídez / Milberg / Tortuguitas</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$59.000</span>
+                                <span class="precio-extra">$69.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Ing. Maschwitz / Del Viso</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$59.000</span>
+                                <span class="precio-extra">$70.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Pilar / Escobar</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$69.000</span>
+                                <span class="precio-extra">$79.000</span>
+                            </div>
+                        </div>
+                        <div class="subzona-item">
+                            <span>Campana / Cardales</span>
+                            <div class="subzona-precios">
+                                <span class="precio-standard">$110.000</span>
+                                <span class="precio-extra">$129.000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <h2>¿Listo para viajar?</h2>
+        <p>Reserve ahora y viaje con la tranquilidad que se merece</p>
+        <a href="index.html#reservar" class="cta-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <path
+                    d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.480 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+            </svg>
+            Reservar Ahora
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <svg viewBox="0 0 100 100" width="50" height="50">
+                    <polygon points="50,15 85,75 50,60 15,75" fill="#5B8DB8" />
+                    <polygon points="50,15 50,60 85,75" fill="#3B5998" />
+                    <polygon points="50,15 15,75 50,60" fill="#2C4A7C" />
+                </svg>
+                <div class="footer-brand">ALTIOR TRASLADOS</div>
+            </div>
+
+            <!-- Footer Social Media -->
+            <div class="footer-social">
+                <a href="https://wa.me/5491122516700" target="_blank" class="social-icon whatsapp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="mailto:altior.traslados@gmail.com" class="social-icon email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="https://www.facebook.com/p/Altior-Traslados-100075517674744" target="_blank"
+                    class="social-icon facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-icon instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+
+            <p class="footer-text">&copy; 2024 Altior Traslados. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/hamburger-menu.js"></script>
+    <script>
+        // Funcionalidad de tabs
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remover clase active de todos los botones y contenidos
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Agregar clase active al botón clickeado
+                    btn.classList.add('active');
+                    
+                    // Mostrar el contenido correspondiente
+                    const tabId = btn.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-content`).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

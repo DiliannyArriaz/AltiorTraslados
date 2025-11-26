@@ -1,0 +1,17 @@
+{
+  "reservas": [
+    {
+      "codigo_reserva": "ALT-TEST-001",
+      "email_cliente": "test@example.com",
+      "fecha": "2024-03-01",
+      "hora": "10:00",
+      "origen": "Aeropuerto Ezeiza",
+      "destino": "Centro CABA",
+      "pasajeros": 2,
+      "telefono": "+54 9 11 1234-5678",
+      "estado": "cancelada",
+      "fechaCreacion": "2025-11-26T21:02:00.529Z",
+      "fechaCancelacion": "2025-11-26T21:02:50.366Z"
+    }
+  ]
+}
