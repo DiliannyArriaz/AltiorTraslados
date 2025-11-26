@@ -15,14 +15,47 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Instanciar el gestor de reservas
 const gestorReservas = new GestorReservas('reservas.json');
 
-// Ruta para servir el frontend de prueba
+// Ruta principal - información de la API
 app.get('/', (req, res) => {
+    res.json({
+        message: 'API de Altior Traslados',
+        version: '1.0.0',
+        endpoints: {
+            'GET /api/reservas': 'Listar reservas activas',
+            'POST /api/reservas': 'Crear nueva reserva',
+            'GET /api/reservas/:codigo': 'Obtener reserva por código',
+            'POST /api/reservas/:codigo/cancelar': 'Cancelar reserva',
+            'POST /api/verificar-reserva': 'Verificar código de reserva',
+            'POST /api/cancelar-reserva': 'Cancelar reserva con verificación',
+            'GET /admin': 'Panel de administración'
+        },
+        documentation: 'https://github.com/DiliannyArriaz/AltiorTraslados'
+    });
+});
+
+// Ruta para servir el frontend de prueba
+app.get('/index.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Ruta para servir el panel de administración
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+// Ruta para información de la API
+app.get('/api', (req, res) => {
+    res.json({
+        message: 'API de Altior Traslados',
+        endpoints: {
+            'GET /api/reservas': 'Listar reservas activas',
+            'POST /api/reservas': 'Crear nueva reserva',
+            'GET /api/reservas/:codigo': 'Obtener reserva por código',
+            'POST /api/reservas/:codigo/cancelar': 'Cancelar reserva',
+            'POST /api/verificar-reserva': 'Verificar código de reserva',
+            'POST /api/cancelar-reserva': 'Cancelar reserva con verificación'
+        }
+    });
 });
 
 // Endpoint para crear una nueva reserva
