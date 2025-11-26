@@ -253,22 +253,23 @@ document.getElementById('bookingForm').addEventListener('submit', async function
     const mensajeCodificado = encodeURIComponent(mensaje);
     const linkWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensajeCodificado}`;
     
-    // Enviar correos electrónicos a ambos destinatarios
-    sendReservationEmails(datosEmail);
+    // Guardar la reserva en el backend (esto también enviará los correos)
+    const resultado = await saveReservation(datosEmail);
     
-    // Guardar la reserva en la nube o en localStorage como respaldo
-    await saveReservation(datosEmail);
-    
-    // Abrir WhatsApp en una nueva pestaña
-    window.open(linkWhatsApp, '_blank');
-    
-    // Mostrar popup de confirmación de reserva
-    showReservationPopup(codigoReserva, emailCliente);
-    
-    // Guardar en localStorage para mostrar el mensaje al regresar
-    localStorage.setItem('reservationCompleted', 'true');
-    localStorage.setItem('reservationCode', codigoReserva);
-    localStorage.setItem('clientEmail', emailCliente);
+    if (resultado && resultado.success) {
+        // Abrir WhatsApp en una nueva pestaña
+        window.open(linkWhatsApp, '_blank');
+        
+        // Mostrar popup de confirmación de reserva
+        showReservationPopup(codigoReserva, emailCliente);
+        
+        // Guardar en localStorage para mostrar el mensaje al regresar
+        localStorage.setItem('reservationCompleted', 'true');
+        localStorage.setItem('reservationCode', codigoReserva);
+        localStorage.setItem('clientEmail', emailCliente);
+    } else {
+        alert('Error al guardar la reserva. Por favor, inténtelo nuevamente.');
+    }
 });
 
 // Handle cancellation form submission
@@ -685,7 +686,9 @@ async function saveReservation(datosReserva) {
             throw new Error(`Error al guardar reserva: ${response.status}`);
         }
         
-        return await response.json();
+        const result = await response.json();
+        console.log('Reserva guardada exitosamente:', result);
+        return result;
     } catch (error) {
         console.error('Error guardando reserva en backend:', error);
         // Fallback a localStorage en caso de error
@@ -697,6 +700,7 @@ async function saveReservation(datosReserva) {
                 estado: 'activa'
             };
             localStorage.setItem('reservas_backup', JSON.stringify(reservas));
+            console.log('Reserva guardada en localStorage como respaldo');
             return { success: true, backup: true };
         } catch (backupError) {
             console.error('Error en respaldo de reserva:', backupError);
