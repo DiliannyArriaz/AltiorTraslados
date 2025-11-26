@@ -15,7 +15,7 @@ const isAirtableConfigured = AIRTABLE_CONFIG.apiKey !== "YOUR_AIRTABLE_API_KEY" 
 
 // Configuración de reservas (usando backend en Render.com)
 const RESERVAS_CONFIG = {
-    apiUrl: "https://TU_URL_DE_RENDER.com/api" // Reemplaza con tu URL real de Render.com
+    apiUrl: "https://altiortraslados.onrender.com/api"
 };
 
 // Verificar si el sistema de reservas está configurado
