@@ -38,8 +38,8 @@ DETALLES DE TU RESERVA:
 • Código de reserva: ${datosReserva.codigo_reserva}
 • Fecha: ${datosReserva.fecha} | Hora: ${datosReserva.hora}
 • Ruta: ${datosReserva.origen} → ${datosReserva.destino}
-• Vehículo: ${datosReserva.tipo_vehiculo}
-• Maletas: ${datosReserva.cantidad_maletas}
+• Pasajeros: ${datosReserva.pasajeros}
+• Equipaje: ${datosReserva.maletas}
 
 Importante: Conserva este código para futuras consultas o modificaciones.
 
@@ -53,8 +53,8 @@ Equipo Altior Traslados`,
                     <li><strong>Código de reserva:</strong> ${datosReserva.codigo_reserva}</li>
                     <li><strong>Fecha:</strong> ${datosReserva.fecha} | <strong>Hora:</strong> ${datosReserva.hora}</li>
                     <li><strong>Ruta:</strong> ${datosReserva.origen} → ${datosReserva.destino}</li>
-                    <li><strong>Vehículo:</strong> ${datosReserva.tipo_vehiculo}</li>
-                    <li><strong>Maletas:</strong> ${datosReserva.cantidad_maletas}</li>
+                    <li><strong>Pasajeros:</strong> ${datosReserva.pasajeros}</li>
+                    <li><strong>Equipaje:</strong> ${datosReserva.maletas}</li>
                 </ul>
                 <p><strong>Importante:</strong> Conserva este código para futuras consultas o modificaciones.</p>
                 <p>¡Gracias por elegir Altior Traslados!</p>
