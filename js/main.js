@@ -223,14 +223,6 @@ fechaInput.min = today;
 const equipajeCheckbox = document.getElementById('equipaje');
 const luggageDetails = document.getElementById('luggageDetails');
 
-equipajeCheckbox.addEventListener('change', function() {
-    if(this.checked) {
-        luggageDetails.classList.add('active');
-    } else {
-        luggageDetails.classList.remove('active');
-    }
-});
-
 // Handle form submission
 document.getElementById('bookingForm').addEventListener('submit', async function(e) {
     e.preventDefault();

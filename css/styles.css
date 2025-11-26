@@ -306,6 +306,7 @@ select:focus {
     cursor: pointer;
     transition: all 0.3s;
     border: 2px solid transparent;
+    position: relative;
 }
 
 .checkbox-container:hover {
@@ -319,6 +320,8 @@ select:focus {
     margin-right: 12px;
     cursor: pointer;
     accent-color: #3B5998;
+    position: relative;
+    z-index: 2;
 }
 
 .checkbox-container label {
@@ -327,6 +330,19 @@ select:focus {
     text-transform: none;
     letter-spacing: normal;
     font-weight: 500;
+    position: relative;
+    z-index: 2;
+}
+
+/* Hacer que todo el contenedor sea cliqueable */
+.checkbox-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
 }
 
 .luggage-details {

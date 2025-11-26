@@ -1049,16 +1049,32 @@ document.addEventListener('DOMContentLoaded', function () {
     if (maletasInput) maletasInput.addEventListener('input', actualizarPrecio);
 
     if (equipajeCheckbox) {
-        const originalChangeHandler = function () {
+        // Remover cualquier listener previo para evitar duplicados
+        const toggleLuggageSection = function () {
+            const luggageDetails = document.getElementById('luggageDetails');
             if (this.checked) {
-                document.getElementById('luggageDetails').classList.add('active');
+                luggageDetails.classList.add('active');
             } else {
-                document.getElementById('luggageDetails').classList.remove('active');
+                luggageDetails.classList.remove('active');
             }
             mostrarPrecio();
         };
 
-        equipajeCheckbox.removeEventListener('change', originalChangeHandler);
-        equipajeCheckbox.addEventListener('change', originalChangeHandler);
+        // Remover listeners antiguos y agregar el nuevo
+        equipajeCheckbox.replaceWith(equipajeCheckbox.cloneNode(true));
+        const newEquipajeCheckbox = document.getElementById('equipaje');
+        newEquipajeCheckbox.addEventListener('change', toggleLuggageSection);
+
+        // Agregar click al contenedor para mejor UX
+        const checkboxContainer = document.querySelector('.checkbox-container');
+        if (checkboxContainer) {
+            checkboxContainer.addEventListener('click', function(e) {
+                // Prevenir el doble toggle si se hace clic directamente en el checkbox
+                if (e.target !== newEquipajeCheckbox) {
+                    newEquipajeCheckbox.checked = !newEquipajeCheckbox.checked;
+                    newEquipajeCheckbox.dispatchEvent(new Event('change'));
+                }
+            });
+        }
     }
 });
