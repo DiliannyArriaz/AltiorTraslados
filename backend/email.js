@@ -7,6 +7,11 @@ const SENDGRID_CONFIG = {
     fromName: 'Altior Traslados'
 };
 
+// Verificar si la API Key está configurada
+if (!process.env.SENDGRID_API_KEY) {
+    console.warn('⚠️  ADVERTENCIA: SENDGRID_API_KEY no está configurada. Los correos no se enviarán.');
+}
+
 sgMail.setApiKey(SENDGRID_CONFIG.apiKey);
 
 /**
@@ -14,6 +19,12 @@ sgMail.setApiKey(SENDGRID_CONFIG.apiKey);
  */
 async function sendReservationConfirmation(datosReserva) {
     try {
+        // Verificar que la API Key esté configurada
+        if (!process.env.SENDGRID_API_KEY) {
+            console.warn('⚠️  ADVERTENCIA: SENDGRID_API_KEY no está configurada. No se enviará correo de confirmación.');
+            return false;
+        }
+        
         const msg = {
             to: datosReserva.email_cliente,
             from: {
@@ -51,11 +62,12 @@ Equipo Altior Traslados`,
             `,
         };
 
+        console.log('📧 Enviando correo de confirmación a:', datosReserva.email_cliente);
         await sgMail.send(msg);
-        console.log('Correo de confirmación enviado exitosamente');
+        console.log('✅ Correo de confirmación enviado exitosamente a:', datosReserva.email_cliente);
         return true;
     } catch (error) {
-        console.error('Error enviando email de confirmación:', error);
+        console.error('❌ Error enviando email de confirmación:', error);
         if (error.response) {
             console.error('Detalles del error:', error.response.body);
         }
@@ -68,6 +80,12 @@ Equipo Altior Traslados`,
  */
 async function sendCancellationConfirmation(datosReserva) {
     try {
+        // Verificar que la API Key esté configurada
+        if (!process.env.SENDGRID_API_KEY) {
+            console.warn('⚠️  ADVERTENCIA: SENDGRID_API_KEY no está configurada. No se enviará correo de cancelación.');
+            return false;
+        }
+        
         const msg = {
             to: datosReserva.email_cliente,
             from: {
@@ -100,11 +118,12 @@ Equipo Altior Traslados`,
             `,
         };
 
+        console.log('📧 Enviando correo de cancelación a:', datosReserva.email_cliente);
         await sgMail.send(msg);
-        console.log('Correo de cancelación enviado exitosamente');
+        console.log('✅ Correo de cancelación enviado exitosamente a:', datosReserva.email_cliente);
         return true;
     } catch (error) {
-        console.error('Error enviando email de cancelación:', error);
+        console.error('❌ Error enviando email de cancelación:', error);
         if (error.response) {
             console.error('Detalles del error:', error.response.body);
         }
