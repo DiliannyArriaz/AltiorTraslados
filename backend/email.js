@@ -56,6 +56,9 @@ Equipo Altior Traslados`,
         return true;
     } catch (error) {
         console.error('Error enviando email de confirmación:', error);
+        if (error.response) {
+            console.error('Detalles del error:', error.response.body);
+        }
         return false;
     }
 }
@@ -102,6 +105,9 @@ Equipo Altior Traslados`,
         return true;
     } catch (error) {
         console.error('Error enviando email de cancelación:', error);
+        if (error.response) {
+            console.error('Detalles del error:', error.response.body);
+        }
         return false;
     }
 }
