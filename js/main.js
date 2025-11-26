@@ -18,6 +18,12 @@ const RESERVAS_CONFIG = {
     apiUrl: "https://altiortraslados.onrender.com/api"
 };
 
+// Configuración de Tally.so para envío de correos
+const TALLY_CONFIG = {
+    formId: "tally-form-id", // Reemplazar con tu ID de formulario de Tally.so
+    baseUrl: "https://tally.so/forms/"
+};
+
 // Verificar si el sistema de reservas está configurado
 const isReservasConfigured = true;
 
@@ -170,6 +176,57 @@ Equipo Altior Traslados`
     }
 }
 
+// Función para enviar correo de confirmación usando Tally.so
+async function sendConfirmationEmail(datosReserva) {
+    try {
+        // Datos para el correo de confirmación
+        const emailData = {
+            email: datosReserva.email_cliente,
+            subject: 'Confirmación de Reserva - Altior Traslados',
+            message: `CONFIRMACIÓN DE RESERVA - ALTIOR TRASLADOS
+
+DETALLES DE TU RESERVA:
+• Código de reserva: ${datosReserva.codigo_reserva}
+• Fecha: ${datosReserva.fecha} | Hora: ${datosReserva.hora}
+• Ruta: ${datosReserva.origen} → ${datosReserva.destino}
+• Vehículo: ${datosReserva.tipo_vehiculo}
+• Maletas: ${datosReserva.cantidad_maletas}
+
+Importante: Conserva este código para futuras consultas o modificaciones.
+
+¡Gracias por elegir Altior Traslados!
+Atentamente,
+Equipo Altior Traslados`,
+            codigo_reserva: datosReserva.codigo_reserva,
+            fecha: datosReserva.fecha,
+            hora: datosReserva.hora,
+            origen: datosReserva.origen,
+            destino: datosReserva.destino,
+            tipo_vehiculo: datosReserva.tipo_vehiculo,
+            cantidad_maletas: datosReserva.cantidad_maletas
+        };
+
+        // Enviar correo usando Tally.so
+        const response = await fetch(`${TALLY_CONFIG.baseUrl}${TALLY_CONFIG.formId}/submit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(emailData)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error al enviar correo: ${response.status}`);
+        }
+
+        console.log('Correo de confirmación enviado exitosamente');
+        return true;
+    } catch (error) {
+        console.error('Error enviando email de confirmación:', error);
+        return false;
+    }
+}
+
 // Enviar notificación de cancelación por correo
 async function sendCancellationEmail(datos) {
     try {
@@ -214,6 +271,53 @@ Equipo Altior Traslados`
         
     } catch (error) {
         console.error('Error enviando email de cancelación:', error);
+    }
+}
+
+// Función para enviar correo de cancelación usando Tally.so
+async function sendCancellationEmail(datosReserva) {
+    try {
+        // Datos para el correo de cancelación
+        const emailData = {
+            email: datosReserva.email_cliente,
+            subject: 'Confirmación de Cancelación de Reserva - Altior Traslados',
+            message: `CONFIRMACIÓN DE CANCELACIÓN - ALTIOR TRASLADOS
+
+Tu reserva ${datosReserva.codigo_reserva} ha sido cancelada exitosamente.
+
+DETALLES DE LA RESERVA CANCELADA:
+• Fecha: ${datosReserva.fecha} | Hora: ${datosReserva.hora}
+• Ruta: ${datosReserva.origen} → ${datosReserva.destino}
+
+Si tienes alguna pregunta, no dudes en contactarnos.
+
+Atentamente,
+Equipo Altior Traslados`,
+            codigo_reserva: datosReserva.codigo_reserva,
+            fecha: datosReserva.fecha,
+            hora: datosReserva.hora,
+            origen: datosReserva.origen,
+            destino: datosReserva.destino
+        };
+
+        // Enviar correo usando Tally.so
+        const response = await fetch(`${TALLY_CONFIG.baseUrl}${TALLY_CONFIG.formId}/submit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(emailData)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error al enviar correo: ${response.status}`);
+        }
+
+        console.log('Correo de cancelación enviado exitosamente');
+        return true;
+    } catch (error) {
+        console.error('Error enviando email de cancelación:', error);
+        return false;
     }
 }
 
@@ -518,175 +622,6 @@ function showCancellationPopup() {
     `;
     
     // Agregar estilos para el popup (reutilizamos los mismos estilos)
-    const styles = document.createElement('style');
-    styles.textContent = `
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            backdrop-filter: blur(5px);
-        }
-        
-        .popup-content {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: popupFadeIn 0.3s ease-out;
-        }
-        
-        @keyframes popupFadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        
-        .popup-header {
-            padding: 25px 30px 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .popup-header h2 {
-            margin: 0;
-            color: #2C4A7C;
-            font-size: 1.8em;
-        }
-        
-        .popup-close {
-            background: none;
-            border: none;
-            font-size: 2em;
-            cursor: pointer;
-            color: #999;
-            padding: 0;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s;
-        }
-        
-        .popup-close:hover {
-            background: #f5f5f5;
-            color: #333;
-        }
-        
-        .popup-body {
-            padding: 25px 30px;
-        }
-        
-        .popup-body p {
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-        
-        .reservation-details {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-        
-        .reservation-details p {
-            margin: 10px 0;
-            font-size: 0.95em;
-        }
-        
-        .popup-footer {
-            padding: 20px 30px;
-            border-top: 1px solid #eee;
-            text-align: center;
-        }
-        
-        .popup-footer .btn-submit {
-            margin: 0;
-            padding: 12px 30px;
-            width: auto;
-            background: linear-gradient(135deg, #5B8DB8, #3B5998);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.15em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            box-shadow: 0 6px 20px rgba(59, 89, 152, 0.3);
-        }
-        
-        .popup-footer .btn-submit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(59, 89, 152, 0.4);
-        }
-    `;
-    
-    document.head.appendChild(styles);
-    document.body.appendChild(popup);
-    
-    // Agregar eventos para cerrar el popup
-    const closeButtons = popup.querySelectorAll('.popup-close');
-    closeButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            document.head.removeChild(styles);
-            document.body.removeChild(popup);
-        });
-    });
-    
-    // Cerrar con Escape
-    document.addEventListener('keydown', function closeOnEscape(e) {
-        if (e.key === 'Escape') {
-            document.head.removeChild(styles);
-            document.body.removeChild(popup);
-            document.removeEventListener('keydown', closeOnEscape);
-        }
-    });
-}
-
-// Función para mostrar popup de confirmación de reserva
-function showReservationPopup(codigoReserva, emailCliente) {
-    // Crear el popup
-    const popup = document.createElement('div');
-    popup.innerHTML = `
-        <div class="popup-overlay">
-            <div class="popup-content">
-                <div class="popup-header">
-                    <h2>¡Reserva Confirmada!</h2>
-                    <span class="popup-close">&times;</span>
-                </div>
-                <div class="popup-body">
-                    <p>Su reserva ha sido registrada exitosamente.</p>
-                    <div class="reservation-details">
-                        <p><strong>Código de reserva:</strong> ${codigoReserva}</p>
-                        <p><strong>Email de confirmación:</strong> ${emailCliente}</p>
-                    </div>
-                    <p>Hemos enviado un correo de confirmación con todos los detalles.</p>
-                    <p>Para cancelar su reserva, puede responder al correo con "CANCELAR" o usar el formulario de cancelación en nuestra web.</p>
-                </div>
-                <div class="popup-footer">
-                    <button class="btn-submit popup-close">Aceptar</button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // Agregar estilos para el popup
     const styles = document.createElement('style');
     styles.textContent = `
         .popup-overlay {

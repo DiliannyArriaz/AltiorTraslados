@@ -253,15 +253,19 @@
             document.getElementById('totalCount').textContent = activeCount;
         }
 
-        // Función para enviar correo de cancelación usando Formspree
+        // Configuración de Tally.so para envío de correos
+        const TALLY_CONFIG = {
+            formId: "tally-form-id", // Reemplazar con tu ID de formulario de Tally.so
+            baseUrl: "https://tally.so/forms/"
+        };
+
+        // Función para enviar correo de cancelación usando Tally.so
         async function sendCancellationEmail(datosReserva) {
             try {
                 // Datos para el correo al cliente
-                const clienteData = {
-                    subject: 'Confirmación de Cancelación de Reserva - Altior Traslados',
+                const emailData = {
                     email: datosReserva.email_cliente,
-                    replyto: 'altior.traslados@gmail.com',
-                    cc: 'altior.traslados@gmail.com', // Copia a la empresa
+                    subject: 'Confirmación de Cancelación de Reserva - Altior Traslados',
                     message: `CONFIRMACIÓN DE CANCELACIÓN - ALTIOR TRASLADOS
 
 Tu reserva ${datosReserva.codigo_reserva} ha sido cancelada exitosamente.
@@ -273,21 +277,32 @@ DETALLES DE LA RESERVA CANCELADA:
 Si tienes alguna pregunta, no dudes en contactarnos.
 
 Atentamente,
-Equipo Altior Traslados`
+Equipo Altior Traslados`,
+                    codigo_reserva: datosReserva.codigo_reserva,
+                    fecha: datosReserva.fecha,
+                    hora: datosReserva.hora,
+                    origen: datosReserva.origen,
+                    destino: datosReserva.destino
                 };
 
-                // Enviar correo al cliente usando Formspree
-                await fetch('https://formspree.io/f/mgvrzkbd', {
+                // Enviar correo al cliente usando Tally.so
+                const response = await fetch(`${TALLY_CONFIG.baseUrl}${TALLY_CONFIG.formId}/submit`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(clienteData)
+                    body: JSON.stringify(emailData)
                 });
-                
+
+                if (!response.ok) {
+                    throw new Error(`Error al enviar correo: ${response.status}`);
+                }
+
                 console.log('Correo de cancelación enviado exitosamente');
+                return true;
             } catch (error) {
                 console.error('Error enviando email de cancelación:', error);
+                return false;
             }
         }
 
