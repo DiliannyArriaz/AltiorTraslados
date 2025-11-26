@@ -1,10 +1,40 @@
 // Tabla de precios por zonas
 const tablaPrecios = {
-    // HACIA / DESDE EZEIZA o Aeroparque
-    'CABA / Aeroparque': {
+    // HACIA / DESDE EZEIZA
+    'EZEIZA': {
         urbano: 49900,
         kangoo: 65900
     },
+    // HACIA / DESDE AEROPARQUE
+    'AEROPARQUE': {
+        urbano: 0,
+        kangoo: 0,
+        subzonas: {
+            // CABA
+            'CABA': { urbano: 35000, kangoo: 45000 },
+            // Zona Sur
+            'Avellaneda / Lanús': { urbano: 45000, kangoo: 59000 },
+            'Wilde / Monte Chingolo': { urbano: 49000, kangoo: 65000 },
+            'Quilmes / Alte Brown': { urbano: 49900, kangoo: 65000 },
+            'Berazategui / Hudson': { urbano: 55000, kangoo: 69000 },
+            'Lomas de Zamora': { urbano: 55000, kangoo: 69000 },
+            'Canning / Spegazzini': { urbano: 69000, kangoo: 85000 },
+            'La Plata': { urbano: 85000, kangoo: 95000 },
+            // Zona Norte
+            'Vicente López / Olivos': { urbano: 35000, kangoo: 45000 },
+            'San Martín / San Andrés': { urbano: 45000, kangoo: 55000 },
+            'San Isidro / Boulogne': { urbano: 45000, kangoo: 55000 },
+            'Villa Ballester / José León Suárez': { urbano: 49000, kangoo: 59000 },
+            'Tigre Centro / Pacheco': { urbano: 49000, kangoo: 59000 },
+            'Don Torcuato / Grand Bourg': { urbano: 55000, kangoo: 65000 },
+            'Benavídez / Milberg / Tortuguitas': { urbano: 59000, kangoo: 69000 },
+            'Ing. Maschwitz / Del Viso': { urbano: 59000, kangoo: 70000 },
+            'Pilar / Escobar': { urbano: 69000, kangoo: 79000 },
+            'Campana / Cardales': { urbano: 110000, kangoo: 129000 }
+        }
+    },
+    // CONEXIÓN ENTRE AEROPUERTOS
+    'Aeroparque / Ezeiza Conexión': { urbano: 55000, kangoo: 75000 },
     'ZONA SUR': {
         urbano: 0,
         kangoo: 0,
@@ -54,9 +84,9 @@ const tablaPrecios = {
 
 // Definición de Zonas por Código Postal
 const ZONAS_CP = {
-    'CABA / Aeroparque': { min: 1000, max: 1499 },
+    'CABA': { min: 1000, max: 1499 },
     'Avellaneda / Lanús': [1870, 1871, 1872, 1873, 1874, 1875, 1822, 1824],
-    'Wilde / Monte Chingolo': [1875, 1826],
+    'Wilde / Monte Chingolo': [1875],
     'Quilmes / Alte Brown': [1878, 1879, 1846],
     'Berazategui / Hudson': [1880, 1884, 1885, 1886],
     'Lomas de Zamora': [1832],
@@ -103,6 +133,11 @@ function determinarZonaFromDetails(address) {
         }
     }
 
+    // AEROPARQUE
+    if (address.airport && address.airport.includes('Aeroparque')) {
+        return 'AEROPARQUE';
+    }
+
     // ZONA NORTE
     if (address.city === 'Villa Ballester' || address.town === 'Villa Ballester' ||
         (address.municipality && address.municipality.includes('Villa Ballester')) ||
@@ -144,7 +179,7 @@ function determinarZonaFromDetails(address) {
 
     // CABA
     if (address.city === 'Buenos Aires' || address.state === 'Ciudad Autónoma de Buenos Aires') {
-        return 'CABA / Aeroparque';
+        return 'CABA';
     }
 
     return null;
@@ -152,19 +187,60 @@ function determinarZonaFromDetails(address) {
 
 // Función para determinar la zona según el origen o destino
 async function determinarZona(direccion, cachedDetails = null) {
-    // 0. Usar detalles cacheados si existen (Optimización)
+    // 0. Usar detalles cacheados si existen y son relevantes para la dirección actual (Optimización)
     if (cachedDetails) {
         console.log('Usando detalles de dirección cacheados');
-        const zona = determinarZonaFromDetails(cachedDetails);
-        if (zona) return zona;
+        
+        // Verificar si los datos cacheados son relevantes para la dirección actual
+        // Solo usar los datos cacheados si contienen información que coincida con la dirección actual
+        const direccionLower = direccion.toLowerCase();
+        let esRelevante = false;
+        
+        // Verificar si algún campo de los datos cacheados contiene parte de la dirección actual
+        for (const key in cachedDetails) {
+            if (cachedDetails[key] && 
+                typeof cachedDetails[key] === 'string' && 
+                direccionLower.includes(cachedDetails[key].toLowerCase())) {
+                esRelevante = true;
+                break;
+            }
+        }
+        
+        // También verificar casos especiales como aeropuertos
+        if (!esRelevante && (
+            (direccionLower.includes('aeroparque') && cachedDetails.airport && cachedDetails.airport.includes('Aeroparque')) ||
+            (direccionLower.includes('aeroparque') && cachedDetails.full_address && cachedDetails.full_address.includes('Aeroparque')) ||
+            (direccionLower.includes('aeroparque') && cachedDetails.road && cachedDetails.road.includes('Aeroparque')) ||
+            (direccionLower.includes('ezeiza') && cachedDetails.full_address && cachedDetails.full_address.includes('Ezeiza')) ||
+            (direccionLower.includes('ezeiza') && cachedDetails.airport && cachedDetails.airport.includes('Ezeiza')) ||
+            (direccionLower.includes('ezeiza') && cachedDetails.road && cachedDetails.road.includes('Ezeiza'))
+        )) {
+            esRelevante = true;
+        }
+        
+        // Verificación adicional: si la dirección es corta (menos de 5 caracteres), no usar datos cacheados
+        // Esto evita usar datos cacheados cuando el usuario está escribiendo una nueva dirección
+        if (direccion.length < 5) {
+            esRelevante = false;
+        }
+        
+        if (esRelevante) {
+            const zona = determinarZonaFromDetails(cachedDetails);
+            if (zona) return zona;
+        } else {
+            // Limpiar datos cacheados si no son relevantes
+            // Esto ayuda a evitar interferencias entre direcciones diferentes
+            console.log('Datos cacheados no son relevantes, ignorando');
+        }
     }
 
     // 1. Intentar extraer CP directamente del texto
-    const cpRegex = /\b([a-zA-Z])\s*(\d{4})(?:[a-zA-Z]{3})?\b/g;
+    // Patrón mejorado para manejar códigos postales como "C1426", "C 1426" y "C1426AGX"
+    const cpRegex = /\b(?:C\s*)?(\d{4})(?:[a-zA-Z]*)?\b/gi;
     let match;
 
     while ((match = cpRegex.exec(direccion)) !== null) {
-        const cp = parseInt(match[2]);
+        const cp = parseInt(match[1]);
         if (cp >= 1000 && cp <= 9999) {
             const zonaCP = determinarZonaPorCP(cp);
             if (zonaCP) {
@@ -181,28 +257,57 @@ async function determinarZona(direccion, cachedDetails = null) {
     }
 
     // 3. Si no se encuentra por texto, buscar con Nominatim
-    try {
-        const response = await fetch(
-            `https://nominatim.openstreetmap.org/search?` +
-            `q=${encodeURIComponent(direccion)}&` +
-            `format=json&` +
-            `countrycodes=AR&` +
-            `limit=1&` +
-            `addressdetails=1`
-        );
+    // Implementar retry con backoff exponencial para manejar errores de red
+    const maxRetries = 3;
+    const baseDelay = 1000; // 1 segundo
+    
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/search?` +
+                `q=${encodeURIComponent(direccion)}&` +
+                `format=json&` +
+                `countrycodes=AR&` +
+                `limit=1&` +
+                `addressdetails=1`,
+                {
+                    headers: {
+                        'User-Agent': 'Altior Traslados/1.0 (contacto@altiortraslados.com)'
+                    }
+                }
+            );
 
-        const results = await response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
-        if (results && results.length > 0) {
-            const result = results[0];
-            const address = result.address;
-            console.log('Nominatim result:', address);
+            const results = await response.json();
 
-            const zona = determinarZonaFromDetails(address);
-            if (zona) return zona;
+            if (results && results.length > 0) {
+                const result = results[0];
+                const address = result.address;
+                console.log('Nominatim result:', address);
+
+                const zona = determinarZonaFromDetails(address);
+                if (zona) return zona;
+            }
+            
+            // Si llegamos aquí, significa que la llamada fue exitosa pero no se encontró zona
+            break;
+        } catch (error) {
+            console.error(`Error buscando dirección en Nominatim (intento ${attempt + 1}/${maxRetries}):`, error);
+            
+            // Si es el último intento, retornar null
+            if (attempt === maxRetries - 1) {
+                console.log('Todos los intentos fallaron, retornando null');
+                return null;
+            }
+            
+            // Esperar antes de reintentar (backoff exponencial)
+            const delay = baseDelay * Math.pow(2, attempt);
+            console.log(`Esperando ${delay}ms antes de reintentar...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
         }
-    } catch (error) {
-        console.error('Error buscando dirección en Nominatim:', error);
     }
 
     return null;
@@ -232,15 +337,27 @@ function determinarZonaPorCP(cp) {
 // Función auxiliar para determinar zona por coincidencias de texto
 function determinarZonaPorTexto(direccion) {
     const dir = direccion.toLowerCase();
+    
+    // Verificar si la dirección está vacía o es muy corta
+    if (!dir || dir.length < 3) {
+        return null;
+    }
 
     // EZEIZA
-    if (dir.includes('ezeiza') || dir.includes('pistarini') || dir.includes('aeropuerto internacional')) {
+    if (dir.includes('ezeiza') || dir.includes('pistarini') || 
+        (dir.includes('aeropuerto') && dir.includes('internacional')) ||
+        (dir.includes('aeropuerto') && dir.includes('ezeiza'))) {
         return 'EZEIZA';
     }
 
-    // CABA / Aeroparque
-    if (dir.includes('caba') || dir.includes('aeroparque') ||
-        dir.includes('ciudad autónoma') || dir.includes('ciudad autonoma') ||
+    // AEROPARQUE
+    if (dir.includes('aeroparque') || (dir.includes('aeropuerto') && dir.includes('aeroparque')) ||
+        (dir.includes('jorge newbery'))) {
+        return 'AEROPARQUE';
+    }
+
+    // CABA
+    if (dir.includes('caba') || dir.includes('ciudad autónoma') || dir.includes('ciudad autonoma') ||
         dir.includes('capital federal') ||
         dir.includes('palermo') ||
         dir.includes('recoleta') || dir.includes('san telmo') ||
@@ -250,7 +367,7 @@ function determinarZonaPorTexto(direccion) {
         dir.includes('nuñez') || dir.includes('saavedra') ||
         dir.includes('villa urquiza') || dir.includes('villa crespo') ||
         dir.includes('almagro') || dir.includes('caballito')) {
-        return 'CABA / Aeroparque';
+        return 'CABA';
     }
 
     // ZONA SUR
@@ -304,6 +421,14 @@ async function calcularPrecio(origen, destino, numMaletas, origenDetails = null,
         return null;
     }
 
+    // Caso especial: Conexión entre Aeroparque y Ezeiza
+    if ((zonaOrigen === 'AEROPARQUE' && zonaDestino === 'EZEIZA') || 
+        (zonaOrigen === 'EZEIZA' && zonaDestino === 'AEROPARQUE')) {
+        const usarKangoo = numMaletas > 3;
+        const tipoVehiculo = usarKangoo ? 'kangoo' : 'urbano';
+        return tablaPrecios['Aeroparque / Ezeiza Conexión'][tipoVehiculo];
+    }
+
     const usarKangoo = numMaletas > 3;
     const tipoVehiculo = usarKangoo ? 'kangoo' : 'urbano';
     console.log(`Tipo Vehículo: ${tipoVehiculo}`);
@@ -312,38 +437,44 @@ async function calcularPrecio(origen, destino, numMaletas, origenDetails = null,
     let precioDestino = null;
 
     // Buscar precio para el origen
+    // Primero buscar directamente en las zonas principales
     if (tablaPrecios[zonaOrigen]) {
         precioOrigen = tablaPrecios[zonaOrigen][tipoVehiculo];
+        // Si el precio es 0, buscar en subzonas
         if (precioOrigen === 0 && tablaPrecios[zonaOrigen].subzonas) {
-            const subzonaOrigen = await determinarZona(origen, origenDetails);
-            if (tablaPrecios[zonaOrigen].subzonas[subzonaOrigen]) {
-                precioOrigen = tablaPrecios[zonaOrigen].subzonas[subzonaOrigen][tipoVehiculo];
+            // Ya tenemos la zona origen, buscar directamente en subzonas
+            if (tablaPrecios[zonaOrigen].subzonas[zonaOrigen]) {
+                precioOrigen = tablaPrecios[zonaOrigen].subzonas[zonaOrigen][tipoVehiculo];
             }
         }
     } else {
-        for (const zona in tablaPrecios) {
-            if (tablaPrecios[zona].subzonas && tablaPrecios[zona].subzonas[zonaOrigen]) {
-                precioOrigen = tablaPrecios[zona].subzonas[zonaOrigen][tipoVehiculo];
-                break;
-            }
+        // Si no se encuentra como zona principal, buscar en subzonas de EZEIZA primero, luego AEROPARQUE
+        // Priorizar EZEIZA ya que tiene tarifas más altas para las mismas zonas
+        if (tablaPrecios['EZEIZA'] && tablaPrecios['EZEIZA'].subzonas && tablaPrecios['EZEIZA'].subzonas[zonaOrigen]) {
+            precioOrigen = tablaPrecios['EZEIZA'].subzonas[zonaOrigen][tipoVehiculo];
+        } else if (tablaPrecios['AEROPARQUE'] && tablaPrecios['AEROPARQUE'].subzonas && tablaPrecios['AEROPARQUE'].subzonas[zonaOrigen]) {
+            precioOrigen = tablaPrecios['AEROPARQUE'].subzonas[zonaOrigen][tipoVehiculo];
         }
     }
 
     // Buscar precio para el destino
+    // Primero buscar directamente en las zonas principales
     if (tablaPrecios[zonaDestino]) {
         precioDestino = tablaPrecios[zonaDestino][tipoVehiculo];
+        // Si el precio es 0, buscar en subzonas
         if (precioDestino === 0 && tablaPrecios[zonaDestino].subzonas) {
-            const subzonaDestino = await determinarZona(destino, destinoDetails);
-            if (tablaPrecios[zonaDestino].subzonas[subzonaDestino]) {
-                precioDestino = tablaPrecios[zonaDestino].subzonas[subzonaDestino][tipoVehiculo];
+            // Ya tenemos la zona destino, buscar directamente en subzonas
+            if (tablaPrecios[zonaDestino].subzonas[zonaDestino]) {
+                precioDestino = tablaPrecios[zonaDestino].subzonas[zonaDestino][tipoVehiculo];
             }
         }
     } else {
-        for (const zona in tablaPrecios) {
-            if (tablaPrecios[zona].subzonas && tablaPrecios[zona].subzonas[zonaDestino]) {
-                precioDestino = tablaPrecios[zona].subzonas[zonaDestino][tipoVehiculo];
-                break;
-            }
+        // Si no se encuentra como zona principal, buscar en subzonas de EZEIZA primero, luego AEROPARQUE
+        // Priorizar EZEIZA ya que tiene tarifas más altas para las mismas zonas
+        if (tablaPrecios['EZEIZA'] && tablaPrecios['EZEIZA'].subzonas && tablaPrecios['EZEIZA'].subzonas[zonaDestino]) {
+            precioDestino = tablaPrecios['EZEIZA'].subzonas[zonaDestino][tipoVehiculo];
+        } else if (tablaPrecios['AEROPARQUE'] && tablaPrecios['AEROPARQUE'].subzonas && tablaPrecios['AEROPARQUE'].subzonas[zonaDestino]) {
+            precioDestino = tablaPrecios['AEROPARQUE'].subzonas[zonaDestino][tipoVehiculo];
         }
     }
 
@@ -358,6 +489,9 @@ async function calcularPrecio(origen, destino, numMaletas, origenDetails = null,
     return null;
 }
 
+// Variable para rastrear si la burbuja ya ha mostrado un precio válido
+let burbujaMostrada = false;
+
 // Función para mostrar el precio en el formulario
 async function mostrarPrecio() {
     const origenInput = document.getElementById('origen');
@@ -368,8 +502,6 @@ async function mostrarPrecio() {
 
     // Si no existe el contenedor de precio, crearlo
     if (!precioContainer) {
-        const heroContent = document.querySelector('.hero-content');
-
         const precioDiv = document.createElement('div');
         precioDiv.id = 'precioContainer';
         precioDiv.className = 'precio-container';
@@ -381,90 +513,30 @@ async function mostrarPrecio() {
             <div class="precio-detalle" id="precioDetalle">Ingrese origen y destino</div>
         `;
 
-        // Insertar después del formulario de reserva
-        if (heroContent) {
-            heroContent.appendChild(precioDiv);
-        }
+        // Agregar al body para que no modifique el layout
+        document.body.appendChild(precioDiv);
         precioContainer = precioDiv;
-
-        const style = document.createElement('style');
-        style.textContent = `
-            .hero-content {
-                grid-template-columns: 1fr 1fr 400px !important;
-                gap: 40px !important;
-            }
-            
-            .precio-container {
-                background: linear-gradient(135deg, #f5f8fc 0%, #e8f0f8 100%);
-                padding: 35px;
-                border-radius: 25px;
-                box-shadow: 0 20px 60px rgba(59, 89, 152, 0.15);
-                border: 1px solid rgba(91, 141, 184, 0.1);
-                position: sticky;
-                top: 70px;
-                height: fit-content;
-                transition: all 0.3s ease;
-            }
-            
-            .precio-header h3 {
-                font-size: 1.5em;
-                background: linear-gradient(135deg, #2C4A7C, #3B5998);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                margin-bottom: 20px;
-                text-align: center;
-            }
-            
-            .precio-valor {
-                font-size: 3em;
-                font-weight: 700;
-                background: linear-gradient(135deg, #3B5998, #5B8DB8);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                text-align: center;
-                margin: 20px 0;
-            }
-            
-            .precio-detalle {
-                font-size: 1em;
-                color: #5B8DB8;
-                text-align: center;
-                font-weight: 500;
-            }
-            
-            /* Responsive para tablets y móviles */
-            @media (max-width: 1200px) {
-                .hero-content {
-                    grid-template-columns: 1fr 1fr !important;
-                    gap: 40px !important;
-                }
-                
-                .precio-container {
-                    grid-column: 1 / -1;
-                    position: relative;
-                    top: 0;
-                    margin-top: 30px;
-                }
-            }
-            
-            @media (max-width: 768px) {
-                .hero-content {
-                    grid-template-columns: 1fr !important;
-                }
-            }
-        `;
-        document.head.appendChild(style);
+        
+        // Hacer visible la burbuja desde el principio
+        precioContainer.classList.add('visible');
     }
 
     const origen = origenInput.value;
     const destino = destinoInput.value;
 
-    // Mostrar estado de carga
+    // Mostrar estado de carga solo si ambos campos tienen contenido significativo
     if (origen.length > 3 && destino.length > 3) {
-        document.getElementById('precioValor').textContent = 'Calculando...';
-        document.getElementById('precioDetalle').textContent = '';
+        // Solo mostrar "Calculando..." si realmente vamos a calcular un precio
+        // Verificar si tenemos datos suficientes para calcular
+        const origenDetails = origenInput.dataset.address ? JSON.parse(origenInput.dataset.address) : null;
+        const destinoDetails = destinoInput.dataset.address ? JSON.parse(destinoInput.dataset.address) : null;
+        
+        // Si tenemos datos cacheados o direcciones completas, mostrar "Calculando..."
+        if (origenDetails || destinoDetails || 
+            (origen.includes(',') && destino.includes(','))) {
+            document.getElementById('precioValor').textContent = 'Calculando...';
+            document.getElementById('precioDetalle').textContent = '';
+        }
     }
 
     let numMaletas = 0;
@@ -492,32 +564,228 @@ async function mostrarPrecio() {
             } else {
                 precioDetalle.textContent = 'Precio base (Sin equipaje)';
             }
+            
+            // Marcar que la burbuja ya ha mostrado un precio válido
+            burbujaMostrada = true;
         } else {
-            if (!origen && !destino) {
-                precioValor.textContent = '-';
-                precioDetalle.textContent = 'Ingrese origen y destino';
+            // Solo mostrar mensaje inicial si la burbuja nunca ha mostrado un precio
+            if (!burbujaMostrada) {
+                if (!origen && !destino) {
+                    precioValor.textContent = '-';
+                    precioDetalle.textContent = 'Ingrese origen y destino';
+                }
+            } else {
+                // Si ya se mostró un precio, mantener el último precio o mostrar mensaje de cálculo
+                if (origen.length > 3 && destino.length > 3) {
+                    // Verificar si tenemos datos suficientes para calcular
+                    const origenDetails = origenInput.dataset.address ? JSON.parse(origenInput.dataset.address) : null;
+                    const destinoDetails = destinoInput.dataset.address ? JSON.parse(destinoInput.dataset.address) : null;
+                    
+                    // Solo mostrar "Calculando..." si realmente vamos a calcular un precio
+                    if (origenDetails || destinoDetails || 
+                        (origen.includes(',') && destino.includes(','))) {
+                        precioValor.textContent = 'Calculando...';
+                        precioDetalle.textContent = '';
+                    } else {
+                        // Si no tenemos datos suficientes, mantener el último precio mostrado
+                        // o mostrar un mensaje más informativo
+                        if (precioValor.textContent === 'Calculando...') {
+                            precioValor.textContent = '-';
+                            precioDetalle.textContent = 'Complete ambos campos para calcular precio';
+                        }
+                    }
+                } else {
+                    // Si uno de los campos está vacío, mostrar mensaje inicial
+                    precioValor.textContent = '-';
+                    precioDetalle.textContent = 'Ingrese origen y destino';
+                }
             }
         }
     } catch (error) {
         console.error('Error al calcular precio:', error);
+        
+        // Mantener la burbuja visible incluso si hay error
+        if (burbujaMostrada) {
+            const precioValor = document.getElementById('precioValor');
+            const precioDetalle = document.getElementById('precioDetalle');
+            
+            // Mantener el último precio mostrado o mostrar mensaje de error
+            if (precioValor.textContent === '-' || precioValor.textContent === 'Calculando...') {
+                precioDetalle.textContent = 'Error al calcular precio';
+            }
+        } else {
+            // Si nunca se mostró un precio, mostrar mensaje de error
+            const precioValor = document.getElementById('precioValor');
+            const precioDetalle = document.getElementById('precioDetalle');
+            precioValor.textContent = '-';
+            precioDetalle.textContent = 'Error al calcular precio';
+        }
     }
+}
+
+// Función para buscar lugares comunes que coincidan
+function searchLugaresComunes(query, lugaresComunes) {
+    if (!query.trim()) return [];
+    
+    const searchTerm = query.toLowerCase();
+    return lugaresComunes.filter(lugar => 
+        lugar.nombre.toLowerCase().includes(searchTerm)
+    );
+}
+
+// Función para verificar si una dirección está en el área permitida
+function isDireccionPermitida(direccion) {
+    const direccionLower = direccion.toLowerCase();
+    
+    // Partidos y localidades permitidos (área metropolitana de Buenos Aires)
+    const partidosPermitidos = [
+        "buenos aires", "ciudad autónoma de buenos aires", "caba",
+        "quilmes", "bernal", "wilde", "lanús", "lomas de zamora", 
+        "adrogué", "monte grande", "ezeiza", "san justo", "ramos mejía",
+        "morón", "caseros", "hurlingham", "san martín", "villa ballester",
+        "olivos", "martínez", "san isidro", "vicente lópez"
+    ];
+    
+    // Verificar si alguna de las localidades permitidas está en la dirección
+    return partidosPermitidos.some(partido => 
+        direccionLower.includes(partido.toLowerCase())
+    );
+}
+
+// Función para buscar lugares comunes que coincidan
+function searchLugaresComunes(query, lugaresComunes) {
+    if (!query.trim()) return [];
+    
+    const searchTerm = query.toLowerCase();
+    // Usar búsqueda más eficiente con indexOf en lugar de includes
+    return lugaresComunes.filter(lugar => 
+        lugar.nombre.toLowerCase().indexOf(searchTerm) !== -1
+    );
 }
 
 // Función para configurar el autocompletado
 function setupAutocomplete(inputId, suggestionsId) {
+    console.log(`Setting up autocomplete for ${inputId} with suggestions container ${suggestionsId}`);
     const input = document.getElementById(inputId);
     let suggestionsContainer = document.getElementById(suggestionsId);
+    console.log(`Input element for ${inputId}:`, input);
+    console.log(`Suggestions container for ${suggestionsId}:`, suggestionsContainer);
     let debounceTimer;
     let isSelectingSuggestion = false; // Flag para evitar reabrir la lista al seleccionar
+    
+    // Cache para búsquedas recientes para reducir llamadas a la API
+    const searchCache = new Map();
+    const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+    
+    // Lugares comunes predefinidos (aeropuertos, estaciones, etc.)
+    const lugaresComunes = [
+        {
+            nombre: "Aeropuerto Ezeiza",
+            direccion: "Ministro Pistarini International Airport, Marinos del Fournier, Barrio Villa Guillermina, Ezeiza, Partido de Ezeiza, Buenos Aires, 1804, Argentina"
+        },
+        {
+            nombre: "Aeropuerto Aeroparque",
+            direccion: "Aeropuerto Internacional Jorge Newbery, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+        },
+        {
+            nombre: "Aeropuerto El Palomar",
+            direccion: "Aeropuerto El Palomar, Partido de Morón, Buenos Aires, Argentina"
+        },
+        {
+            nombre: "Estación Retiro",
+            direccion: "Estación Retiro, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+        },
+        {
+            nombre: "Estación Constitución",
+            direccion: "Estación Constitución, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+        },
+        {
+            nombre: "Estación Once",
+            direccion: "Estación Once, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+        },
+        {
+            nombre: "Puerto Madero",
+            direccion: "Puerto Madero, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+        },
+        {
+            nombre: "Centro Cívico",
+            direccion: "Centro Cívico, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+        },
+        {
+            nombre: "Palermo",
+            direccion: "Palermo, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+        },
+        {
+            nombre: "Recoleta",
+            direccion: "Recoleta, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+        },
+        {
+            nombre: "San Telmo",
+            direccion: "San Telmo, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+        },
+        {
+            nombre: "La Boca",
+            direccion: "La Boca, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+        },
+        {
+            nombre: "Microcentro",
+            direccion: "Microcentro, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+        }
+    ];
 
     if (!suggestionsContainer) {
         suggestionsContainer = document.createElement('div');
         suggestionsContainer.id = suggestionsId;
         suggestionsContainer.className = 'autocomplete-suggestions';
+        // Crear contenedor de sugerencias con posición absoluta
+        suggestionsContainer.style.cssText = `
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        `;
+        
+        // Asegurarse de que el contenedor tenga un ID único
+        if (document.getElementById(suggestionsId)) {
+            console.warn(`Element with ID ${suggestionsId} already exists`);
+            // Si ya existe, eliminarlo primero
+            document.getElementById(suggestionsId).remove();
+            suggestionsContainer = document.createElement('div');
+            suggestionsContainer.id = suggestionsId;
+            suggestionsContainer.className = 'autocomplete-suggestions';
+            suggestionsContainer.style.cssText = `
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                z-index: 1000;
+                max-height: 200px;
+                overflow-y: auto;
+                display: none;
+            `;
+        }
+        
+        input.parentNode.style.position = 'relative';
         input.parentNode.appendChild(suggestionsContainer);
+        console.log(`Created suggestions container for ${inputId}:`, suggestionsContainer);
+    } else {
+        console.log(`Found existing suggestions container for ${inputId}:`, suggestionsContainer);
     }
 
     input.addEventListener('input', function () {
+        console.log(`Input event triggered for ${inputId}:`, this.value);
         // Si estamos seleccionando una sugerencia, no hacer nada
         if (isSelectingSuggestion) {
             isSelectingSuggestion = false;
@@ -525,6 +793,7 @@ function setupAutocomplete(inputId, suggestionsId) {
         }
 
         const query = this.value;
+        console.log(`Query for ${inputId}:`, query);
 
         // Limpiar cache si el usuario edita manualmente
         delete input.dataset.address;
@@ -532,73 +801,226 @@ function setupAutocomplete(inputId, suggestionsId) {
         suggestionsContainer.innerHTML = '';
         suggestionsContainer.style.display = 'none';
 
-        if (query.length < 3) return;
+        if (query.length < 3) {
+            console.log(`Query too short for ${inputId}:`, query.length);
+            return;
+        } // Aumentar longitud mínima a 3 caracteres
 
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
             try {
-                const response = await fetch(
-                    `https://nominatim.openstreetmap.org/search?` +
-                    `q=${encodeURIComponent(query)}&` +
-                    `format=json&` +
-                    `countrycodes=AR&` +
-                    `limit=5&` +
-                    `addressdetails=1`
-                );
-
-                const results = await response.json();
-
-                if (results.length > 0) {
-                    suggestionsContainer.style.display = 'block';
-
-                    results.forEach(result => {
-                        const div = document.createElement('div');
-                        div.className = 'autocomplete-item';
-
-                        let displayText = result.display_name;
-                        if (result.address) {
-                            const parts = [];
-                            if (result.address.road) parts.push(result.address.road);
-                            if (result.address.house_number) parts.push(result.address.house_number);
-                            if (result.address.neighbourhood) parts.push(result.address.neighbourhood);
-                            if (result.address.city || result.address.town || result.address.municipality) {
-                                parts.push(result.address.city || result.address.town || result.address.municipality);
-                            }
-                            if (result.address.postcode) parts.push(result.address.postcode);
-
-                            if (parts.length > 0) {
-                                displayText = parts.join(', ');
+                // Buscar lugares comunes primero
+                const lugares = searchLugaresComunes(query, lugaresComunes);
+                
+                // Si encontramos lugares comunes, mostrar solo esos (prioridad alta)
+                if (lugares.length > 0) {
+                    const results = lugares.map(lugar => ({
+                        display_name: lugar.nombre,
+                        address: lugar.direccion,
+                        isCommonPlace: true
+                    }));
+                    
+                    displaySuggestions(results);
+                    return;
+                }
+                
+                // Para consultas muy cortas, no buscar en OSM
+                if (query.length < 4) {
+                    suggestionsContainer.style.display = 'none';
+                    return;
+                }
+                
+                // Verificar si tenemos resultados en cache
+                const cacheKey = query.toLowerCase();
+                const cachedResult = searchCache.get(cacheKey);
+                const now = Date.now();
+                
+                if (cachedResult && (now - cachedResult.timestamp) < CACHE_TTL) {
+                    console.log('Usando resultados de cache para:', query);
+                    let osmResults = cachedResult.data;
+                    
+                    // Filtrar resultados por área permitida
+                    osmResults = osmResults.filter(item => 
+                        isDireccionPermitida(item.display_name)
+                    );
+                    
+                    // Tomar solo los primeros 5 resultados
+                    osmResults = osmResults.slice(0, 5);
+                    
+                    // Convertir resultados de OSM al mismo formato
+                    const osmFormatted = osmResults.map(result => ({
+                        display_name: result.display_name,
+                        address: result.address,
+                        lat: result.lat,
+                        lon: result.lon,
+                        isCommonPlace: false
+                    }));
+                    
+                    // Mostrar resultados
+                    if (osmFormatted.length > 0) {
+                        displaySuggestions(osmFormatted);
+                    } else {
+                        suggestionsContainer.style.display = 'none';
+                    }
+                    return;
+                }
+                
+                // Buscar en OSM solo si no hay lugares comunes
+                // Agregar manejo de errores y límites de tasa
+                let osmResults = [];
+                try {
+                    const response = await fetch(
+                        `https://nominatim.openstreetmap.org/search?` +
+                        `q=${encodeURIComponent(query)}&` +
+                        `format=json&` +
+                        `countrycodes=AR&` +
+                        `limit=5&` +  // Pedir solo 5 resultados directamente
+                        `addressdetails=1`,
+                        {
+                            headers: {
+                                'User-Agent': 'Altior Traslados/1.0 (contacto@altiortraslados.com)'
                             }
                         }
-
-                        div.innerHTML = `<strong>${displayText}</strong>`;
-
-                        div.addEventListener('click', function () {
-                            // Activar flag antes de cambiar el valor
-                            isSelectingSuggestion = true;
-
-                            input.value = displayText;
-                            // Cachear detalles de la dirección
-                            input.dataset.address = JSON.stringify(result.address);
-
-                            suggestionsContainer.style.display = 'none';
-                            suggestionsContainer.innerHTML = '';
-
-                            // Disparar evento input para actualizar precio
-                            input.dispatchEvent(new Event('input'));
-                        });
-
-                        suggestionsContainer.appendChild(div);
+                    );
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    osmResults = await response.json();
+                    
+                    // Guardar en cache
+                    searchCache.set(cacheKey, {
+                        data: osmResults,
+                        timestamp: now
                     });
+                } catch (error) {
+                    console.error('Error fetching OSM suggestions:', error);
+                    // En caso de error, continuar con array vacío
+                    osmResults = [];
+                }
+                
+                // Filtrar resultados por área permitida
+                osmResults = osmResults.filter(item => 
+                    isDireccionPermitida(item.display_name)
+                );
+                
+                // Tomar solo los primeros 5 resultados
+                osmResults = osmResults.slice(0, 5);
+                
+                // Convertir resultados de OSM al mismo formato
+                const osmFormatted = osmResults.map(result => ({
+                    display_name: result.display_name,
+                    address: result.address,
+                    lat: result.lat,
+                    lon: result.lon,
+                    isCommonPlace: false
+                }));
+                
+                // Mostrar resultados
+                if (osmFormatted.length > 0) {
+                    displaySuggestions(osmFormatted);
+                } else {
+                    suggestionsContainer.style.display = 'none';
                 }
             } catch (error) {
                 console.error('Error fetching suggestions:', error);
+                suggestionsContainer.style.display = 'none';
             }
-        }, 500);
+        }, 1000); // Aumentar el tiempo de debounce a 1000ms para reducir llamadas a la API
     });
 
+    // Cerrar sugerencias al hacer clic fuera
     document.addEventListener('click', function (e) {
-        if (e.target !== input && e.target !== suggestionsContainer) {
+        if (e.target !== input && !suggestionsContainer.contains(e.target)) {
+            suggestionsContainer.style.display = 'none';
+        }
+    });
+    
+    // Función para mostrar sugerencias
+    function displaySuggestions(results) {
+        suggestionsContainer.innerHTML = '';
+        
+        if (results.length > 0) {
+            suggestionsContainer.style.display = 'block';
+            
+            results.forEach(result => {
+                const div = document.createElement('div');
+                div.className = 'autocomplete-item';
+                div.style.cssText = `
+                    padding: 12px 16px;
+                    cursor: pointer;
+                    border-bottom: 1px solid #f0f0f0;
+                    font-size: 0.9em;
+                    display: flex;
+                    align-items: center;
+                `;
+                
+                let displayText = result.display_name;
+                
+                // Para lugares comunes, usar el nombre directamente
+                if (result.isCommonPlace) {
+                    displayText = result.display_name;
+                    div.style.fontWeight = '600';
+                    div.style.color = '#2C4A7C';
+                } else if (result.address) {
+                    // Para resultados de OSM, formatear la dirección
+                    const parts = [];
+                    if (result.address.road) parts.push(result.address.road);
+                    if (result.address.house_number) parts.push(result.address.house_number);
+                    if (result.address.neighbourhood) parts.push(result.address.neighbourhood);
+                    if (result.address.city || result.address.town || result.address.municipality) {
+                        parts.push(result.address.city || result.address.town || result.address.municipality);
+                    }
+                    if (result.address.postcode) parts.push(result.address.postcode);
+                    
+                    if (parts.length > 0) {
+                        displayText = parts.join(', ');
+                    }
+                }
+                
+                div.innerHTML = `<strong>${displayText}</strong>`;
+                
+                div.addEventListener('mouseenter', function () {
+                    this.style.backgroundColor = '#f5f8fc';
+                });
+                
+                div.addEventListener('mouseleave', function () {
+                    this.style.backgroundColor = 'white';
+                });
+                
+                div.addEventListener('click', function () {
+                    // Activar flag antes de cambiar el valor
+                    isSelectingSuggestion = true;
+                    
+                    input.value = result.display_name;
+                    // Cachear detalles de la dirección
+                    if (result.isCommonPlace) {
+                        input.dataset.address = JSON.stringify({
+                            road: result.display_name,
+                            full_address: result.address
+                        });
+                    } else {
+                        input.dataset.address = JSON.stringify(result.address);
+                    }
+                    
+                    suggestionsContainer.style.display = 'none';
+                    suggestionsContainer.innerHTML = '';
+                    
+                    // Disparar evento input para actualizar precio
+                    input.dispatchEvent(new Event('input'));
+                });
+                
+                suggestionsContainer.appendChild(div);
+            });
+        } else {
+            suggestionsContainer.style.display = 'none';
+        }
+    }
+
+    // Cerrar sugerencias con Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
             suggestionsContainer.style.display = 'none';
         }
     });
@@ -611,8 +1033,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const maletasInput = document.getElementById('maletas');
     const equipajeCheckbox = document.getElementById('equipaje');
 
+    console.log('Setting up autocomplete for origen');
     setupAutocomplete('origen', 'origen-suggestions');
+    console.log('Setting up autocomplete for destino');
     setupAutocomplete('destino', 'destino-suggestions');
+    console.log('Finished setting up autocompletes');
 
     async function actualizarPrecio() {
         await mostrarPrecio();

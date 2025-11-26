@@ -1,0 +1,75 @@
+/* Sobrescribir TODOS los estilos del grid para que no se modifique */
+.hero-content {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 40px !important;
+}
+
+/* Estilos para la burbuja de precios flotante */
+#precioContainer.precio-container,
+.precio-container {
+    background: linear-gradient(135deg, #f5f8fc 0%, #e8f0f8 100%) !important;
+    padding: 20px !important;
+    border-radius: 15px !important;
+    box-shadow: 0 10px 30px rgba(59, 89, 152, 0.15) !important;
+    border: 1px solid rgba(91, 141, 184, 0.1) !important;
+    position: fixed !important;
+    right: 30px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 280px !important;
+    height: auto !important;
+    z-index: 999 !important;
+    transition: all 0.3s ease !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    /* Asegurar que NO sea parte del grid */
+    grid-column: unset !important;
+    margin: 0 !important;
+}
+
+#precioContainer.precio-container.visible,
+.precio-container.visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+.precio-header h3 {
+    font-size: 1.2em;
+    background: linear-gradient(135deg, #2C4A7C, #3B5998);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.precio-valor {
+    font-size: 2.2em;
+    font-weight: 700;
+    background: linear-gradient(135deg, #3B5998, #5B8DB8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+    margin: 15px 0;
+}
+
+.precio-detalle {
+    font-size: 0.9em;
+    color: #5B8DB8;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Responsive para tablets y móviles */
+@media (max-width: 1200px) {
+    .precio-container {
+        position: static !important;
+        transform: none !important;
+        width: 100% !important;
+        margin: 30px auto !important;
+        max-width: 500px !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+}
