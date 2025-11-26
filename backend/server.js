@@ -144,7 +144,7 @@ app.post('/api/reservas/:codigo/cancelar', async (req, res) => {
         
         if (resultado.exito) {
             // Enviar correo de confirmación de cancelación
-            await sendCancellationConfirmation(reserva.datos);
+            await sendCancellationConfirmation(reserva.datos || reserva);
             
             return res.json({
                 success: true,
@@ -244,7 +244,7 @@ app.post('/api/cancelar-reserva', async (req, res) => {
         
         if (resultado.exito) {
             // Enviar correo de confirmación de cancelación
-            await sendCancellationConfirmation(reserva.datos);
+            await sendCancellationConfirmation(reserva.datos || reserva);
             
             return res.json({
                 success: true,
