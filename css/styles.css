@@ -848,6 +848,11 @@ footer {
         font-size: 2.2em;
     }
 
+    .hero-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
     /* Social sidebar for mobile */
     .social-sidebar {
         right: 10px;
@@ -1072,6 +1077,49 @@ footer {
     .btn-whatsapp i {
         font-size: 1.1em;
     }
+    
+    /* Ajustes específicos para formulario en móviles pequeños */
+    .hero-content {
+        padding-top: 40px;
+    }
+    
+    .booking-form {
+        margin-top: 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    input[type="tel"],
+    input[type="email"],
+    select {
+        padding: 12px 15px;
+        font-size: 0.95em;
+    }
+    
+    .btn-submit {
+        padding: 15px;
+        font-size: 1em;
+    }
+    
+    .whatsapp-contact {
+        padding: 15px 10px;
+        margin-top: 20px;
+    }
+    
+    .whatsapp-header h3 {
+        font-size: 1em;
+    }
+    
+    .btn-whatsapp {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
 }
 
 /* Estilos para popups (aunque se inyectan dinámicamente, los definimos aquí por consistencia) */
@@ -1181,86 +1229,6 @@ footer {
     .btn-whatsapp {
         padding: 12px 20px;
         font-size: 0.95em;
-        gap: 8px;
-    }
-
-    .btn-whatsapp i {
-        font-size: 1.1em;
-    }
-}
-
-@media (max-width: 480px) {
-
-    /* Ajustes adicionales para móviles pequeños */
-    .hero-text h1 {
-        font-size: 1.8em;
-    }
-
-    .hero-text .subtitle {
-        font-size: 1.1em;
-    }
-
-    .booking-form {
-        padding: 25px 15px;
-    }
-
-    .form-group {
-        margin-bottom: 18px;
-    }
-
-    .btn-submit {
-        padding: 16px;
-        font-size: 1em;
-    }
-
-    .section-header h2 {
-        font-size: 1.7em;
-    }
-
-    .feature-card {
-        padding: 20px;
-    }
-
-    .feature-card h3 {
-        font-size: 1.3em;
-    }
-
-    .cta h2 {
-        font-size: 1.7em;
-    }
-
-    .cta-button {
-        padding: 14px 25px;
-        font-size: 1em;
-    }
-
-    .social-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2em;
-    }
-
-    .footer-social .social-icon {
-        width: 45px;
-        height: 45px;
-        font-size: 1.3em;
-    }
-
-    .whatsapp-header {
-        gap: 8px;
-    }
-
-    .whatsapp-header i {
-        font-size: 1.5em;
-    }
-
-    .whatsapp-header h3 {
-        font-size: 1.1em;
-    }
-
-    .btn-whatsapp {
-        padding: 10px 15px;
-        font-size: 0.9em;
         gap: 8px;
     }
 
