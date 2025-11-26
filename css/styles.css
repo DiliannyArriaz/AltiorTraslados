@@ -851,6 +851,18 @@ footer {
     .hero-content {
         grid-template-columns: 1fr;
         gap: 40px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .hero-text {
+        order: 1;
+    }
+
+    .booking-form {
+        order: 2;
+        width: 100%;
+        max-width: 100%;
     }
 
     /* Social sidebar for mobile */
@@ -1085,6 +1097,8 @@ footer {
     
     .booking-form {
         margin-top: 20px;
+        width: 100%;
+        max-width: 100%;
     }
     
     .form-row {
