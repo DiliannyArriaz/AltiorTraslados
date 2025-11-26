@@ -344,7 +344,7 @@ function determinarZonaPorTexto(direccion) {
     const dir = direccion.toLowerCase();
     
     // Verificar si la dirección está vacía o es muy corta
-    if (!dir || dir.length < 3) {
+    if (!dir || dir.length < 4) {
         return null;
     }
 
@@ -806,10 +806,12 @@ function setupAutocomplete(inputId, suggestionsId) {
         suggestionsContainer.innerHTML = '';
         suggestionsContainer.style.display = 'none';
 
-        if (query.length < 3) {
+        // Para consultas muy cortas, no buscar en OSM
+        if (query.length < 4) {
             console.log(`Query too short for ${inputId}:`, query.length);
+            suggestionsContainer.style.display = 'none';
             return;
-        } // Aumentar longitud mínima a 3 caracteres
+        }
 
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
@@ -826,12 +828,6 @@ function setupAutocomplete(inputId, suggestionsId) {
                     }));
                     
                     displaySuggestions(results);
-                    return;
-                }
-                
-                // Para consultas muy cortas, no buscar en OSM
-                if (query.length < 4) {
-                    suggestionsContainer.style.display = 'none';
                     return;
                 }
                 
