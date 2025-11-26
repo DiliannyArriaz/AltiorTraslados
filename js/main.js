@@ -261,6 +261,56 @@ Equipo Altior Traslados`
     }
 }
 
+// Función para enviar correo de confirmación usando el backend
+async function sendConfirmationEmail(datosReserva) {
+    try {
+        // Enviar correo usando el backend (que a su vez usa SendGrid)
+        const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/reservas`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datosReserva)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error al enviar correo: ${response.status}`);
+        }
+
+        console.log('Correo de confirmación enviado exitosamente');
+        return true;
+    } catch (error) {
+        console.error('Error enviando email de confirmación:', error);
+        return false;
+    }
+}
+
+// Función para enviar correo de cancelación usando el backend
+async function sendCancellationEmail(datosReserva) {
+    try {
+        // Enviar correo usando el backend (que a su vez usa SendGrid)
+        const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/cancelar-reserva`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                codigo_reserva: datosReserva.codigo_reserva
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error al enviar correo: ${response.status}`);
+        }
+
+        console.log('Correo de cancelación enviado exitosamente');
+        return true;
+    } catch (error) {
+        console.error('Error enviando email de cancelación:', error);
+        return false;
+    }
+}
+
 // Función para enviar correo de cancelación usando Formspree (restaurada)
 async function sendCancellationEmail(datosReserva) {
     try {
