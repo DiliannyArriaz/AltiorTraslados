@@ -314,8 +314,8 @@ Equipo Altior Traslados`
                     throw new Error('Error al cancelar reserva');
                 }
                 
-                // Enviar correo de confirmación de cancelación
-                await sendCancellationEmail(reserva);
+                // Enviar correo de confirmación de cancelación (usando los datos correctos)
+                await sendCancellationEmail(reserva.datos);
                 
                 alert('Reserva cancelada exitosamente. Se ha enviado un correo de confirmación al cliente.');
                 loadReservations(); // Recargar la lista
