@@ -206,6 +206,7 @@
     </footer>
 
     <script src="js/hamburger-menu.js"></script>
+    <script src="js/main.js"></script>
     <script>
         // Funcionalidad del formulario de cancelación
         document.addEventListener('DOMContentLoaded', function() {
@@ -226,8 +227,8 @@
                     
                     // Validación básica del código de reserva
                     if (codigoReserva && codigoReserva.length >= 10) {
-                        // Procesar cancelación usando Formspree
-                        procesarCancelacionConFormspree(codigoReserva);
+                        // Procesar cancelación usando el backend real
+                        procesarCancelacionConBackend(codigoReserva);
                     } else {
                         alert('Por favor ingrese un código de reserva válido (mínimo 10 caracteres).');
                     }
@@ -254,8 +255,8 @@
                 });
             }
             
-            // Función para procesar la cancelación usando Formspree
-            async function procesarCancelacionConFormspree(codigoReserva) {
+            // Función para procesar la cancelación usando el backend real
+            async function procesarCancelacionConBackend(codigoReserva) {
                 try {
                     // Mostrar indicador de carga
                     const boton = cancelForm.querySelector('button[type="submit"]');
@@ -263,52 +264,32 @@
                     boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
                     boton.disabled = true;
                     
-                    // Verificar que el código de reserva sea válido (simulación)
-                    const verificacion = await verificarCodigoReserva(codigoReserva);
+                    // Verificar que el código de reserva sea válido usando el backend
+                    const verificacion = await verificarCodigoReservaBackend(codigoReserva);
                     
-                    if (!verificacion.valido) {
+                    if (!verificacion.exito || !verificacion.valido) {
                         // Restaurar botón
                         boton.innerHTML = textoOriginal;
                         boton.disabled = false;
-                        alert(verificacion.mensaje);
+                        alert(verificacion.mensaje || 'Código de reserva no válido o ya cancelado');
                         return;
                     }
                     
-                    // Enviar notificación de cancelación a la empresa usando Formspree
-                    const formData = new FormData();
-                    formData.append('_subject', 'NOTIFICACIÓN: Reserva Cancelada - ' + codigoReserva);
-                    formData.append('email', 'info@altiortraslados.com');
-                    formData.append('message', `
-RESERVA CANCELADA
-
-Se ha cancelado la siguiente reserva:
-
-Código de reserva: ${codigoReserva}
-Fecha de cancelación: ${new Date().toLocaleDateString('es-ES')}
-
-Esta reserva ha sido marcada como cancelada en el sistema.
-                    `);
-                    
-                    const response = await fetch('https://formspree.io/f/mgvrzkbd', {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    });
+                    // Cancelar la reserva usando el backend
+                    const resultado = await cancelarReservaBackend(codigoReserva);
                     
                     // Restaurar botón
                     boton.innerHTML = textoOriginal;
                     boton.disabled = false;
                     
-                    if (response.ok) {
+                    if (resultado.exito && resultado.cancelada) {
                         // Mostrar popup de confirmación
                         if (popup) {
                             popup.style.display = 'flex';
                         }
                         cancelForm.reset();
                     } else {
-                        alert('Error al procesar la cancelación. Por favor intente nuevamente.');
+                        alert(resultado.mensaje || 'Error al cancelar la reserva');
                     }
                 } catch (error) {
                     // Restaurar botón
@@ -321,47 +302,52 @@ Esta reserva ha sido marcada como cancelada en el sistema.
                 }
             }
             
-            // Función para verificar código de reserva (simulación)
-            async function verificarCodigoReserva(codigoReserva) {
-                // Simular delay de verificación
-                await new Promise(resolve => setTimeout(resolve, 500));
-                
-                // Datos de ejemplo para pruebas
-                const reservasEjemplo = [
-                    {
-                        "codigo": "ALT-123456-78901",
-                        "email": "cliente1@example.com",
-                        "nombre": "Juan Pérez",
-                        "fecha": "2024-02-15",
-                        "origen": "Aeropuerto Ezeiza",
-                        "destino": "Centro CABA",
-                        "estado": "activa"
-                    },
-                    {
-                        "codigo": "ALT-234567-89012",
-                        "email": "cliente2@example.com",
-                        "nombre": "María González",
-                        "fecha": "2024-02-16",
-                        "origen": "Centro CABA",
-                        "destino": "Aeropuerto Ezeiza",
-                        "estado": "activa"
+            // Función para verificar código de reserva usando el backend
+            async function verificarCodigoReservaBackend(codigoReserva) {
+                try {
+                    const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/verificar-reserva`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ codigoReserva: codigoReserva })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Error en la verificación');
                     }
-                ];
-                
-                const reserva = reservasEjemplo.find(r => 
-                    r.codigo === codigoReserva && 
-                    r.estado === 'activa'
-                );
-                
-                if (reserva) {
+                    
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error al verificar código de reserva:', error);
                     return {
-                        valido: true,
-                        reserva: reserva
+                        exito: false,
+                        mensaje: 'Error al verificar el código de reserva'
                     };
-                } else {
+                }
+            }
+            
+            // Función para cancelar reserva usando el backend
+            async function cancelarReservaBackend(codigoReserva) {
+                try {
+                    const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/cancelar-reserva`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ codigoReserva: codigoReserva })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Error al cancelar reserva');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error al cancelar reserva:', error);
                     return {
-                        valido: false,
-                        mensaje: 'Código de reserva no válido o ya cancelado'
+                        exito: false,
+                        mensaje: 'Error al cancelar la reserva'
                     };
                 }
             }
