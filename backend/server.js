@@ -94,7 +94,7 @@ app.post('/api/reservas', async (req, res) => {
 // Endpoint para obtener todas las reservas activas
 app.get('/api/reservas', (req, res) => {
     try {
-        const reservas = gestorReservas.obtenerReservasActivas();
+        const reservas = gestorReservas.listarReservasActivas();
         res.json(reservas);
     } catch (error) {
         console.error('Error al obtener reservas:', error);
@@ -106,7 +106,7 @@ app.get('/api/reservas', (req, res) => {
 app.get('/api/reservas/:codigo', (req, res) => {
     try {
         const { codigo } = req.params;
-        const reserva = gestorReservas.obtenerReservaPorCodigo(codigo);
+        const reserva = gestorReservas.obtenerReserva(codigo);
         
         if (reserva) {
             res.json(reserva);
@@ -123,7 +123,7 @@ app.get('/api/reservas/:codigo', (req, res) => {
 app.post('/api/reservas/:codigo/cancelar', async (req, res) => {
     try {
         const { codigo } = req.params;
-        const reserva = gestorReservas.obtenerReservaPorCodigo(codigo);
+        const reserva = gestorReservas.obtenerReserva(codigo);
         
         if (!reserva) {
             return res.status(404).json({
@@ -177,7 +177,7 @@ app.post('/api/verificar-reserva', (req, res) => {
             });
         }
         
-        const reserva = gestorReservas.obtenerReservaPorCodigo(codigo_reserva);
+        const reserva = gestorReservas.obtenerReserva(codigo_reserva);
         
         if (reserva && reserva.estado === 'activa') {
             return res.json({
@@ -223,7 +223,7 @@ app.post('/api/cancelar-reserva', async (req, res) => {
             });
         }
         
-        const reserva = gestorReservas.obtenerReservaPorCodigo(codigo_reserva);
+        const reserva = gestorReservas.obtenerReserva(codigo_reserva);
         
         if (!reserva) {
             return res.status(404).json({
