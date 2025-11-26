@@ -20,7 +20,7 @@ const RESERVAS_CONFIG = {
 
 // Configuración de Tally.so para envío de correos
 const TALLY_CONFIG = {
-    formId: "tally-form-id", // Reemplazar con tu ID de formulario de Tally.so
+    formId: "9qNQqp", // Tu ID de formulario de Tally.so
     baseUrl: "https://tally.so/forms/"
 };
 
