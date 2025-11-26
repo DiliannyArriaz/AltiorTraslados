@@ -83,43 +83,61 @@
             bottom: 80px !important;
             transform: translateX(-50%) !important;
             width: 200px !important;
+            padding: 15px !important;
             opacity: 0.95 !important;
             pointer-events: auto !important;
             box-shadow: 0 5px 20px rgba(59, 89, 152, 0.2) !important;
+            max-width: 85vw !important;
+            display: block !important;
         }
         
         .precio-container.visible {
             opacity: 0.95 !important;
             pointer-events: auto !important;
+            display: block !important;
+        }
+        
+        .precio-header h3 {
+            font-size: 1em;
+        }
+        
+        .precio-valor {
+            font-size: 1.8em;
+        }
+        
+        .precio-detalle {
+            font-size: 0.8em;
         }
     }
 }
 
-/* Responsive para móviles pequeños */
-@media (max-width: 768px) {
+/* Responsive para móviles muy pequeños */
+@media (max-width: 480px) {
     .precio-container {
         position: fixed !important;
         left: 50% !important;
-        top: 75% !important;
-        transform: translate(-50%, -50%) !important;
-        width: 200px !important;
-        padding: 15px !important;
+        top: auto !important;
+        bottom: 80px !important;
+        transform: translateX(-50%) !important;
+        width: 180px !important;
+        padding: 12px !important;
         margin: 0 !important;
-        opacity: 1 !important;
+        opacity: 0.95 !important;
         pointer-events: auto !important;
-        max-width: 85vw !important;
+        max-width: 80vw !important;
+        box-shadow: 0 5px 20px rgba(59, 89, 152, 0.2) !important;
     }
     
     .precio-header h3 {
-        font-size: 1em;
+        font-size: 0.9em;
     }
     
     .precio-valor {
-        font-size: 1.8em;
+        font-size: 1.5em;
     }
     
     .precio-detalle {
-        font-size: 0.8em;
+        font-size: 0.7em;
     }
 }
 
