@@ -112,152 +112,24 @@ async function sendEmail(datos) {
 // Enviar notificación de reserva a ambos destinatarios
 async function sendReservationEmails(datos) {
     try {
-        // Datos para el correo a la empresa
-        const empresaData = {
-            ...datos,
-            subject: 'Nueva Reserva - Altior Traslados',
-            _cc: datos.email_cliente, // Copia al cliente
-            mensaje_empresa: `Nueva reserva recibida:
-
-Código: ${datos.codigo_reserva}
-Fecha: ${datos.fecha} | Hora: ${datos.hora}
-Origen: ${datos.origen}
-Destino: ${datos.destino}
-Pasajeros: ${datos.pasajeros} | Equipaje: ${datos.maletas}
-Contacto: ${datos.telefono} | ${datos.email_cliente}`
-        };
-        
-        // Datos para el correo al cliente
-        const clienteData = {
-            ...datos,
-            subject: 'Confirmación de Reserva - Altior Traslados',
-            _replyto: 'altior.traslados@gmail.com',
-            mensaje_cliente: `¡Gracias por tu reserva con Altior Traslados!
-
-DETALLES DE TU RESERVA:
-• Código: ${datos.codigo_reserva}
-• Fecha: ${datos.fecha} | Hora: ${datos.hora}
-• Ruta: ${datos.origen} → ${datos.destino}
-• Pasajeros: ${datos.pasajeros} | Equipaje: ${datos.maletas}
-
-CANCELACIÓN:
-Para cancelar, responde "CANCELAR ${datos.codigo_reserva}" o usa el formulario web.
-
-¡Esperamos verte pronto!
-Equipo Altior Traslados`
-        };
-        
-        // Enviar correo a la empresa (con copia al cliente) usando fetch
-        await fetch('https://formspree.io/f/mgvrzkbd', {
+        // Enviar correo usando el backend (que a su vez usa SendGrid)
+        const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/reservas`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(empresaData)
-        });
-        
-        // Enviar correo al cliente usando fetch
-        await fetch('https://formspree.io/f/mgvrzkbd', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(clienteData)
-        });
-        
-    } catch (error) {
-        console.error('Error enviando emails:', error);
-    }
-}
-
-// Función para enviar correo de confirmación usando Formspree (restaurada)
-async function sendConfirmationEmail(datosReserva) {
-    try {
-        // Datos para el correo de confirmación
-        const emailData = {
-            email: datosReserva.email_cliente,
-            subject: 'Confirmación de Reserva - Altior Traslados',
-            message: `CONFIRMACIÓN DE RESERVA - ALTIOR TRASLADOS
-
-DETALLES DE TU RESERVA:
-• Código de reserva: ${datosReserva.codigo_reserva}
-• Fecha: ${datosReserva.fecha} | Hora: ${datosReserva.hora}
-• Ruta: ${datosReserva.origen} → ${datosReserva.destino}
-• Vehículo: ${datosReserva.tipo_vehiculo}
-• Maletas: ${datosReserva.cantidad_maletas}
-
-Importante: Conserva este código para futuras consultas o modificaciones.
-
-¡Gracias por elegir Altior Traslados!
-Atentamente,
-Equipo Altior Traslados`
-        };
-
-        // Enviar correo usando Formspree
-        const response = await fetch('https://formspree.io/f/mgvrzkbd', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(emailData)
+            body: JSON.stringify(datos)
         });
 
         if (!response.ok) {
             throw new Error(`Error al enviar correo: ${response.status}`);
         }
 
-        console.log('Correo de confirmación enviado exitosamente');
+        console.log('Correos de confirmación enviados exitosamente');
         return true;
     } catch (error) {
-        console.error('Error enviando email de confirmación:', error);
+        console.error('Error enviando emails de confirmación:', error);
         return false;
-    }
-}
-
-// Enviar notificación de cancelación por correo
-async function sendCancellationEmail(datos) {
-    try {
-        // En una implementación real, estos datos vendrían de una base de datos
-        // Por ahora, usamos datos de ejemplo
-        const datosReales = {
-            ...datos,
-            fecha: datos.fecha || '15 de noviembre de 2024',
-            hora: datos.hora || '14:30',
-            origen: datos.origen || 'Aeropuerto Ezeiza',
-            destino: datos.destino || 'Palermo'
-        };
-        
-        // Datos para el correo al cliente
-        const clienteData = {
-            ...datosReales,
-            subject: 'Confirmación de Cancelación de Reserva - Altior Traslados',
-            _replyto: 'altior.traslados@gmail.com',
-            _cc: 'altior.traslados@gmail.com', // Copia a la empresa
-            mensaje_cliente: `CONFIRMACIÓN DE CANCELACIÓN - ALTIOR TRASLADOS
-
-Tu reserva ${datosReales.codigo_reserva} ha sido cancelada exitosamente.
-
-DETALLES DE LA RESERVA CANCELADA:
-• Fecha: ${datosReales.fecha} | Hora: ${datosReales.hora}
-• Ruta: ${datosReales.origen} → ${datosReales.destino}
-
-Si tienes alguna pregunta, no dudes en contactarnos.
-
-Atentamente,
-Equipo Altior Traslados`
-        };
-        
-        // Enviar correo al cliente usando fetch
-        await fetch('https://formspree.io/f/mgvrzkbd', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(clienteData)
-        });
-        
-    } catch (error) {
-        console.error('Error enviando email de cancelación:', error);
     }
 }
 
@@ -297,48 +169,6 @@ async function sendCancellationEmail(datosReserva) {
             body: JSON.stringify({
                 codigo_reserva: datosReserva.codigo_reserva
             })
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error al enviar correo: ${response.status}`);
-        }
-
-        console.log('Correo de cancelación enviado exitosamente');
-        return true;
-    } catch (error) {
-        console.error('Error enviando email de cancelación:', error);
-        return false;
-    }
-}
-
-// Función para enviar correo de cancelación usando Formspree (restaurada)
-async function sendCancellationEmail(datosReserva) {
-    try {
-        // Datos para el correo de cancelación
-        const emailData = {
-            email: datosReserva.email_cliente,
-            subject: 'Confirmación de Cancelación de Reserva - Altior Traslados',
-            message: `CONFIRMACIÓN DE CANCELACIÓN - ALTIOR TRASLADOS
-
-Tu reserva ${datosReserva.codigo_reserva} ha sido cancelada exitosamente.
-
-DETALLES DE LA RESERVA CANCELADA:
-• Fecha: ${datosReserva.fecha} | Hora: ${datosReserva.hora}
-• Ruta: ${datosReserva.origen} → ${datosReserva.destino}
-
-Si tienes alguna pregunta, no dudes en contactarnos.
-
-Atentamente,
-Equipo Altior Traslados`
-        };
-
-        // Enviar correo usando Formspree
-        const response = await fetch('https://formspree.io/f/mgvrzkbd', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(emailData)
         });
 
         if (!response.ok) {
