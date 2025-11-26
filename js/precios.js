@@ -258,11 +258,16 @@ async function determinarZona(direccion, cachedDetails = null) {
 
     // 3. Si no se encuentra por texto, buscar con Nominatim
     // Implementar retry con backoff exponencial para manejar errores de red
-    const maxRetries = 3;
-    const baseDelay = 1000; // 1 segundo
+    const maxRetries = 2; // Reducir intentos para evitar límites de tasa
+    const baseDelay = 2000; // Aumentar tiempo de espera inicial a 2 segundos
     
     for (let attempt = 0; attempt < maxRetries; attempt++) {
         try {
+            // Agregar un pequeño retraso antes de la primera llamada para evitar sobrecarga
+            if (attempt === 0) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
             const response = await fetch(
                 `https://nominatim.openstreetmap.org/search?` +
                 `q=${encodeURIComponent(direccion)}&` +
@@ -675,7 +680,7 @@ function setupAutocomplete(inputId, suggestionsId) {
     
     // Cache para búsquedas recientes para reducir llamadas a la API
     const searchCache = new Map();
-    const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+    const CACHE_TTL = 10 * 60 * 1000; // 10 minutos
     
     // Lugares comunes predefinidos (aeropuertos, estaciones, etc.)
     const lugaresComunes = [
@@ -927,7 +932,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                 console.error('Error fetching suggestions:', error);
                 suggestionsContainer.style.display = 'none';
             }
-        }, 1000); // Aumentar el tiempo de debounce a 1000ms para reducir llamadas a la API
+        }, 1500); // Aumentar el tiempo de debounce a 1500ms para reducir llamadas a la API
     });
 
     // Cerrar sugerencias al hacer clic fuera

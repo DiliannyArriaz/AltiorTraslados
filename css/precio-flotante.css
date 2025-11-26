@@ -73,6 +73,13 @@
         opacity: 1 !important;
         pointer-events: auto !important;
         max-width: 90vw !important;
+        display: block !important;
+    }
+    
+    .precio-container.visible {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        display: block !important;
     }
     
     /* Posicionar la burbuja en la parte inferior en móviles para no interferir */
@@ -141,30 +148,3 @@
     }
 }
 
-/* Responsive para móviles muy pequeños */
-@media (max-width: 480px) {
-    .precio-container {
-        position: fixed !important;
-        left: 50% !important;
-        top: 80% !important;
-        transform: translate(-50%, -50%) !important;
-        width: 180px !important;
-        padding: 12px !important;
-        margin: 0 !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        max-width: 80vw !important;
-    }
-    
-    .precio-header h3 {
-        font-size: 0.9em;
-    }
-    
-    .precio-valor {
-        font-size: 1.5em;
-    }
-    
-    .precio-detalle {
-        font-size: 0.7em;
-    }
-}
