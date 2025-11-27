@@ -163,8 +163,14 @@ Teléfono: ${datos.telefono}`
         
         console.log('Respuesta de Telegram:', response.status, response.statusText);
         
+        // Leer el contenido de la respuesta para mejor debugging
+        const responseText = await response.text();
+        console.log('Contenido de la respuesta:', responseText);
+        
         if (!response.ok) {
-            throw new Error(`Error al enviar a Telegram: ${response.status}`);
+            console.error(`Error HTTP: ${response.status} - ${response.statusText}`);
+            console.error('Detalles de la respuesta:', responseText);
+            return false;
         }
         
         console.log('Datos enviados a Telegram exitosamente');
