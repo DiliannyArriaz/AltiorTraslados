@@ -182,10 +182,12 @@ async function sendToTelegram(datos) {
     }
 }
 
-// Función para enviar correo de confirmación usando el backend
-async function sendConfirmationEmail(datosReserva) {
+// Función para guardar la reserva en el backend
+async function saveReservation(datosReserva) {
     try {
-        // Enviar correo usando el backend (que a su vez usa SendGrid)
+        console.log('Guardando reserva con datos:', datosReserva);
+        
+        // Enviar reserva al backend
         const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/reservas`, {
             method: 'POST',
             headers: {
@@ -193,170 +195,44 @@ async function sendConfirmationEmail(datosReserva) {
             },
             body: JSON.stringify(datosReserva)
         });
-
+        
+        console.log('Respuesta del backend:', response.status, response.statusText);
+        
         if (!response.ok) {
-            throw new Error(`Error al enviar correo: ${response.status}`);
+            throw new Error(`Error al guardar reserva: ${response.status}`);
         }
-
-        console.log('Correo de confirmación enviado exitosamente');
-        return true;
+        
+        const result = await response.json();
+        console.log('Reserva guardada exitosamente:', result);
+        
+        // Enviar notificación a Telegram
+        console.log('Enviando notificación a Telegram...');
+        await sendToTelegram(datosReserva);
+        
+        return result;
     } catch (error) {
-        console.error('Error enviando email de confirmación:', error);
-        return false;
-    }
-}
-
-// Función para enviar correo de cancelación usando el backend
-async function sendCancellationEmail(datosReserva) {
-    try {
-        // Enviar correo usando el backend (que a su vez usa SendGrid)
-        const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/cancelar-reserva`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                codigo_reserva: datosReserva.codigo_reserva
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error al enviar correo: ${response.status}`);
+        console.error('Error guardando reserva en backend:', error);
+        // Fallback a localStorage en caso de error
+        try {
+            let reservas = JSON.parse(localStorage.getItem('reservas_backup') || '{}');
+            reservas[datosReserva.codigo_reserva] = {
+                ...datosReserva,
+                timestamp: new Date().toISOString(),
+                estado: 'activa'
+            };
+            localStorage.setItem('reservas_backup', JSON.stringify(reservas));
+            console.log('Reserva guardada en localStorage como respaldo');
+            
+            // Enviar notificación a Telegram
+            console.log('Enviando notificación a Telegram desde respaldo...');
+            await sendToTelegram(datosReserva);
+            
+            return { success: true, backup: true };
+        } catch (backupError) {
+            console.error('Error en respaldo de reserva:', backupError);
+            return { success: false, error: backupError.message };
         }
-
-        console.log('Correo de cancelación enviado exitosamente');
-        return true;
-    } catch (error) {
-        console.error('Error enviando email de cancelación:', error);
-        return false;
     }
-}
-
-// Generar código de reserva único
-function generateReservationCode() {
-    return 'ALT-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
-}
-
-// Set minimum date to today
-const fechaInput = document.getElementById('fecha');
-const today = new Date().toISOString().split('T')[0];
-fechaInput.min = today;
-
-// Toggle luggage section
-const equipajeCheckbox = document.getElementById('equipaje');
-const luggageDetails = document.getElementById('luggageDetails');
-
-// Handle form submission
-document.getElementById('bookingForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    const fecha = document.getElementById('fecha').value;
-    const hora = document.getElementById('hora').value;
-    const origenInput = document.getElementById('origen');
-    const destinoInput = document.getElementById('destino');
-    const emailCliente = document.getElementById('email').value;
-    
-    // Usar la dirección completa si es un lugar común
-    const origen = origenInput.getAttribute('data-full-address') || origenInput.value;
-    const destino = destinoInput.getAttribute('data-full-address') || destinoInput.value;
-    
-    const pasajeros = document.getElementById('pasajeros').value;
-    const telefono = document.getElementById('telefono').value;
-    const tieneEquipaje = document.getElementById('equipaje').checked;
-    const maletas = tieneEquipaje ? document.getElementById('maletas').value : 'Sin equipaje';
-
-    // Generar código de reserva único
-    const codigoReserva = generateReservationCode();
-
-    // Datos para el correo electrónico
-    const datosEmail = {
-        fecha: formatDate(fecha),
-        hora: hora,
-        origen: origenInput.value,
-        destino: destinoInput.value,
-        pasajeros: pasajeros,
-        telefono: telefono,
-        email_cliente: emailCliente,
-        equipaje: tieneEquipaje ? 'Sí' : 'No',
-        maletas: maletas,
-        origen_completo: origen,
-        destino_completo: destino,
-        codigo_reserva: codigoReserva
-    };
-
-    let mensaje = `*NUEVA RESERVA - TRASLADO AEROPUERTO*\n\n`;
-    mensaje += `📅 *Fecha:* ${formatDate(fecha)}\n`;
-    mensaje += `🕐 *Hora:* ${hora}\n`;
-    mensaje += `📍 *Origen:* ${origenInput.value}\n`;
-    mensaje += `🎯 *Destino:* ${destinoInput.value}\n`;
-    mensaje += `👥 *Pasajeros:* ${pasajeros}\n`;
-    mensaje += `🧳 *Equipaje:* ${maletas}\n`;
-    mensaje += `📱 *Contacto:* ${telefono}\n`;
-    mensaje += `✉️ *Email:* ${emailCliente}\n`;
-    mensaje += `🎫 *Código de Reserva:* ${codigoReserva}\n\n`;
-    mensaje += `_Solicitud enviada desde la web_`;
-
-    // Número de WhatsApp de prueba
-    const numeroWhatsApp = '5491122516700';
-    
-    const mensajeCodificado = encodeURIComponent(mensaje);
-    const linkWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensajeCodificado}`;
-    
-    // Guardar la reserva en el backend (esto también enviará los correos)
-    const resultado = await saveReservation(datosEmail);
-    
-    if (resultado && resultado.success) {
-        // Abrir WhatsApp en una nueva pestaña
-        window.open(linkWhatsApp, '_blank');
-        
-        // Mostrar popup de confirmación de reserva
-        showReservationPopup(codigoReserva, emailCliente);
-        
-        // Guardar en localStorage para mostrar el mensaje al regresar
-        localStorage.setItem('reservationCompleted', 'true');
-        localStorage.setItem('reservationCode', codigoReserva);
-        localStorage.setItem('clientEmail', emailCliente);
-    } else {
-        alert('Error al guardar la reserva. Por favor, inténtelo nuevamente.');
-    }
-});
-
-// Handle cancellation form submission
-const cancelForm = document.getElementById('cancelForm');
-if (cancelForm) {
-    cancelForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const codigoReserva = document.getElementById('codigoReserva').value.trim();
-        
-        if (!codigoReserva) {
-            alert('Por favor, ingrese su código de reserva.');
-            return;
-        }
-        
-        // Verificar si el código de reserva existe
-        const reserva = await getReservationByCode(codigoReserva);
-        
-        if (!reserva) {
-            alert('Código de reserva inválido. Por favor, verifique e intente nuevamente.');
-            return;
-        }
-        
-        // Enviar correo de confirmación de cancelación a ambos destinatarios
-        sendCancellationEmail(reserva);
-        
-        // Eliminar la reserva de la nube o de localStorage
-        await removeReservation(codigoReserva);
-        
-        // Mostrar popup de confirmación de cancelación
-        showCancellationPopup();
-        
-        // Guardar en localStorage para mostrar el mensaje al regresar
-        localStorage.setItem('cancellationCompleted', 'true');
-        
-        // Limpiar el formulario
-        cancelForm.reset();
-    });
 }
 
 // Función para mostrar popup de confirmación de reserva
@@ -717,59 +593,6 @@ function formatDate(dateString) {
     const date = new Date(dateString + 'T00:00:00');
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('es-ES', options);
-}
-
-// Función para guardar la reserva en el backend
-async function saveReservation(datosReserva) {
-    try {
-        console.log('Guardando reserva con datos:', datosReserva);
-        
-        // Enviar reserva al backend
-        const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/reservas`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(datosReserva)
-        });
-        
-        console.log('Respuesta del backend:', response.status, response.statusText);
-        
-        if (!response.ok) {
-            throw new Error(`Error al guardar reserva: ${response.status}`);
-        }
-        
-        const result = await response.json();
-        console.log('Reserva guardada exitosamente:', result);
-        
-        // Enviar notificación a Telegram
-        console.log('Enviando notificación a Telegram...');
-        await sendToTelegram(datosReserva);
-        
-        return result;
-    } catch (error) {
-        console.error('Error guardando reserva en backend:', error);
-        // Fallback a localStorage en caso de error
-        try {
-            let reservas = JSON.parse(localStorage.getItem('reservas_backup') || '{}');
-            reservas[datosReserva.codigo_reserva] = {
-                ...datosReserva,
-                timestamp: new Date().toISOString(),
-                estado: 'activa'
-            };
-            localStorage.setItem('reservas_backup', JSON.stringify(reservas));
-            console.log('Reserva guardada en localStorage como respaldo');
-            
-            // Enviar notificación a Telegram
-            console.log('Enviando notificación a Telegram desde respaldo...');
-            await sendToTelegram(datosReserva);
-            
-            return { success: true, backup: true };
-        } catch (backupError) {
-            console.error('Error en respaldo de reserva:', backupError);
-            return { success: false, error: backupError.message };
-        }
-    }
 }
 
 // Función para obtener una reserva por su código desde el backend
