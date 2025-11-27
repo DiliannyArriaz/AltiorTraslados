@@ -761,6 +761,78 @@ async function testAirtableWrite() {
     }
 }
 
+// Handle booking form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const bookingForm = document.getElementById('bookingForm');
+    if (bookingForm) {
+        bookingForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Obtener valores del formulario
+            const fecha = document.getElementById('fecha').value;
+            const hora = document.getElementById('hora').value;
+            const origenInput = document.getElementById('origen');
+            const destinoInput = document.getElementById('destino');
+            const emailCliente = document.getElementById('email').value;
+            
+            // Usar la dirección completa si es un lugar común
+            const origen = origenInput.getAttribute('data-full-address') || origenInput.value;
+            const destino = destinoInput.getAttribute('data-full-address') || destinoInput.value;
+            
+            const pasajeros = document.getElementById('pasajeros').value;
+            const telefono = document.getElementById('telefono').value;
+            const tieneEquipaje = document.getElementById('equipaje').checked;
+            const maletas = tieneEquipaje ? document.getElementById('maletas').value : 'Sin equipaje';
+            
+            // Generar código de reserva único
+            const codigoReserva = generateReservationCode();
+            
+            // Datos para el correo electrónico y la reserva
+            const datosReserva = {
+                fecha: formatDate(fecha),
+                hora: hora,
+                origen: origenInput.value,
+                destino: destinoInput.value,
+                pasajeros: pasajeros,
+                telefono: telefono,
+                email_cliente: emailCliente,
+                equipaje: tieneEquipaje ? 'Sí' : 'No',
+                maletas: maletas,
+                origen_completo: origen,
+                destino_completo: destino,
+                codigo_reserva: codigoReserva
+            };
+            
+            try {
+                // Guardar la reserva en el backend
+                const resultado = await saveReservation(datosReserva);
+                
+                if (resultado && resultado.success) {
+                    // Mostrar popup de confirmación de reserva
+                    showReservationPopup(codigoReserva, emailCliente);
+                    
+                    // Guardar en localStorage para mostrar el mensaje al regresar
+                    localStorage.setItem('reservationCompleted', 'true');
+                    localStorage.setItem('reservationCode', codigoReserva);
+                    localStorage.setItem('clientEmail', emailCliente);
+                    
+                    // Resetear el formulario
+                    bookingForm.reset();
+                    
+                    // Ocultar detalles de equipaje si estaban visibles
+                    document.getElementById('luggageDetails').style.display = 'none';
+                } else {
+                    alert('Error al guardar la reserva. Por favor, inténtelo nuevamente.');
+                }
+            } catch (error) {
+                console.error('Error al procesar la reserva:', error);
+                alert('Error al procesar la reserva. Por favor, inténtelo nuevamente.');
+            }
+        });
+    }
+});
+
 // Inicializar autocompletado cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
     initOSMAutocomplete();
