@@ -71,6 +71,9 @@ app.post('/api/reservas', async (req, res) => {
             // Enviar correo de confirmación
             await sendReservationConfirmation(datosReserva);
             
+            // Enviar notificación a Telegram
+            await sendNotificationToTelegram(datosReserva);
+            
             return res.json({
                 success: true,
                 reserva: resultado.reserva,
@@ -274,3 +277,52 @@ app.get('/admin', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Servidor backend corriendo en puerto ${PORT}`);
 });
+
+// Función para enviar notificación a Telegram
+async function sendNotificationToTelegram(datos) {
+    try {
+        console.log('Enviando notificación a Telegram:', datos);
+        
+        // Verificar que los datos necesarios estén presentes
+        if (!datos || !datos.codigo_reserva) {
+            console.error('Datos incompletos para enviar a Telegram:', datos);
+            return false;
+        }
+        
+        const telegramData = {
+            name: datos.email_cliente || "No especificado",
+            email: datos.email_cliente || "No especificado",
+            date: `${datos.fecha || 'No especificado'} ${datos.hora || ''}`.trim() || "No especificado",
+            message: `Nueva reserva recibida:
+• Código: ${datos.codigo_reserva}
+• Origen: ${datos.origen || datos.origen_completo || 'No especificado'}
+• Destino: ${datos.destino || datos.destino_completo || 'No especificado'}
+• Pasajeros: ${datos.pasajeros || 'No especificado'}
+• Equipaje: ${datos.maletas || datos.equipaje || 'No especificado'}
+• Teléfono: ${datos.telefono || 'No especificado'}`
+        };
+        
+        console.log('Datos formateados para Telegram:', telegramData);
+        
+        const response = await fetch('https://script.google.com/macros/s/AKfycbz-fY8zI7hHgsJu8EhZuEgowaKqnxIDNn_tY3xx41C2eUT7ac4gO45YaAAjYzVD4Me4Gw/exec', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(telegramData)
+        });
+        
+        console.log('Respuesta de Telegram:', response.status, response.statusText);
+        
+        if (response.ok) {
+            console.log('✅ Notificación enviada a Telegram exitosamente');
+            return true;
+        } else {
+            console.error('❌ Error al enviar notificación a Telegram:', response.status);
+            return false;
+        }
+    } catch (error) {
+        console.error('❌ Error al enviar notificación a Telegram:', error);
+        return false;
+    }
+}
