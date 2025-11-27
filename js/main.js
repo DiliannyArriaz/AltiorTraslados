@@ -150,12 +150,11 @@ async function sendToTelegram(datos) {
             date: `${datos.fecha || 'No especificado'} ${datos.hora || ''}`.trim() || "No especificado",
             message: `Nueva reserva recibida:
 • Código: ${datos.codigo_reserva}
-• Origen: ${datos.origen || 'No especificado'}
-• Destino: ${datos.destino || 'No especificado'}
+• Origen: ${datos.origen || datos.origen_completo || 'No especificado'}
+• Destino: ${datos.destino || datos.destino_completo || 'No especificado'}
 • Pasajeros: ${datos.pasajeros || 'No especificado'}
 • Equipaje: ${datos.maletas || datos.equipaje || 'No especificado'}
-• Teléfono: ${datos.telefono || 'No especificado'}
-• Email: ${datos.email_cliente || 'No especificado'}`
+• Teléfono: ${datos.telefono || 'No especificado'}`
         };
         
         console.log('Datos formateados para Telegram:', telegramData);
@@ -170,20 +169,15 @@ async function sendToTelegram(datos) {
         
         console.log('Respuesta de Telegram:', response.status, response.statusText);
         
-        // Leer el contenido de la respuesta para mejor debugging
-        const responseText = await response.text();
-        console.log('Contenido de la respuesta:', responseText);
-        
-        if (!response.ok) {
-            console.error(`Error HTTP: ${response.status} - ${response.statusText}`);
-            console.error('Detalles de la respuesta:', responseText);
+        if (response.ok) {
+            console.log('✅ Notificación enviada a Telegram exitosamente');
+            return true;
+        } else {
+            console.error('❌ Error al enviar notificación a Telegram:', response.status);
             return false;
         }
-        
-        console.log('Datos enviados a Telegram exitosamente');
-        return true;
     } catch (error) {
-        console.error('Error enviando datos a Telegram:', error);
+        console.error('❌ Error al enviar notificación a Telegram:', error);
         return false;
     }
 }
