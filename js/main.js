@@ -136,24 +136,32 @@ async function sendReservationEmails(datos) {
 // Enviar datos a Google Apps Script para notificación por Telegram
 async function sendToTelegram(datos) {
     try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbwJVd1vDSvmAMKc5pFkCrd5ot_tDDAsyvapGsWSJAem59qraFp-xpVfbM6IVy_O9MtNvg/exec', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: datos.email_cliente || "No especificado",
-                email: datos.email_cliente || "No especificado",
-                date: `${datos.fecha} ${datos.hora}` || "No especificado",
-                message: `Nueva reserva recibida:
+        console.log('Enviando datos a Telegram:', datos);
+        
+        const telegramData = {
+            name: datos.email_cliente || "No especificado",
+            email: datos.email_cliente || "No especificado",
+            date: `${datos.fecha} ${datos.hora}` || "No especificado",
+            message: `Nueva reserva recibida:
 Código: ${datos.codigo_reserva}
 Origen: ${datos.origen}
 Destino: ${datos.destino}
 Pasajeros: ${datos.pasajeros}
 Equipaje: ${datos.maletas}
 Teléfono: ${datos.telefono}`
-            })
+        };
+        
+        console.log('Datos a enviar:', telegramData);
+        
+        const response = await fetch('https://script.google.com/macros/s/AKfycbwJVd1vDSvmAMKc5pFkCrd5ot_tDDAsyvapGsWSJAem59qraFp-xpVfbM6IVy_O9MtNvg/exec', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(telegramData)
         });
+        
+        console.log('Respuesta de Telegram:', response.status, response.statusText);
         
         if (!response.ok) {
             throw new Error(`Error al enviar a Telegram: ${response.status}`);
