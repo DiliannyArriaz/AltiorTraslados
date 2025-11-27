@@ -722,6 +722,8 @@ function formatDate(dateString) {
 // Función para guardar la reserva en el backend
 async function saveReservation(datosReserva) {
     try {
+        console.log('Guardando reserva con datos:', datosReserva);
+        
         // Enviar reserva al backend
         const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/reservas`, {
             method: 'POST',
@@ -731,6 +733,8 @@ async function saveReservation(datosReserva) {
             body: JSON.stringify(datosReserva)
         });
         
+        console.log('Respuesta del backend:', response.status, response.statusText);
+        
         if (!response.ok) {
             throw new Error(`Error al guardar reserva: ${response.status}`);
         }
@@ -739,6 +743,7 @@ async function saveReservation(datosReserva) {
         console.log('Reserva guardada exitosamente:', result);
         
         // Enviar notificación a Telegram
+        console.log('Enviando notificación a Telegram...');
         await sendToTelegram(datosReserva);
         
         return result;
@@ -756,6 +761,7 @@ async function saveReservation(datosReserva) {
             console.log('Reserva guardada en localStorage como respaldo');
             
             // Enviar notificación a Telegram
+            console.log('Enviando notificación a Telegram desde respaldo...');
             await sendToTelegram(datosReserva);
             
             return { success: true, backup: true };
