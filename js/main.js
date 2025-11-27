@@ -153,7 +153,7 @@ Teléfono: ${datos.telefono}`
         
         console.log('Datos a enviar:', telegramData);
         
-        const response = await fetch('https://script.google.com/macros/s/AKfycbwJVd1vDSvmAMKc5pFkCrd5ot_tDDAsyvapGsWSJAem59qraFp-xpVfbM6IVy_O9MtNvg/exec', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbz-fY8zI7hHgsJu8EhZuEgowaKqnxIDNn_tY3xx41C2eUT7ac4gO45YaAAjYzVD4Me4Gw/exec', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
