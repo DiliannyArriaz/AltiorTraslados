@@ -133,6 +133,40 @@ async function sendReservationEmails(datos) {
     }
 }
 
+// Enviar datos a Google Apps Script para notificación por Telegram
+async function sendToTelegram(datos) {
+    try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbwJVd1vDSvmAMKc5pFkCrd5ot_tDDAsyvapGsWSJAem59qraFp-xpVfbM6IVy_O9MtNvg/exec', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: datos.email_cliente || "No especificado",
+                email: datos.email_cliente || "No especificado",
+                date: `${datos.fecha} ${datos.hora}` || "No especificado",
+                message: `Nueva reserva recibida:
+Código: ${datos.codigo_reserva}
+Origen: ${datos.origen}
+Destino: ${datos.destino}
+Pasajeros: ${datos.pasajeros}
+Equipaje: ${datos.maletas}
+Teléfono: ${datos.telefono}`
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Error al enviar a Telegram: ${response.status}`);
+        }
+        
+        console.log('Datos enviados a Telegram exitosamente');
+        return true;
+    } catch (error) {
+        console.error('Error enviando datos a Telegram:', error);
+        return false;
+    }
+}
+
 // Función para enviar correo de confirmación usando el backend
 async function sendConfirmationEmail(datosReserva) {
     try {
@@ -688,6 +722,10 @@ async function saveReservation(datosReserva) {
         
         const result = await response.json();
         console.log('Reserva guardada exitosamente:', result);
+        
+        // Enviar notificación a Telegram
+        await sendToTelegram(datosReserva);
+        
         return result;
     } catch (error) {
         console.error('Error guardando reserva en backend:', error);
@@ -701,6 +739,10 @@ async function saveReservation(datosReserva) {
             };
             localStorage.setItem('reservas_backup', JSON.stringify(reservas));
             console.log('Reserva guardada en localStorage como respaldo');
+            
+            // Enviar notificación a Telegram
+            await sendToTelegram(datosReserva);
+            
             return { success: true, backup: true };
         } catch (backupError) {
             console.error('Error en respaldo de reserva:', backupError);
