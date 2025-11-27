@@ -138,20 +138,27 @@ async function sendToTelegram(datos) {
     try {
         console.log('Enviando datos a Telegram:', datos);
         
+        // Verificar que los datos necesarios estén presentes
+        if (!datos || !datos.codigo_reserva) {
+            console.error('Datos incompletos para enviar a Telegram:', datos);
+            return false;
+        }
+        
         const telegramData = {
             name: datos.email_cliente || "No especificado",
             email: datos.email_cliente || "No especificado",
-            date: `${datos.fecha} ${datos.hora}` || "No especificado",
+            date: `${datos.fecha || 'No especificado'} ${datos.hora || ''}`.trim() || "No especificado",
             message: `Nueva reserva recibida:
-Código: ${datos.codigo_reserva}
-Origen: ${datos.origen}
-Destino: ${datos.destino}
-Pasajeros: ${datos.pasajeros}
-Equipaje: ${datos.maletas}
-Teléfono: ${datos.telefono}`
+• Código: ${datos.codigo_reserva}
+• Origen: ${datos.origen || 'No especificado'}
+• Destino: ${datos.destino || 'No especificado'}
+• Pasajeros: ${datos.pasajeros || 'No especificado'}
+• Equipaje: ${datos.maletas || datos.equipaje || 'No especificado'}
+• Teléfono: ${datos.telefono || 'No especificado'}
+• Email: ${datos.email_cliente || 'No especificado'}`
         };
         
-        console.log('Datos a enviar:', telegramData);
+        console.log('Datos formateados para Telegram:', telegramData);
         
         const response = await fetch('https://script.google.com/macros/s/AKfycbz-fY8zI7hHgsJu8EhZuEgowaKqnxIDNn_tY3xx41C2eUT7ac4gO45YaAAjYzVD4Me4Gw/exec', {
             method: 'POST',
