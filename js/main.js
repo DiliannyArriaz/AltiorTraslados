@@ -1,7 +1,8 @@
 // Configuración de reservas (usando Google Sheets como sistema principal)
 const RESERVAS_CONFIG = {
     useGoogleSheets: true,
-    scriptUrl: 'https://script.google.com/macros/s/AKfycbyfcBmgJ_HGH9up8S0knKpAdL2xqZ1AKXSqqKddm4WS_dxPG1T5P944AiWdvCcYF2qD7w/exec'
+    // Usamos un proxy CORS para evitar problemas de cross-origin
+    scriptUrl: 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://script.google.com/macros/s/AKfycbyfcBmgJ_HGH9up8S0knKpAdL2xqZ1AKXSqqKddm4WS_dxPG1T5P944AiWdvCcYF2qD7w/exec')
 };
 
 // Verificar si el sistema de reservas está configurado
@@ -119,17 +120,12 @@ async function sendReservationEmails(datos) {
     }
 }
 
-// Enviar datos a Google Apps Script para notificación por Telegram
+// Función para enviar datos a Telegram
 async function sendToTelegram(datos) {
     try {
         console.log('Enviando datos a Telegram:', datos);
         
-        // Verificar que los datos necesarios estén presentes
-        if (!datos || !datos.codigo_reserva) {
-            console.error('Datos incompletos para enviar a Telegram:', datos);
-            return false;
-        }
-        
+        // Datos formateados para enviar a Telegram
         const telegramData = {
             name: datos.email_cliente || "No especificado",
             email: datos.email_cliente || "No especificado",
@@ -145,7 +141,10 @@ async function sendToTelegram(datos) {
         
         console.log('Datos formateados para Telegram:', telegramData);
         
-        const response = await fetch('https://script.google.com/macros/s/AKfycbz-fY8zI7hHgsJu8EhZuEgowaKqnxIDNn_tY3xx41C2eUT7ac4gO45YaAAjYzVD4Me4Gw/exec', {
+        // Usamos también un proxy para la llamada a Telegram
+        const telegramUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://script.google.com/macros/s/AKfycbz-fY8zI7hHgsJu8EhZuEgowaKqnxIDNn_tY3xx41C2eUT7ac4gO45YaAAjYzVD4Me4Gw/exec');
+        
+        const response = await fetch(telegramUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -173,7 +172,7 @@ async function saveReservation(datosReserva) {
     try {
         console.log('Guardando reserva con datos:', datosReserva);
         
-        // Enviar datos a Google Sheets usando Google Apps Script
+        // Enviar datos a Google Sheets usando Google Apps Script a través de proxy CORS
         const response = await fetch(RESERVAS_CONFIG.scriptUrl, {
             method: 'POST',
             headers: {
