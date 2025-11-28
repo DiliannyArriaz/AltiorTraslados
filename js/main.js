@@ -10,14 +10,8 @@ const isReservasConfigured = true;
 
 // Lugares comunes predefinidos (aeropuertos, estaciones, etc.)
 const lugaresComunes = [
-    {
-        nombre: "Aeropuerto Ezeiza",
-        direccion: "Ministro Pistarini International Airport, Marinos del Fournier, Barrio Villa Guillermina, Ezeiza, Partido de Ezeiza, Buenos Aires, 1804, Argentina"
-    },
-    {
-        nombre: "Aeropuerto Aeroparque",
-        direccion: "Aeropuerto Internacional Jorge Newbery, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
-    },
+    { nombre: "Aeropuerto Ezeiza", direccion: "Aeropuerto Internacional Ministro Pistarini, Ezeiza, Buenos Aires" },
+    { nombre: "Aeropuerto Aeroparque", direccion: "Aeropuerto Jorge Newbery, Ciudad Autónoma de Buenos Aires" },
     {
         nombre: "Aeropuerto El Palomar",
         direccion: "Aeropuerto El Palomar, Partido de Morón, Buenos Aires, Argentina"
@@ -143,6 +137,7 @@ async function sendToTelegram(datos) {
         
         // Usamos también un proxy para la llamada a Telegram
         const telegramUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://script.google.com/macros/s/AKfycbysoBEGQiTf3Gpv886Nw_UBPVGvK0-j_bug3CGuf5J8PZHdMKmtziU6wGJjBi9lIAz1Mw/exec');
+
         
         const response = await fetch(telegramUrl, {
             method: 'POST',
@@ -203,10 +198,6 @@ async function saveReservation(datosReserva) {
         
         console.log('Reserva enviada exitosamente a Google Sheets');
         
-        // Enviar notificación a Telegram
-        console.log('Enviando notificación a Telegram...');
-        await sendToTelegram(datosReserva);
-        
         return { success: true };
     } catch (error) {
         console.error('Error guardando reserva:', error);
@@ -214,22 +205,9 @@ async function saveReservation(datosReserva) {
         // Manejo específico para errores de CORS
         if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
             console.log('Error de CORS o red detectado. Los datos pueden haberse guardado de todas formas.');
-            // Aún así, intentamos enviar notificación a Telegram
-            try {
-                await sendToTelegram(datosReserva);
-            } catch (telegramError) {
-                console.error('Error al enviar notificación a Telegram:', telegramError);
-            }
             // Retornamos éxito aunque haya error de CORS, ya que Google Apps Script
             // puede haber procesado la solicitud a pesar del error del navegador
             return { success: true, warning: 'Posible error de CORS pero datos enviados' };
-        }
-        
-        // Para otros errores, seguimos con el flujo normal
-        try {
-            await sendToTelegram(datosReserva);
-        } catch (telegramError) {
-            console.error('Error al enviar notificación a Telegram:', telegramError);
         }
         
         // Relanzamos el error para que sea manejado por la función llamadora
