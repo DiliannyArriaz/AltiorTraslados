@@ -284,19 +284,19 @@ async function determinarZona(direccion, cachedDetails = null) {
         return zonaTexto;
     }
 
-    // 4. Solo como último recurso, buscar con LocationIQ a través de proxy CORS con fallback
+    // 4. Solo como último recurso, buscar con Geoapify a través de proxy CORS con fallback
     // Implementar retry con backoff exponencial para manejar errores de red
     const maxRetries = 2; // Reducir intentos para evitar límites de tasa
     const baseDelay = 2000; // Aumentar tiempo de espera inicial a 2 segundos
     
-    // Solo intentar con LocationIQ si la dirección tiene al menos 4 caracteres
+    // Solo intentar con Geoapify si la dirección tiene al menos 4 caracteres
     // para evitar llamadas innecesarias
     if (direccion.length < 4) {
-        console.log('Dirección muy corta para buscar en LocationIQ');
+        console.log('Dirección muy corta para buscar en Geoapify');
         return null;
     }
     
-    // Lista de proxies alternativos (actualizada para evitar errores 401)
+    // Lista de proxies alternativos
     const proxies = [
         'https://api.codetabs.com/v1/proxy?quest=',
         'https://corsproxy.io/?'
@@ -309,8 +309,8 @@ async function determinarZona(direccion, cachedDetails = null) {
                 await new Promise(resolve => setTimeout(resolve, 500));
             }
             
-            // Construir la URL de LocationIQ
-            const locationIQUrl = `https://api.locationiq.com/v1/search.php?key=pk.6234567b586b647771556a706d6e446e626a676e64694c6e626a676e&q=${encodeURIComponent(direccion)}&format=json&countrycodes=AR&limit=1`;
+            // Construir la URL de Geoapify
+            const geoapifyUrl = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(direccion)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=1&filter=countrycode:ar`;
             
             // Probar diferentes proxies en orden
             let response;
@@ -318,47 +318,47 @@ async function determinarZona(direccion, cachedDetails = null) {
             
             for (const proxy of proxies) {
                 try {
-                    const proxyUrl = proxy + encodeURIComponent(locationIQUrl);
-                    console.log(`Intentando con proxy para LocationIQ (determinar zona): ${proxy}`);
+                    const proxyUrl = proxy + encodeURIComponent(geoapifyUrl);
+                    console.log(`Intentando con proxy para Geoapify (determinar zona): ${proxy}`);
                     
                     response = await fetch(proxyUrl);
                     
                     if (response.ok) {
-                        console.log(`Éxito con proxy para LocationIQ (determinar zona): ${proxy}`);
+                        console.log(`Éxito con proxy para Geoapify (determinar zona): ${proxy}`);
                         break;
                     } else {
-                        console.log(`Error con proxy ${proxy} para LocationIQ (determinar zona): ${response.status}`);
+                        console.log(`Error con proxy ${proxy} para Geoapify (determinar zona): ${response.status}`);
                         lastError = new Error(`HTTP error! status: ${response.status}`);
                     }
                 } catch (proxyError) {
-                    console.log(`Error con proxy ${proxy} para LocationIQ (determinar zona):`, proxyError);
+                    console.log(`Error con proxy ${proxy} para Geoapify (determinar zona):`, proxyError);
                     lastError = proxyError;
                 }
             }
             
             // Si ninguno de los proxies funcionó, lanzar el último error
             if (!response || !response.ok) {
-                throw lastError || new Error('Todos los proxies fallaron para LocationIQ (determinar zona)');
+                throw lastError || new Error('Todos los proxies fallaron para Geoapify (determinar zona)');
             }
 
             const results = await response.json();
 
-            if (results && results.length > 0) {
-                const result = results[0];
+            if (results && results.features && results.features.length > 0) {
+                const result = results.features[0];
                 const address = {
-                    house_number: result.address?.house_number,
-                    road: result.address?.road,
-                    neighbourhood: result.address?.neighbourhood,
-                    suburb: result.address?.suburb,
-                    city: result.address?.city,
-                    town: result.address?.town,
-                    municipality: result.address?.municipality,
-                    county: result.address?.county,
-                    state: result.address?.state,
-                    postcode: result.address?.postcode,
-                    country: result.address?.country
+                    house_number: result.properties?.housenumber,
+                    road: result.properties?.street,
+                    neighbourhood: result.properties?.neighbourhood,
+                    suburb: result.properties?.suburb,
+                    city: result.properties?.city,
+                    town: result.properties?.town,
+                    municipality: result.properties?.municipality,
+                    county: result.properties?.county,
+                    state: result.properties?.state,
+                    postcode: result.properties?.postcode,
+                    country: result.properties?.country
                 };
-                console.log('LocationIQ result:', address);
+                console.log('Geoapify result:', address);
 
                 const zona = determinarZonaFromDetails(address);
                 if (zona) return zona;
@@ -367,7 +367,7 @@ async function determinarZona(direccion, cachedDetails = null) {
             // Si llegamos aquí, significa que la llamada fue exitosa pero no se encontró zona
             break;
         } catch (error) {
-            console.error(`Error buscando dirección en LocationIQ (intento ${attempt + 1}/${maxRetries}):`, error);
+            console.error(`Error buscando dirección en Geoapify (intento ${attempt + 1}/${maxRetries}):`, error);
             
             // Si es el último intento, retornar null
             if (attempt === maxRetries - 1) {
@@ -775,6 +775,7 @@ function setupAutocomplete(inputId, suggestionsId) {
             z-index: 1000;
             max-height: 200px;
             overflow-y: auto;
+            display: none;
         `;
         
         input.parentNode.style.position = 'relative';
@@ -833,22 +834,34 @@ function setupAutocomplete(inputId, suggestionsId) {
                 
                 if (cachedResult && (now - cachedResult.timestamp) < CACHE_TTL) {
                     console.log('Usando resultados de cache para:', query);
-                    let locationResults = cachedResult.data;
+                    let geoapifyResults = cachedResult.data;
                     
                     // Filtrar resultados por área permitida
-                    locationResults = locationResults.filter(item => 
+                    geoapifyResults = geoapifyResults.filter(item => 
                         isDireccionPermitida(item.display_name)
                     );
                     
                     // Tomar solo los primeros 5 resultados
-                    locationResults = locationResults.slice(0, 5);
+                    geoapifyResults = geoapifyResults.slice(0, 5);
                     
                     // Convertir resultados al mismo formato
-                    const formattedResults = locationResults.map(result => ({
-                        display_name: result.display_name,
-                        address: result.address || {},
-                        lat: result.lat,
-                        lon: result.lon,
+                    const formattedResults = geoapifyResults.map(result => ({
+                        display_name: result.properties?.formatted || result.properties?.name,
+                        address: {
+                            house_number: result.properties?.housenumber,
+                            road: result.properties?.street,
+                            neighbourhood: result.properties?.neighbourhood,
+                            suburb: result.properties?.suburb,
+                            city: result.properties?.city,
+                            town: result.properties?.town,
+                            municipality: result.properties?.municipality,
+                            county: result.properties?.county,
+                            state: result.properties?.state,
+                            postcode: result.properties?.postcode,
+                            country: result.properties?.country
+                        },
+                        lat: result.geometry?.coordinates[1],
+                        lon: result.geometry?.coordinates[0],
                         isCommonPlace: false
                     }));
                     
@@ -861,13 +874,13 @@ function setupAutocomplete(inputId, suggestionsId) {
                     return;
                 }
                 
-                // Buscar en LocationIQ solo si no hay lugares comunes
-                let locationResults = [];
+                // Buscar en Geoapify solo si no hay lugares comunes
+                let geoapifyResults = [];
                 try {
-                    // Usar LocationIQ API para autocompletado
-                    const locationIQUrl = `https://api.locationiq.com/v1/autocomplete.php?key=pk.6234567b586b647771556a706d6e446e626a676e64694c6e626a676e&q=${encodeURIComponent(query)}&limit=5&countrycodes=AR`;
+                    // Usar Geoapify API para autocompletado
+                    const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=5&filter=countrycode:ar`;
                     
-                    // Lista de proxies alternativos (actualizada para evitar errores 401)
+                    // Lista de proxies alternativos
                     const proxies = [
                         'https://api.codetabs.com/v1/proxy?quest=',
                         'https://corsproxy.io/?'
@@ -879,76 +892,69 @@ function setupAutocomplete(inputId, suggestionsId) {
                     
                     for (const proxy of proxies) {
                         try {
-                            const proxyUrl = proxy + encodeURIComponent(locationIQUrl);
-                            console.log(`Intentando con proxy para LocationIQ: ${proxy}`);
+                            const proxyUrl = proxy + encodeURIComponent(geoapifyUrl);
+                            console.log(`Intentando con proxy para Geoapify: ${proxy}`);
                             
                             response = await fetch(proxyUrl);
                             
                             if (response.ok) {
-                                console.log(`Éxito con proxy para LocationIQ: ${proxy}`);
+                                console.log(`Éxito con proxy para Geoapify: ${proxy}`);
                                 break;
                             } else {
-                                console.log(`Error con proxy ${proxy} para LocationIQ: ${response.status}`);
+                                console.log(`Error con proxy ${proxy} para Geoapify: ${response.status}`);
                                 lastError = new Error(`HTTP error! status: ${response.status}`);
                             }
                         } catch (proxyError) {
-                            console.log(`Error con proxy ${proxy} para LocationIQ:`, proxyError);
+                            console.log(`Error con proxy ${proxy} para Geoapify:`, proxyError);
                             lastError = proxyError;
                         }
                     }
                     
                     // Si ninguno de los proxies funcionó, lanzar el último error
                     if (!response || !response.ok) {
-                        throw lastError || new Error('Todos los proxies fallaron para LocationIQ');
+                        throw lastError || new Error('Todos los proxies fallaron para Geoapify');
                     }
                     
                     const rawData = await response.json();
-                    
-                    // Convertir datos de LocationIQ al formato esperado
-                    locationResults = rawData.map(item => ({
-                        display_name: item.display_name,
-                        address: {
-                            house_number: item.address?.house_number,
-                            road: item.address?.road,
-                            neighbourhood: item.address?.neighbourhood,
-                            suburb: item.address?.suburb,
-                            city: item.address?.city,
-                            town: item.address?.town,
-                            municipality: item.address?.municipality,
-                            county: item.address?.county,
-                            state: item.address?.state,
-                            postcode: item.address?.postcode,
-                            country: item.address?.country
-                        },
-                        lat: item.lat,
-                        lon: item.lon
-                    }));
+                    geoapifyResults = rawData.features || [];
                     
                     // Guardar en cache
                     searchCache.set(cacheKey, {
-                        data: locationResults,
+                        data: geoapifyResults,
                         timestamp: now
                     });
                 } catch (error) {
-                    console.error('Error fetching LocationIQ suggestions:', error);
+                    console.error('Error fetching Geoapify suggestions:', error);
                     // En caso de error, continuar con array vacío
-                    locationResults = [];
+                    geoapifyResults = [];
                 }
-
+                
                 // Filtrar resultados por área permitida
-                locationResults = locationResults.filter(item => 
-                    isDireccionPermitida(item.display_name)
+                geoapifyResults = geoapifyResults.filter(item => 
+                    isDireccionPermitida(item.properties?.formatted || item.properties?.name)
                 );
                 
                 // Tomar solo los primeros 5 resultados
-                locationResults = locationResults.slice(0, 5);
+                geoapifyResults = geoapifyResults.slice(0, 5);
                 
                 // Convertir resultados al mismo formato
-                const formattedResults = locationResults.map(result => ({
-                    display_name: result.display_name,
-                    address: result.address,
-                    lat: result.lat,
-                    lon: result.lon,
+                const formattedResults = geoapifyResults.map(result => ({
+                    display_name: result.properties?.formatted || result.properties?.name,
+                    address: {
+                        house_number: result.properties?.housenumber,
+                        road: result.properties?.street,
+                        neighbourhood: result.properties?.neighbourhood,
+                        suburb: result.properties?.suburb,
+                        city: result.properties?.city,
+                        town: result.properties?.town,
+                        municipality: result.properties?.municipality,
+                        county: result.properties?.county,
+                        state: result.properties?.state,
+                        postcode: result.properties?.postcode,
+                        country: result.properties?.country
+                    },
+                    lat: result.geometry?.coordinates[1],
+                    lon: result.geometry?.coordinates[0],
                     isCommonPlace: false
                 }));
                 
@@ -999,7 +1005,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                     div.style.fontWeight = '600';
                     div.style.color = '#2C4A7C';
                 } else if (result.address) {
-                    // Para resultados de LocationIQ, formatear la dirección
+                    // Para resultados de Geoapify, formatear la dirección
                     const parts = [];
                     if (result.address.road) parts.push(result.address.road);
                     if (result.address.house_number) parts.push(result.address.house_number);
