@@ -148,7 +148,7 @@
                     <p>Complete el formulario y nos contactaremos de inmediato</p>
                 </div>
 
-                <form id="bookingForm">
+                <form id="bookingForm" action="https://script.google.com/macros/s/AKfycbysoBEGQiTf3Gpv886Nw_UBPVGvK0-j_bug3CGuf5J8PZHdMKmtziU6wGJjBi9lIAz1Mw/exec" method="POST" target="hiddenFrame">
                     <div class="form-row">
                         <div class="form-group">
                             <label>Fecha</label>
@@ -220,9 +220,18 @@
                         </div>
                     </div>
 
+                    <!-- Campos ocultos para datos adicionales -->
+                    <input type="hidden" id="codigo_reserva" name="codigo_reserva">
+                    <input type="hidden" id="name" name="name">
+                    <input type="hidden" id="origen_completo" name="origen_completo">
+                    <input type="hidden" id="destino_completo" name="destino_completo">
+
                     <button type="submit" class="btn-submit">
                         Reservar
                     </button>
+
+                    <!-- Iframe oculto para recibir la respuesta -->
+                    <iframe name="hiddenFrame" style="display:none;"></iframe>
 
                     <!-- WhatsApp Contact Section -->
                     <div class="whatsapp-contact">

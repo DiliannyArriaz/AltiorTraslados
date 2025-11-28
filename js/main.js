@@ -643,47 +643,32 @@ document.addEventListener('DOMContentLoaded', function() {
             // Generar código de reserva único
             const codigoReserva = generateReservationCode();
             
-            // Datos para el correo electrónico y la reserva
-            const datosReserva = {
-                fecha: formatDate(fecha),
-                hora: hora,
-                origen: origenInput.value,
-                destino: destinoInput.value,
-                pasajeros: pasajeros,
-                telefono: telefono,
-                email_cliente: emailCliente,
-                equipaje: tieneEquipaje ? 'Sí' : 'No',
-                maletas: maletas,
-                origen_completo: origen,
-                destino_completo: destino,
-                codigo_reserva: codigoReserva
-            };
+            // Completar los campos ocultos del formulario
+            document.getElementById('codigo_reserva').value = codigoReserva;
+            document.getElementById('name').value = emailCliente;
+            document.getElementById('origen_completo').value = origen;
+            document.getElementById('destino_completo').value = destino;
             
-            try {
-                // Guardar la reserva en el backend
-                const resultado = await saveReservation(datosReserva);
-                
-                if (resultado && resultado.success) {
-                    // Mostrar popup de confirmación de reserva
-                    showReservationPopup(codigoReserva, emailCliente);
-                    
-                    // Guardar en localStorage para mostrar el mensaje al regresar
-                    localStorage.setItem('reservationCompleted', 'true');
-                    localStorage.setItem('reservationCode', codigoReserva);
-                    localStorage.setItem('clientEmail', emailCliente);
-                    
-                    // Resetear el formulario
-                    bookingForm.reset();
-                    
-                    // Ocultar detalles de equipaje si estaban visibles
-                    document.getElementById('luggageDetails').style.display = 'none';
-                } else {
-                    alert('Error al guardar la reserva. Por favor, inténtelo nuevamente.');
-                }
-            } catch (error) {
-                console.error('Error al procesar la reserva:', error);
-                alert('Error al procesar la reserva. Por favor, inténtelo nuevamente.');
-            }
+            // Mostrar popup de confirmación de reserva inmediatamente
+            showReservationPopup(codigoReserva, emailCliente);
+            
+            // Guardar en localStorage para mostrar el mensaje al regresar
+            localStorage.setItem('reservationCompleted', 'true');
+            localStorage.setItem('reservationCode', codigoReserva);
+            localStorage.setItem('clientEmail', emailCliente);
+            
+            // Enviar el formulario
+            // El formulario se enviará automáticamente después de un corto retraso
+            // para permitir que se muestre el popup
+            setTimeout(() => {
+                bookingForm.submit();
+            }, 2000);
+            
+            // Resetear el formulario
+            bookingForm.reset();
+            
+            // Ocultar detalles de equipaje si estaban visibles
+            document.getElementById('luggageDetails').style.display = 'none';
         });
     }
 });
