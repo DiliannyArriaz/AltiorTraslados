@@ -296,10 +296,10 @@ async function determinarZona(direccion, cachedDetails = null) {
         return null;
     }
     
-    // Lista de proxies alternativos
+    // Lista de proxies alternativos (actualizada para evitar errores 401)
     const proxies = [
-        'https://corsproxy.io/?',
-        'https://api.codetabs.com/v1/proxy?quest='
+        'https://api.codetabs.com/v1/proxy?quest=',
+        'https://corsproxy.io/?'
     ];
     
     for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -726,6 +726,10 @@ function isDireccionPermitida(direccion) {
     );
 }
 
+// Variable global para caché de búsquedas
+const searchCache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
 // Función para buscar lugares comunes que coincidan
 function searchLugaresComunes(query, lugaresComunes) {
     if (!query.trim()) return [];
@@ -771,7 +775,6 @@ function setupAutocomplete(inputId, suggestionsId) {
             z-index: 1000;
             max-height: 200px;
             overflow-y: auto;
-            display: none;
         `;
         
         input.parentNode.style.position = 'relative';
@@ -864,10 +867,10 @@ function setupAutocomplete(inputId, suggestionsId) {
                     // Usar LocationIQ API para autocompletado
                     const locationIQUrl = `https://api.locationiq.com/v1/autocomplete.php?key=pk.6234567b586b647771556a706d6e446e626a676e64694c6e626a676e&q=${encodeURIComponent(query)}&limit=5&countrycodes=AR`;
                     
-                    // Lista de proxies alternativos
+                    // Lista de proxies alternativos (actualizada para evitar errores 401)
                     const proxies = [
-                        'https://corsproxy.io/?',
-                        'https://api.codetabs.com/v1/proxy?quest='
+                        'https://api.codetabs.com/v1/proxy?quest=',
+                        'https://corsproxy.io/?'
                     ];
                     
                     // Probar diferentes proxies en orden
@@ -931,7 +934,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                     // En caso de error, continuar con array vacío
                     locationResults = [];
                 }
-                
+
                 // Filtrar resultados por área permitida
                 locationResults = locationResults.filter(item => 
                     isDireccionPermitida(item.display_name)
