@@ -1,21 +1,7 @@
-// Configuración de Airtable (debería ser reemplazada con credenciales reales)
-// PARA CONFIGURAR AIRTABLE:
-// 1. Reemplaza "YOUR_AIRTABLE_API_KEY" con tu API Key real de Airtable
-// 2. Reemplaza "YOUR_BASE_ID" con el ID real de tu base de datos
-// 3. Asegúrate de que el nombre de la tabla sea "Reservas"
-const AIRTABLE_CONFIG = {
-    apiKey: "YOUR_AIRTABLE_API_KEY",
-    baseId: "YOUR_BASE_ID",
-    tableName: "Reservas"
-};
-
-// Verificar si Airtable está configurado
-const isAirtableConfigured = AIRTABLE_CONFIG.apiKey !== "YOUR_AIRTABLE_API_KEY" && 
-                             AIRTABLE_CONFIG.baseId !== "YOUR_BASE_ID";
-
-// Configuración de reservas (usando backend en Render.com)
+// Configuración de reservas (usando Google Sheets como sistema principal)
 const RESERVAS_CONFIG = {
-    apiUrl: "https://altiortraslados.onrender.com/api"
+    useGoogleSheets: true,
+    scriptUrl: 'https://script.google.com/macros/s/AKfycbwJVd1vDSvmAMKc5pFkCrd5ot_tDDAsyvapGsWSJAem59qraFp-xpVfbM6IVy_O9MtNvg/exec'
 };
 
 // Verificar si el sistema de reservas está configurado
@@ -182,13 +168,13 @@ async function sendToTelegram(datos) {
     }
 }
 
-// Función para guardar la reserva en el backend
+// Función para guardar la reserva usando Google Sheets
 async function saveReservation(datosReserva) {
     try {
         console.log('Guardando reserva con datos:', datosReserva);
         
-        // Enviar reserva al backend
-        const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/reservas`, {
+        // Enviar datos a Google Sheets usando Google Apps Script
+        const response = await fetch(RESERVAS_CONFIG.scriptUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -196,42 +182,20 @@ async function saveReservation(datosReserva) {
             body: JSON.stringify(datosReserva)
         });
         
-        console.log('Respuesta del backend:', response.status, response.statusText);
-        
         if (!response.ok) {
-            throw new Error(`Error al guardar reserva: ${response.status}`);
+            throw new Error(`Error al enviar datos: ${response.status}`);
         }
         
-        const result = await response.json();
-        console.log('Reserva guardada exitosamente:', result);
+        console.log('Reserva enviada exitosamente a Google Sheets');
         
         // Enviar notificación a Telegram
         console.log('Enviando notificación a Telegram...');
         await sendToTelegram(datosReserva);
         
-        return result;
+        return { success: true };
     } catch (error) {
-        console.error('Error guardando reserva en backend:', error);
-        // Fallback a localStorage en caso de error
-        try {
-            let reservas = JSON.parse(localStorage.getItem('reservas_backup') || '{}');
-            reservas[datosReserva.codigo_reserva] = {
-                ...datosReserva,
-                timestamp: new Date().toISOString(),
-                estado: 'activa'
-            };
-            localStorage.setItem('reservas_backup', JSON.stringify(reservas));
-            console.log('Reserva guardada en localStorage como respaldo');
-            
-            // Enviar notificación a Telegram
-            console.log('Enviando notificación a Telegram desde respaldo...');
-            await sendToTelegram(datosReserva);
-            
-            return { success: true, backup: true };
-        } catch (backupError) {
-            console.error('Error en respaldo de reserva:', backupError);
-            return { success: false, error: backupError.message };
-        }
+        console.error('Error guardando reserva:', error);
+        return { success: false, error: error.message };
     }
 }
 
@@ -595,169 +559,40 @@ function formatDate(dateString) {
     return date.toLocaleDateString('es-ES', options);
 }
 
-// Función para obtener una reserva por su código desde el backend
+// Función para obtener una reserva por su código (no disponible con Formspree)
 async function getReservationByCode(codigoReserva) {
-    try {
-        // Obtener reserva del backend
-        const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/reservas/${codigoReserva}`);
-        
-        if (!response.ok) {
-            if (response.status === 404) {
-                return null; // Reserva no encontrada
-            }
-            throw new Error(`Error al obtener reserva: ${response.status}`);
-        }
-        
-        const reserva = await response.json();
-        // Verificar que la reserva esté activa
-        if (reserva && reserva.estado === 'activa') {
-            return reserva;
-        }
-        return null;
-    } catch (error) {
-        console.error('Error obteniendo reserva del backend:', error);
-        // Intentar obtener desde localStorage en caso de error
-        try {
-            const reservas = JSON.parse(localStorage.getItem('reservas_backup') || '{}');
-            const reserva = reservas[codigoReserva];
-            if (reserva && reserva.estado === 'activa') {
-                return reserva;
-            }
-            return null;
-        } catch (backupError) {
-            console.error('Error en respaldo de obtención de reserva:', backupError);
-            return null;
-        }
-    }
+    // Con Formspree no podemos obtener reservas individuales
+    // Esta función se mantiene para compatibilidad
+    console.warn('No se puede obtener reserva individual con Formspree');
+    return null;
 }
 
-// Función para eliminar una reserva (cancelar)
+// Función para cancelar una reserva (no disponible con Formspree)
 async function removeReservation(codigoReserva) {
-    try {
-        // Cancelar reserva en el backend
-        const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/reservas/${codigoReserva}/cancelar`, {
-            method: 'POST'
-        });
-        
-        if (!response.ok) {
-            throw new Error(`Error al cancelar reserva: ${response.status}`);
-        }
-        
-        return await response.json();
-    } catch (error) {
-        console.error('Error cancelando reserva en backend:', error);
-        // Fallback a localStorage en caso de error
-        try {
-            const reservas = JSON.parse(localStorage.getItem('reservas_backup') || '{}');
-            if (reservas[codigoReserva]) {
-                reservas[codigoReserva].estado = 'cancelada';
-                reservas[codigoReserva].fechaCancelacion = new Date().toISOString();
-                localStorage.setItem('reservas_backup', JSON.stringify(reservas));
-                return { success: true, backup: true };
-            } else {
-                return { success: false, error: 'Reserva no encontrada' };
-            }
-        } catch (backupError) {
-            console.error('Error en respaldo de cancelación de reserva:', backupError);
-            return { success: false, error: backupError.message };
-        }
-    }
+    // Con Formspree no podemos cancelar reservas
+    // Esta función se mantiene para compatibilidad
+    console.warn('No se puede cancelar reserva con Formspree');
+    return { success: false, error: 'Funcionalidad no disponible con Formspree' };
 }
 
-// Función para verificar la conexión con Airtable
-async function testAirtableConnection() {
-    if (!isAirtableConfigured) {
-        console.log("Airtable no está configurado. Usando valores de ejemplo.");
-        return false;
-    }
-    
+// Función para exportar todas las reservas (para administrador)
+function exportReservations() {
     try {
-        const response = await fetch(
-            `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}?maxRecords=1`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`
-                }
-            }
-        );
+        const reservas = JSON.parse(localStorage.getItem('reservas_altior') || '{}');
+        const dataStr = JSON.stringify(reservas, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
         
-        if (response.ok) {
-            console.log("✅ Conexión con Airtable exitosa");
-            return true;
-        } else {
-            const errorData = await response.text();
-            console.error("❌ Error en la conexión con Airtable:", response.status, response.statusText);
-            console.error("Detalles del error:", errorData);
-            return false;
-        }
+        const exportFileDefaultName = 'reservas-altior-' + new Date().toISOString().split('T')[0] + '.json';
+        
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+        
+        console.log('Reservas exportadas exitosamente');
     } catch (error) {
-        console.error("❌ Error al conectar con Airtable:", error);
-        return false;
-    }
-}
-
-// Función de prueba para crear un registro de ejemplo
-async function testAirtableWrite() {
-    if (!isAirtableConfigured) {
-        console.log("Airtable no está configurado. No se puede probar escritura.");
-        return false;
-    }
-    
-    try {
-        const testData = {
-            fields: {
-                "Código de Reserva": "TEST-" + Date.now(),
-                "Email Cliente": "test@example.com",
-                "Fecha": new Date().toISOString().split('T')[0],
-                "Hora": "12:00",
-                "Origen": "Prueba Origen",
-                "Destino": "Prueba Destino",
-                "Pasajeros": "2",
-                "Teléfono": "+54 9 11 1234-5678",
-                "Equipaje": true,
-                "Maletas": "2 maletas",
-                "Timestamp": new Date().toISOString()
-            }
-        };
-        
-        const response = await fetch(
-            `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(testData)
-            }
-        );
-        
-        if (response.ok) {
-            const result = await response.json();
-            console.log("✅ Prueba de escritura en Airtable exitosa");
-            console.log("Registro creado:", result.id);
-            
-            // Eliminar el registro de prueba
-            await fetch(
-                `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}/${result.id}`,
-                {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`
-                    }
-                }
-            );
-            
-            return true;
-        } else {
-            const errorData = await response.text();
-            console.error("❌ Error en la prueba de escritura:", response.status, response.statusText);
-            console.error("Detalles del error:", errorData);
-            return false;
-        }
-    } catch (error) {
-        console.error("❌ Error en la prueba de escritura:", error);
-        return false;
+        console.error('Error exportando reservas:', error);
+        alert('Error al exportar reservas: ' + error.message);
     }
 }
 
