@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test LocationIQ</title>
+</head>
+<body>
+    <h1>Test LocationIQ API</h1>
+    <input type="text" id="direccion" placeholder="Ingrese una dirección" value="Zapiola 2055">
+    <button onclick="testLocationIQ()">Test LocationIQ</button>
+    <div id="result"></div>
+
+    <script>
+        async function testLocationIQ() {
+            const direccion = document.getElementById('direccion').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = 'Buscando...';
+            
+            try {
+                // Usar LocationIQ API para búsqueda
+                const locationIQUrl = `https://api.locationiq.com/v1/search.php?key=pk.6234567b586b647771556a706d6e446e626a676e64694c6e626a676e&q=${encodeURIComponent(direccion)}&format=json&countrycodes=AR&limit=1`;
+                
+                // Usar proxy CORS
+                const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(locationIQUrl)}`;
+                
+                const response = await fetch(proxyUrl);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `Error: ${response.status} ${response.statusText}`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
