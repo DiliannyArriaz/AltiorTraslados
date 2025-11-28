@@ -680,6 +680,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Función para generar código de reserva único
+function generateReservationCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 8; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return 'ALT-' + code;
+}
+
 function scrollToForm(e) {
     e.preventDefault();
     document.querySelector('.booking-form').scrollIntoView({ behavior: 'smooth' });
