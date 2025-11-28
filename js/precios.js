@@ -284,7 +284,7 @@ async function determinarZona(direccion, cachedDetails = null) {
         return zonaTexto;
     }
 
-    // 4. Si no se encuentra por texto, buscar con Nominatim
+    // 4. Si no se encuentra por texto, buscar con Nominatim a través de proxy CORS
     // Implementar retry con backoff exponencial para manejar errores de red
     const maxRetries = 2; // Reducir intentos para evitar límites de tasa
     const baseDelay = 2000; // Aumentar tiempo de espera inicial a 2 segundos
@@ -296,19 +296,22 @@ async function determinarZona(direccion, cachedDetails = null) {
                 await new Promise(resolve => setTimeout(resolve, 500));
             }
             
-            const response = await fetch(
-                `https://nominatim.openstreetmap.org/search?` +
+            // Usar proxy CORS para evitar problemas de cross-origin
+            const nominatimUrl = `https://nominatim.openstreetmap.org/search?` +
                 `q=${encodeURIComponent(direccion)}&` +
                 `format=json&` +
                 `countrycodes=AR&` +
                 `limit=1&` +
-                `addressdetails=1`,
-                {
-                    headers: {
-                        'User-Agent': 'Altior Traslados/1.0 (contacto@altiortraslados.com)'
-                    }
+                `addressdetails=1`;
+            
+            // Usar proxy CORS
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(nominatimUrl)}`;
+            
+            const response = await fetch(proxyUrl, {
+                headers: {
+                    'User-Agent': 'Altior Traslados/1.0 (contacto@altiortraslados.com)'
                 }
-            );
+            });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
