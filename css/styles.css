@@ -87,6 +87,19 @@ nav {
     color: #3B5998;
 }
 
+/* Estilos para enlace activo */
+.nav-link.active, .nav-cta.active {
+    background: linear-gradient(135deg, #5B8DB8, #3B5998);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 89, 152, 0.3);
+}
+
+.nav-link.active:hover, .nav-cta.active:hover {
+    background: linear-gradient(135deg, #3B5998, #2C4A7C);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 89, 152, 0.4);
+}
+
 .nav-cta {
     padding: 12px 30px;
     background: linear-gradient(135deg, #5B8DB8, #3B5998);
@@ -1546,8 +1559,6 @@ footer {
         width: 60px;
         height: 60px;
         font-size: 1.7em;
-    }
-
     /* Fleet grid for mobile */
     .fleet-grid {
         grid-template-columns: 1fr;

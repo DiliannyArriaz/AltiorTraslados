@@ -633,27 +633,6 @@
     </footer>
 
     <script src="js/hamburger-menu.js"></script>
-    <script>
-        // Funcionalidad de tabs
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabBtns = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // Remover clase active de todos los botones y contenidos
-                    tabBtns.forEach(b => b.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.remove('active'));
-                    
-                    // Agregar clase active al botón clickeado
-                    btn.classList.add('active');
-                    
-                    // Mostrar el contenido correspondiente
-                    const tabId = btn.getAttribute('data-tab');
-                    document.getElementById(`${tabId}-content`).classList.add('active');
-                });
-            });
-        });
-    </script>
+    <script src="js/nav-active.js"></script>
 </body>
 </html>
