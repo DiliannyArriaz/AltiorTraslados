@@ -44,6 +44,9 @@ function doPost(e) {
       throw new Error('No se pudieron obtener los datos de la solicitud');
     }
     
+    // Registrar todos los datos recibidos para depuración
+    console.log('Todos los datos recibidos:', JSON.stringify(data));
+    
     // Obtener la hoja de cálculo activa
     const sheet = SpreadsheetApp.getActiveSheet();
     
@@ -68,28 +71,28 @@ function doPost(e) {
       sheet.appendRow(headers);
     }
     
-    // Preparar datos para guardar
+    // Preparar datos para guardar (asegurando que todos los campos estén presentes)
     const rowData = [
-      new Date(),
-      data.codigo_reserva || data['codigo_reserva'] || '',
-      data.name || data['name'] || data.email_cliente || data['email_cliente'] || '',
-      data.email_cliente || data['email_cliente'] || '',
-      data.fecha || data['fecha'] || '',
-      data.hora || data['hora'] || '',
-      data.origen || data['origen'] || '',
-      data.destino || data['destino'] || '',
-      data.pasajeros || data['pasajeros'] || '',
-      data.telefono || data['telefono'] || '',
-      data.equipaje || data['equipaje'] || '',
-      data.maletas || data['maletas'] || '',
-      data.origen_completo || data['origen_completo'] || data.origen || data['origen'] || '',
-      data.destino_completo || data['destino_completo'] || data.destino || data['destino'] || ''
+      new Date(), // Fecha/Hora de Registro
+      data.codigo_reserva || data['codigo_reserva'] || '', // Código de Reserva
+      data.name || data['name'] || data.email_cliente || data['email_cliente'] || '', // Nombre del Cliente
+      data.email_cliente || data['email_cliente'] || '', // Email del Cliente
+      data.fecha || data['fecha'] || '', // Fecha del Viaje
+      data.hora || data['hora'] || '', // Hora del Viaje
+      data.origen || data['origen'] || '', // Origen
+      data.destino || data['destino'] || '', // Destino
+      data.pasajeros || data['pasajeros'] || '', // Pasajeros
+      data.telefono || data['telefono'] || '', // Teléfono
+      data.equipaje || data['equipaje'] || '', // Equipaje
+      data.maletas || data['maletas'] || '', // Maletas
+      data.origen_completo || data['origen_completo'] || data.origen || data['origen'] || '', // Origen Completo
+      data.destino_completo || data['destino_completo'] || data.destino || data['destino'] || '' // Destino Completo
     ];
     
     // Guardar en la hoja de cálculo
     sheet.appendRow(rowData);
     
-    console.log('Datos guardados exitosamente');
+    console.log('Datos guardados exitosamente:', JSON.stringify(rowData));
     
     // Enviar correos de confirmación
     try {
@@ -97,6 +100,7 @@ function doPost(e) {
       console.log('Correos de confirmación enviados exitosamente');
     } catch (emailError) {
       console.error('Error al enviar correos de confirmación:', emailError);
+      // No detener el proceso por errores de correo
     }
     
     // Devolver respuesta
@@ -144,14 +148,14 @@ Hola,
 Gracias por reservar con Altior Traslados. A continuación te confirmamos los detalles de tu reserva:
 
 Código de Reserva: ${codigoReserva}
-Fecha del Viaje: ${data.fecha || data['fecha'] || ''}
-Hora del Viaje: ${data.hora || data['hora'] || ''}
-Origen: ${data.origen_completo || data['origen_completo'] || data.origen || data['origen'] || ''}
-Destino: ${data.destino_completo || data['destino_completo'] || data.destino || data['destino'] || ''}
-Pasajeros: ${data.pasajeros || data['pasajeros'] || ''}
-Teléfono: ${data.telefono || data['telefono'] || ''}
-Equipaje: ${data.equipaje || data['equipaje'] || ''}
-Maletas: ${data.maletas || data['maletas'] || ''}
+Fecha del Viaje: ${data.fecha || data['fecha'] || 'No especificada'}
+Hora del Viaje: ${data.hora || data['hora'] || 'No especificada'}
+Origen: ${data.origen_completo || data['origen_completo'] || data.origen || data['origen'] || 'No especificado'}
+Destino: ${data.destino_completo || data['destino_completo'] || data.destino || data['destino'] || 'No especificado'}
+Pasajeros: ${data.pasajeros || data['pasajeros'] || 'No especificado'}
+Teléfono: ${data.telefono || data['telefono'] || 'No especificado'}
+Equipaje: ${data.equipaje || data['equipaje'] || 'No especificado'}
+Maletas: ${data.maletas || data['maletas'] || 'No especificado'}
 
 Nuestro equipo se pondrá en contacto contigo para confirmar los últimos detalles de tu traslado.
 
@@ -170,25 +174,29 @@ El equipo de Altior Traslados
 Nueva reserva recibida:
 
 Código de Reserva: ${codigoReserva}
-Nombre del Cliente: ${data.name || data['name'] || data.email_cliente || data['email_cliente'] || ''}
+Nombre del Cliente: ${data.name || data['name'] || data.email_cliente || data['email_cliente'] || 'No especificado'}
 Email del Cliente: ${clienteEmail}
-Fecha del Viaje: ${data.fecha || data['fecha'] || ''}
-Hora del Viaje: ${data.hora || data['hora'] || ''}
-Origen: ${data.origen_completo || data['origen_completo'] || data.origen || data['origen'] || ''}
-Destino: ${data.destino_completo || data['destino_completo'] || data.destino || data['destino'] || ''}
-Pasajeros: ${data.pasajeros || data['pasajeros'] || ''}
-Teléfono: ${data.telefono || data['telefono'] || ''}
-Equipaje: ${data.equipaje || data['equipaje'] || ''}
-Maletas: ${data.maletas || data['maletas'] || ''}
+Fecha del Viaje: ${data.fecha || data['fecha'] || 'No especificada'}
+Hora del Viaje: ${data.hora || data['hora'] || 'No especificada'}
+Origen: ${data.origen_completo || data['origen_completo'] || data.origen || data['origen'] || 'No especificado'}
+Destino: ${data.destino_completo || data['destino_completo'] || data.destino || data['destino'] || 'No especificado'}
+Pasajeros: ${data.pasajeros || data['pasajeros'] || 'No especificado'}
+Teléfono: ${data.telefono || data['telefono'] || 'No especificado'}
+Equipaje: ${data.equipaje || data['equipaje'] || 'No especificado'}
+Maletas: ${data.maletas || data['maletas'] || 'No especificado'}
 
 Datos guardados en la hoja de cálculo.
   `;
   
   // Enviar email al cliente
+  console.log('Enviando email al cliente:', clienteEmail);
   GmailApp.sendEmail(clienteEmail, clienteSubject, clienteBody);
+  console.log('Email enviado al cliente exitosamente');
   
   // Enviar email a la empresa
+  console.log('Enviando email a la empresa:', empresaEmail);
   GmailApp.sendEmail(empresaEmail, empresaSubject, empresaBody);
+  console.log('Email enviado a la empresa exitosamente');
   
   console.log('Correos enviados a:', clienteEmail, 'y', empresaEmail);
 }
