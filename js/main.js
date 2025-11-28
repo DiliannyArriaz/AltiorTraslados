@@ -646,10 +646,60 @@ document.addEventListener('DOMContentLoaded', function() {
             // Completar los campos ocultos del formulario
             document.getElementById('codigo_reserva').value = codigoReserva;
             document.getElementById('name').value = emailCliente;
+            document.getElementById('email_cliente').value = emailCliente;
             document.getElementById('origen_completo').value = origen;
             document.getElementById('destino_completo').value = destino;
             document.getElementById('equipaje_hidden').value = tieneEquipaje ? 'Sí' : 'No';
             document.getElementById('maletas_hidden').value = maletas;
+            document.getElementById('pasajeros_hidden').value = pasajeros;
+            document.getElementById('telefono_hidden').value = telefono;
+            
+            // También necesitamos pasar la fecha y hora formateadas
+            // Para mantener compatibilidad con el formato anterior
+            const fechaFormateada = formatDate(fecha);
+            const origenSimple = origenInput.value;
+            const destinoSimple = destinoInput.value;
+            
+            // Crear campos ocultos adicionales para fecha y hora
+            let fechaHidden = document.getElementById('fecha_hidden');
+            if (!fechaHidden) {
+                fechaHidden = document.createElement('input');
+                fechaHidden.type = 'hidden';
+                fechaHidden.id = 'fecha_hidden';
+                fechaHidden.name = 'fecha';
+                bookingForm.appendChild(fechaHidden);
+            }
+            fechaHidden.value = fechaFormateada;
+            
+            let horaHidden = document.getElementById('hora_hidden');
+            if (!horaHidden) {
+                horaHidden = document.createElement('input');
+                horaHidden.type = 'hidden';
+                horaHidden.id = 'hora_hidden';
+                horaHidden.name = 'hora';
+                bookingForm.appendChild(horaHidden);
+            }
+            horaHidden.value = hora;
+            
+            let origenHidden = document.getElementById('origen_hidden');
+            if (!origenHidden) {
+                origenHidden = document.createElement('input');
+                origenHidden.type = 'hidden';
+                origenHidden.id = 'origen_hidden';
+                origenHidden.name = 'origen';
+                bookingForm.appendChild(origenHidden);
+            }
+            origenHidden.value = origenSimple;
+            
+            let destinoHidden = document.getElementById('destino_hidden');
+            if (!destinoHidden) {
+                destinoHidden = document.createElement('input');
+                destinoHidden.type = 'hidden';
+                destinoHidden.id = 'destino_hidden';
+                destinoHidden.name = 'destino';
+                bookingForm.appendChild(destinoHidden);
+            }
+            destinoHidden.value = destinoSimple;
             
             // Mostrar popup de confirmación de reserva inmediatamente
             showReservationPopup(codigoReserva, emailCliente);
