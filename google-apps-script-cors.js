@@ -1,4 +1,4 @@
-// Google Apps Script con manejo correcto de diferentes tipos de datos
+// Google Apps Script con manejo correcto de diferentes tipos de datos y envío de correos
 // Copia este código en el Editor de Google Apps Script
 
 function doGet(e) {
@@ -91,6 +91,14 @@ function doPost(e) {
     
     console.log('Datos guardados exitosamente');
     
+    // Enviar correos de confirmación
+    try {
+      sendConfirmationEmails(data);
+      console.log('Correos de confirmación enviados exitosamente');
+    } catch (emailError) {
+      console.error('Error al enviar correos de confirmación:', emailError);
+    }
+    
     // Devolver respuesta
     const output = ContentService.createTextOutput(JSON.stringify({
       status: "success", 
@@ -116,6 +124,73 @@ function doPost(e) {
     
     return output;
   }
+}
+
+// Función para enviar correos de confirmación
+function sendConfirmationEmails(data) {
+  const clienteEmail = data.email_cliente || data['email_cliente'] || '';
+  const codigoReserva = data.codigo_reserva || data['codigo_reserva'] || '';
+  
+  if (!clienteEmail) {
+    console.log('No se puede enviar correo: no se proporcionó email del cliente');
+    return;
+  }
+  
+  // Email para el cliente
+  const clienteSubject = `Confirmación de Reserva - ${codigoReserva}`;
+  const clienteBody = `
+Hola,
+
+Gracias por reservar con Altior Traslados. A continuación te confirmamos los detalles de tu reserva:
+
+Código de Reserva: ${codigoReserva}
+Fecha del Viaje: ${data.fecha || data['fecha'] || ''}
+Hora del Viaje: ${data.hora || data['hora'] || ''}
+Origen: ${data.origen_completo || data['origen_completo'] || data.origen || data['origen'] || ''}
+Destino: ${data.destino_completo || data['destino_completo'] || data.destino || data['destino'] || ''}
+Pasajeros: ${data.pasajeros || data['pasajeros'] || ''}
+Teléfono: ${data.telefono || data['telefono'] || ''}
+Equipaje: ${data.equipaje || data['equipaje'] || ''}
+Maletas: ${data.maletas || data['maletas'] || ''}
+
+Nuestro equipo se pondrá en contacto contigo para confirmar los últimos detalles de tu traslado.
+
+Si necesitas hacer algún cambio o cancelar tu reserva, puedes responder a este correo o usar el formulario de cancelación en nuestro sitio web.
+
+¡Gracias por confiar en Altior Traslados!
+
+Atentamente,
+El equipo de Altior Traslados
+  `;
+  
+  // Email para la empresa (tu email)
+  const empresaEmail = "altior.traslados@gmail.com"; // Cambia esto por tu email real
+  const empresaSubject = `Nueva Reserva - ${codigoReserva}`;
+  const empresaBody = `
+Nueva reserva recibida:
+
+Código de Reserva: ${codigoReserva}
+Nombre del Cliente: ${data.name || data['name'] || data.email_cliente || data['email_cliente'] || ''}
+Email del Cliente: ${clienteEmail}
+Fecha del Viaje: ${data.fecha || data['fecha'] || ''}
+Hora del Viaje: ${data.hora || data['hora'] || ''}
+Origen: ${data.origen_completo || data['origen_completo'] || data.origen || data['origen'] || ''}
+Destino: ${data.destino_completo || data['destino_completo'] || data.destino || data['destino'] || ''}
+Pasajeros: ${data.pasajeros || data['pasajeros'] || ''}
+Teléfono: ${data.telefono || data['telefono'] || ''}
+Equipaje: ${data.equipaje || data['equipaje'] || ''}
+Maletas: ${data.maletas || data['maletas'] || ''}
+
+Datos guardados en la hoja de cálculo.
+  `;
+  
+  // Enviar email al cliente
+  GmailApp.sendEmail(clienteEmail, clienteSubject, clienteBody);
+  
+  // Enviar email a la empresa
+  GmailApp.sendEmail(empresaEmail, empresaSubject, empresaBody);
+  
+  console.log('Correos enviados a:', clienteEmail, 'y', empresaEmail);
 }
 
 // Función para parsear datos de formulario
