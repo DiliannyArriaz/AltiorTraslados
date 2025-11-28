@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test de Reserva</title>
+</head>
+<body>
+    <h1>Test de Envío de Reserva</h1>
+    <button onclick="testReserva()">Enviar Reserva de Prueba</button>
+    <div id="resultado"></div>
+
+    <script>
+        async function testReserva() {
+            const resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.innerHTML = 'Enviando...';
+            
+            // Datos de prueba
+            const datosPrueba = {
+                codigo_reserva: "TEST-12345",
+                name: "test@example.com",
+                email_cliente: "test@example.com",
+                fecha: "28 de noviembre de 2025",
+                hora: "18:00",
+                origen: "Test Origen",
+                destino: "Test Destino",
+                pasajeros: "2",
+                telefono: "1122334455",
+                equipaje: "Sí",
+                maletas: "3",
+                origen_completo: "Dirección completa de origen",
+                destino_completo: "Dirección completa de destino"
+            };
+            
+            try {
+                console.log('Enviando datos de prueba:', datosPrueba);
+                
+                // URL del script de Google Apps Script
+                const scriptUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://script.google.com/macros/s/AKfycbysoBEGQiTf3Gpv886Nw_UBPVGvK0-j_bug3CGuf5J8PZHdMKmtziU6wGJjBi9lIAz1Mw/exec');
+                
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datosPrueba)
+                });
+                
+                console.log('Respuesta:', response.status, response.statusText);
+                
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log('Datos de respuesta:', responseData);
+                    resultadoDiv.innerHTML = `
+                        <h2>Éxito</h2>
+                        <p>Estado: ${response.status} ${response.statusText}</p>
+                        <p>Respuesta: ${JSON.stringify(responseData)}</p>
+                    `;
+                } else {
+                    const errorText = await response.text();
+                    console.error('Error:', errorText);
+                    resultadoDiv.innerHTML = `
+                        <h2>Error</h2>
+                        <p>Estado: ${response.status} ${response.statusText}</p>
+                        <p>Detalles: ${errorText}</p>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error al enviar:', error);
+                resultadoDiv.innerHTML = `
+                    <h2>Error de red</h2>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

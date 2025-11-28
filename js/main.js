@@ -145,7 +145,7 @@ async function saveReservation(datosReserva) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(datosFormateados)
+            body: JSON.stringify(datosFormateados)  // Usar datosFormateados en lugar de datosReserva
         });
         
         console.log('Respuesta del servidor Google Apps Script:', response.status, response.statusText);
