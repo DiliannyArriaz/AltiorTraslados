@@ -284,10 +284,17 @@ async function determinarZona(direccion, cachedDetails = null) {
         return zonaTexto;
     }
 
-    // 4. Si no se encuentra por texto, buscar con Nominatim a través de proxy CORS
+    // 4. Si no se encuentra por texto, buscar con Nominatim a través de proxy CORS con fallback
     // Implementar retry con backoff exponencial para manejar errores de red
-    const maxRetries = 2; // Reducir intentos para evitar límites de tasa
+    const maxRetries = 3; // Aumentar intentos para mejorar la fiabilidad
     const baseDelay = 2000; // Aumentar tiempo de espera inicial a 2 segundos
+    
+    // Lista de proxies alternativos
+    const proxies = [
+        'https://api.allorigins.win/raw?url=',
+        'https://corsproxy.io/?',
+        'https://api.codetabs.com/v1/proxy?quest='
+    ];
     
     for (let attempt = 0; attempt < maxRetries; attempt++) {
         try {
@@ -296,7 +303,7 @@ async function determinarZona(direccion, cachedDetails = null) {
                 await new Promise(resolve => setTimeout(resolve, 500));
             }
             
-            // Usar proxy CORS para evitar problemas de cross-origin
+            // Construir la URL de Nominatim
             const nominatimUrl = `https://nominatim.openstreetmap.org/search?` +
                 `q=${encodeURIComponent(direccion)}&` +
                 `format=json&` +
@@ -304,17 +311,37 @@ async function determinarZona(direccion, cachedDetails = null) {
                 `limit=1&` +
                 `addressdetails=1`;
             
-            // Usar proxy CORS
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(nominatimUrl)}`;
+            // Probar diferentes proxies en orden
+            let response;
+            let lastError;
             
-            const response = await fetch(proxyUrl, {
-                headers: {
-                    'User-Agent': 'Altior Traslados/1.0 (contacto@altiortraslados.com)'
+            for (const proxy of proxies) {
+                try {
+                    const proxyUrl = proxy + encodeURIComponent(nominatimUrl);
+                    console.log(`Intentando con proxy: ${proxy}`);
+                    
+                    response = await fetch(proxyUrl, {
+                        headers: {
+                            'User-Agent': 'Altior Traslados/1.0 (contacto@altiortraslados.com)'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        console.log(`Éxito con proxy: ${proxy}`);
+                        break;
+                    } else {
+                        console.log(`Error con proxy ${proxy}: ${response.status}`);
+                        lastError = new Error(`HTTP error! status: ${response.status}`);
+                    }
+                } catch (proxyError) {
+                    console.log(`Error con proxy ${proxy}:`, proxyError);
+                    lastError = proxyError;
                 }
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            // Si ninguno de los proxies funcionó, lanzar el último error
+            if (!response || !response.ok) {
+                throw lastError || new Error('Todos los proxies fallaron');
             }
 
             const results = await response.json();
@@ -911,17 +938,44 @@ function setupAutocomplete(inputId, suggestionsId) {
                         `limit=5&` +  // Pedir solo 5 resultados directamente
                         `addressdetails=1`;
                     
-                    // Usar proxy CORS para evitar problemas de cross-origin
-                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(nominatimUrl)}`;
+                    // Lista de proxies alternativos
+                    const proxies = [
+                        'https://api.allorigins.win/raw?url=',
+                        'https://corsproxy.io/?',
+                        'https://api.codetabs.com/v1/proxy?quest='
+                    ];
                     
-                    const response = await fetch(proxyUrl, {
-                        headers: {
-                            'User-Agent': 'Altior Traslados/1.0 (contacto@altiortraslados.com)'
+                    // Probar diferentes proxies en orden
+                    let response;
+                    let lastError;
+                    
+                    for (const proxy of proxies) {
+                        try {
+                            const proxyUrl = proxy + encodeURIComponent(nominatimUrl);
+                            console.log(`Intentando con proxy para autocompletado: ${proxy}`);
+                            
+                            response = await fetch(proxyUrl, {
+                                headers: {
+                                    'User-Agent': 'Altior Traslados/1.0 (contacto@altiortraslados.com)'
+                                }
+                            });
+                            
+                            if (response.ok) {
+                                console.log(`Éxito con proxy para autocompletado: ${proxy}`);
+                                break;
+                            } else {
+                                console.log(`Error con proxy ${proxy} para autocompletado: ${response.status}`);
+                                lastError = new Error(`HTTP error! status: ${response.status}`);
+                            }
+                        } catch (proxyError) {
+                            console.log(`Error con proxy ${proxy} para autocompletado:`, proxyError);
+                            lastError = proxyError;
                         }
-                    });
+                    }
                     
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                    // Si ninguno de los proxies funcionó, lanzar el último error
+                    if (!response || !response.ok) {
+                        throw lastError || new Error('Todos los proxies fallaron para autocompletado');
                     }
                     
                     osmResults = await response.json();
