@@ -142,7 +142,7 @@ async function sendToTelegram(datos) {
         console.log('Datos formateados para Telegram:', telegramData);
         
         // Usamos también un proxy para la llamada a Telegram
-        const telegramUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://script.google.com/macros/s/AKfycbz-fY8zI7hHgsJu8EhZuEgowaKqnxIDNn_tY3xx41C2eUT7ac4gO45YaAAjYzVD4Me4Gw/exec');
+        const telegramUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://script.google.com/macros/s/AKfycbysoBEGQiTf3Gpv886Nw_UBPVGvK0-j_bug3CGuf5J8PZHdMKmtziU6wGJjBi9lIAz1Mw/exec');
         
         const response = await fetch(telegramUrl, {
             method: 'POST',
