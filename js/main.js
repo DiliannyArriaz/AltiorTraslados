@@ -115,54 +115,6 @@ async function sendReservationEmails(datos) {
     }
 }
 
-// Función para enviar datos a Telegram
-async function sendToTelegram(datos) {
-    try {
-        console.log('Enviando datos a Telegram:', datos);
-        
-        // Datos formateados para enviar a Telegram
-        const telegramData = {
-            name: datos.email_cliente || "No especificado",
-            email: datos.email_cliente || "No especificado",
-            date: `${datos.fecha || 'No especificado'} ${datos.hora || ''}`.trim() || "No especificado",
-            message: `Nueva reserva recibida:
-• Código: ${datos.codigo_reserva}
-• Origen: ${datos.origen || datos.origen_completo || 'No especificado'}
-• Destino: ${datos.destino || datos.destino_completo || 'No especificado'}
-• Pasajeros: ${datos.pasajeros || 'No especificado'}
-• Equipaje: ${datos.maletas || datos.equipaje || 'No especificado'}
-• Teléfono: ${datos.telefono || 'No especificado'}`
-        };
-        
-        console.log('Datos formateados para Telegram:', telegramData);
-        
-        // Usamos también un proxy para la llamada a Telegram
-        const telegramUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://script.google.com/macros/s/AKfycbysoBEGQiTf3Gpv886Nw_UBPVGvK0-j_bug3CGuf5J8PZHdMKmtziU6wGJjBi9lIAz1Mw/exec');
-
-        
-        const response = await fetch(telegramUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(telegramData)
-        });
-        
-        console.log('Respuesta de Telegram:', response.status, response.statusText);
-        
-        if (response.ok) {
-            console.log('✅ Notificación enviada a Telegram exitosamente');
-            return true;
-        } else {
-            console.error('❌ Error al enviar notificación a Telegram:', response.status);
-            return false;
-        }
-    } catch (error) {
-        console.error('❌ Error al enviar notificación a Telegram:', error);
-        return false;
-    }
-}
-
 // Función para guardar la reserva usando Google Sheets
 async function saveReservation(datosReserva) {
     try {
@@ -184,6 +136,8 @@ async function saveReservation(datosReserva) {
             origen_completo: datosReserva.origen_completo,
             destino_completo: datosReserva.destino_completo
         };
+        
+        console.log('Datos formateados para enviar:', datosFormateados);
         
         // Enviar datos a Google Sheets usando Google Apps Script a través de proxy CORS
         const response = await fetch(RESERVAS_CONFIG.scriptUrl, {
@@ -208,15 +162,25 @@ async function saveReservation(datosReserva) {
         try {
             const responseData = await response.json();
             console.log('Datos de respuesta del servidor:', responseData);
+            
+            // Verificar si la respuesta indica éxito
+            if (responseData.status === "success") {
+                console.log('Reserva enviada exitosamente a Google Sheets');
+                return { success: true };
+            } else {
+                console.error('Error en la respuesta del servidor:', responseData.message);
+                throw new Error(`Error del servidor: ${responseData.message}`);
+            }
         } catch (jsonError) {
             // Si no es JSON, leer como texto
             const responseText = await response.text();
             console.log('Respuesta del servidor (texto):', responseText);
+            
+            // Asumir éxito si la respuesta no es JSON pero la solicitud fue exitosa
+            console.log('Reserva probablemente enviada exitosamente a Google Sheets (respuesta no JSON)');
+            return { success: true };
         }
         
-        console.log('Reserva enviada exitosamente a Google Sheets');
-        
-        return { success: true };
     } catch (error) {
         console.error('Error guardando reserva:', error);
         
@@ -705,13 +669,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // Inicializar autocompletado cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
     initOSMAutocomplete();
-    // Verificar la conexión con Airtable
-    testAirtableConnection().then(success => {
-        if (success) {
-            // Si la conexión es exitosa, hacer una prueba de escritura
-            testAirtableWrite();
-        }
-    });
 });
 
 // Función para generar código de reserva único
