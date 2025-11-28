@@ -2,7 +2,7 @@
 const RESERVAS_CONFIG = {
     useGoogleSheets: true,
     // Usamos un proxy CORS para evitar problemas de cross-origin
-    scriptUrl: 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://script.google.com/macros/s/AKfycbyfcBmgJ_HGH9up8S0knKpAdL2xqZ1AKXSqqKddm4WS_dxPG1T5P944AiWdvCcYF2qD7w/exec')
+    scriptUrl: 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://script.google.com/macros/s/AKfycbye7rk0Ym7xvSlIpyr0vwIrADjJY_f4INHwm7PJuncpUuYNU3j8NKMhvr1Yx5G-L8pnQw/exec')
 };
 
 // Verificar si el sistema de reservas está configurado
