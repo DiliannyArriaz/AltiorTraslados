@@ -262,7 +262,7 @@ async function determinarZona(direccion, cachedDetails = null) {
         }
     }
 
-    // 2. Intentar extraer CP directamente del texto
+    // 2. Intentar extraer CP directamente del texto (método principal y más rápido)
     // Patrón mejorado para manejar códigos postales como "C1426", "C 1426" y "C1426AGX"
     const cpRegex = /\b(?:C\s*)?(\d{4})(?:[a-zA-Z]*)?\b/gi;
     let match;
@@ -278,20 +278,26 @@ async function determinarZona(direccion, cachedDetails = null) {
         }
     }
 
-    // 3. Intentar con coincidencias de texto
+    // 3. Intentar con coincidencias de texto (método secundario)
     const zonaTexto = determinarZonaPorTexto(direccion);
     if (zonaTexto) {
         return zonaTexto;
     }
 
-    // 4. Si no se encuentra por texto, buscar con Nominatim a través de proxy CORS con fallback
+    // 4. Solo como último recurso, buscar con Nominatim a través de proxy CORS con fallback
     // Implementar retry con backoff exponencial para manejar errores de red
-    const maxRetries = 3; // Aumentar intentos para mejorar la fiabilidad
+    const maxRetries = 2; // Reducir intentos para evitar límites de tasa
     const baseDelay = 2000; // Aumentar tiempo de espera inicial a 2 segundos
+    
+    // Solo intentar con Nominatim si la dirección tiene al menos 6 caracteres
+    // para evitar llamadas innecesarias
+    if (direccion.length < 6) {
+        console.log('Dirección muy corta para buscar en Nominatim');
+        return null;
+    }
     
     // Lista de proxies alternativos
     const proxies = [
-        'https://api.allorigins.win/raw?url=',
         'https://corsproxy.io/?',
         'https://api.codetabs.com/v1/proxy?quest='
     ];
