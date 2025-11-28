@@ -1,7 +1,7 @@
 // Configuración de reservas (usando Google Sheets como sistema principal)
 const RESERVAS_CONFIG = {
     useGoogleSheets: true,
-    scriptUrl: 'https://script.google.com/macros/s/AKfycbwJVd1vDSvmAMKc5pFkCrd5ot_tDDAsyvapGsWSJAem59qraFp-xpVfbM6IVy_O9MtNvg/exec'
+    scriptUrl: 'https://script.google.com/macros/s/AKfycbyfcBmgJ_HGH9up8S0knKpAdL2xqZ1AKXSqqKddm4WS_dxPG1T5P944AiWdvCcYF2qD7w/exec'
 };
 
 // Verificar si el sistema de reservas está configurado
