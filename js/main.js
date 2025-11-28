@@ -648,6 +648,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('name').value = emailCliente;
             document.getElementById('origen_completo').value = origen;
             document.getElementById('destino_completo').value = destino;
+            document.getElementById('equipaje_hidden').value = tieneEquipaje ? 'Sí' : 'No';
+            document.getElementById('maletas_hidden').value = maletas;
             
             // Mostrar popup de confirmación de reserva inmediatamente
             showReservationPopup(codigoReserva, emailCliente);
