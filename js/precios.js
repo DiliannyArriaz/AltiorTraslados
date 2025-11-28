@@ -284,15 +284,15 @@ async function determinarZona(direccion, cachedDetails = null) {
         return zonaTexto;
     }
 
-    // 4. Solo como último recurso, buscar con Nominatim a través de proxy CORS con fallback
+    // 4. Solo como último recurso, buscar con LocationIQ a través de proxy CORS con fallback
     // Implementar retry con backoff exponencial para manejar errores de red
     const maxRetries = 2; // Reducir intentos para evitar límites de tasa
     const baseDelay = 2000; // Aumentar tiempo de espera inicial a 2 segundos
     
-    // Solo intentar con Nominatim si la dirección tiene al menos 6 caracteres
+    // Solo intentar con LocationIQ si la dirección tiene al menos 4 caracteres
     // para evitar llamadas innecesarias
-    if (direccion.length < 6) {
-        console.log('Dirección muy corta para buscar en Nominatim');
+    if (direccion.length < 4) {
+        console.log('Dirección muy corta para buscar en LocationIQ');
         return null;
     }
     
@@ -309,13 +309,8 @@ async function determinarZona(direccion, cachedDetails = null) {
                 await new Promise(resolve => setTimeout(resolve, 500));
             }
             
-            // Construir la URL de Nominatim
-            const nominatimUrl = `https://nominatim.openstreetmap.org/search?` +
-                `q=${encodeURIComponent(direccion)}&` +
-                `format=json&` +
-                `countrycodes=AR&` +
-                `limit=1&` +
-                `addressdetails=1`;
+            // Construir la URL de LocationIQ
+            const locationIQUrl = `https://api.locationiq.com/v1/search.php?key=pk.6234567b586b647771556a706d6e446e626a676e64694c6e626a676e&q=${encodeURIComponent(direccion)}&format=json&countrycodes=AR&limit=1`;
             
             // Probar diferentes proxies en orden
             let response;
@@ -323,39 +318,47 @@ async function determinarZona(direccion, cachedDetails = null) {
             
             for (const proxy of proxies) {
                 try {
-                    const proxyUrl = proxy + encodeURIComponent(nominatimUrl);
-                    console.log(`Intentando con proxy: ${proxy}`);
+                    const proxyUrl = proxy + encodeURIComponent(locationIQUrl);
+                    console.log(`Intentando con proxy para LocationIQ (determinar zona): ${proxy}`);
                     
-                    response = await fetch(proxyUrl, {
-                        headers: {
-                            'User-Agent': 'Altior Traslados/1.0 (contacto@altiortraslados.com)'
-                        }
-                    });
+                    response = await fetch(proxyUrl);
                     
                     if (response.ok) {
-                        console.log(`Éxito con proxy: ${proxy}`);
+                        console.log(`Éxito con proxy para LocationIQ (determinar zona): ${proxy}`);
                         break;
                     } else {
-                        console.log(`Error con proxy ${proxy}: ${response.status}`);
+                        console.log(`Error con proxy ${proxy} para LocationIQ (determinar zona): ${response.status}`);
                         lastError = new Error(`HTTP error! status: ${response.status}`);
                     }
                 } catch (proxyError) {
-                    console.log(`Error con proxy ${proxy}:`, proxyError);
+                    console.log(`Error con proxy ${proxy} para LocationIQ (determinar zona):`, proxyError);
                     lastError = proxyError;
                 }
             }
             
             // Si ninguno de los proxies funcionó, lanzar el último error
             if (!response || !response.ok) {
-                throw lastError || new Error('Todos los proxies fallaron');
+                throw lastError || new Error('Todos los proxies fallaron para LocationIQ (determinar zona)');
             }
 
             const results = await response.json();
 
             if (results && results.length > 0) {
                 const result = results[0];
-                const address = result.address;
-                console.log('Nominatim result:', address);
+                const address = {
+                    house_number: result.address?.house_number,
+                    road: result.address?.road,
+                    neighbourhood: result.address?.neighbourhood,
+                    suburb: result.address?.suburb,
+                    city: result.address?.city,
+                    town: result.address?.town,
+                    municipality: result.address?.municipality,
+                    county: result.address?.county,
+                    state: result.address?.state,
+                    postcode: result.address?.postcode,
+                    country: result.address?.country
+                };
+                console.log('LocationIQ result:', address);
 
                 const zona = determinarZonaFromDetails(address);
                 if (zona) return zona;
@@ -364,7 +367,7 @@ async function determinarZona(direccion, cachedDetails = null) {
             // Si llegamos aquí, significa que la llamada fue exitosa pero no se encontró zona
             break;
         } catch (error) {
-            console.error(`Error buscando dirección en Nominatim (intento ${attempt + 1}/${maxRetries}):`, error);
+            console.error(`Error buscando dirección en LocationIQ (intento ${attempt + 1}/${maxRetries}):`, error);
             
             // Si es el último intento, retornar null
             if (attempt === maxRetries - 1) {
