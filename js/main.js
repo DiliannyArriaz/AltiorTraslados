@@ -181,9 +181,24 @@ async function saveReservation(datosReserva) {
             body: JSON.stringify(datosReserva)
         });
         
+        console.log('Respuesta del servidor Google Apps Script:', response.status, response.statusText);
+        console.log('URL utilizada:', RESERVAS_CONFIG.scriptUrl);
+        
         // Verificar si la respuesta es exitosa
         if (!response.ok) {
-            throw new Error(`Error al enviar datos: ${response.status} ${response.statusText}`);
+            const errorText = await response.text();
+            console.error('Error detallado del servidor:', errorText);
+            throw new Error(`Error al enviar datos: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+        
+        // Intentar leer la respuesta como JSON
+        try {
+            const responseData = await response.json();
+            console.log('Datos de respuesta del servidor:', responseData);
+        } catch (jsonError) {
+            // Si no es JSON, leer como texto
+            const responseText = await response.text();
+            console.log('Respuesta del servidor (texto):', responseText);
         }
         
         console.log('Reserva enviada exitosamente a Google Sheets');
