@@ -2,6 +2,13 @@
 // Copia este código en el Editor de Google Apps Script
 
 function doGet(e) {
+  // Configurar encabezados CORS para solicitudes OPTIONS
+  if (e.parameter && e.parameter.action === 'options') {
+    const output = ContentService.createTextOutput('');
+    output.setMimeType(ContentService.MimeType.TEXT);
+    return output;
+  }
+  
   // Página de confirmación normal
   const output = ContentService.createTextOutput(`
     <html>
@@ -103,7 +110,7 @@ function doPost(e) {
       // No detener el proceso por errores de correo
     }
     
-    // Devolver respuesta
+    // Devolver respuesta con encabezados CORS
     const output = ContentService.createTextOutput(JSON.stringify({
       status: "success", 
       message: "Datos guardados correctamente",
@@ -119,7 +126,7 @@ function doPost(e) {
   } catch (error) {
     console.error('Error en doPost:', error);
     
-    // Devolver error
+    // Devolver error con encabezados CORS
     const output = ContentService.createTextOutput(JSON.stringify({
       status: "error",
       message: error.toString()
@@ -190,13 +197,23 @@ Datos guardados en la hoja de cálculo.
   
   // Enviar email al cliente
   console.log('Enviando email al cliente:', clienteEmail);
-  GmailApp.sendEmail(clienteEmail, clienteSubject, clienteBody);
-  console.log('Email enviado al cliente exitosamente');
+  try {
+    GmailApp.sendEmail(clienteEmail, clienteSubject, clienteBody);
+    console.log('Email enviado al cliente exitosamente');
+  } catch (error) {
+    console.error('Error al enviar email al cliente:', error);
+    throw error;
+  }
   
   // Enviar email a la empresa
   console.log('Enviando email a la empresa:', empresaEmail);
-  GmailApp.sendEmail(empresaEmail, empresaSubject, empresaBody);
-  console.log('Email enviado a la empresa exitosamente');
+  try {
+    GmailApp.sendEmail(empresaEmail, empresaSubject, empresaBody);
+    console.log('Email enviado a la empresa exitosamente');
+  } catch (error) {
+    console.error('Error al enviar email a la empresa:', error);
+    throw error;
+  }
   
   console.log('Correos enviados a:', clienteEmail, 'y', empresaEmail);
 }
