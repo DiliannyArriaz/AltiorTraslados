@@ -167,13 +167,30 @@ async function saveReservation(datosReserva) {
     try {
         console.log('Guardando reserva con datos:', datosReserva);
         
+        // Formatear los datos para que coincidan con el script de Google Apps Script
+        const datosFormateados = {
+            codigo_reserva: datosReserva.codigo_reserva,
+            name: datosReserva.email_cliente, // Usar email como nombre ya que no tenemos nombre separado
+            email_cliente: datosReserva.email_cliente,
+            fecha: datosReserva.fecha,
+            hora: datosReserva.hora,
+            origen: datosReserva.origen,
+            destino: datosReserva.destino,
+            pasajeros: datosReserva.pasajeros,
+            telefono: datosReserva.telefono,
+            equipaje: datosReserva.equipaje,
+            maletas: datosReserva.maletas,
+            origen_completo: datosReserva.origen_completo,
+            destino_completo: datosReserva.destino_completo
+        };
+        
         // Enviar datos a Google Sheets usando Google Apps Script a través de proxy CORS
         const response = await fetch(RESERVAS_CONFIG.scriptUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(datosReserva)
+            body: JSON.stringify(datosFormateados)
         });
         
         console.log('Respuesta del servidor Google Apps Script:', response.status, response.statusText);
