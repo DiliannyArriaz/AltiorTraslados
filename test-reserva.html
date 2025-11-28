@@ -6,9 +6,13 @@
 <body>
     <h1>Test de Envío de Reserva</h1>
     <button onclick="testReserva()">Enviar Reserva de Prueba</button>
+    <button onclick="testReservaConProxy()">Enviar Reserva de Prueba (con proxy)</button>
     <div id="resultado"></div>
 
     <script>
+        // URL del script de Google Apps Script
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbysoBEGQiTf3Gpv886Nw_UBPVGvK0-j_bug3CGuf5J8PZHdMKmtziU6wGJjBi9lIAz1Mw/exec';
+        
         async function testReserva() {
             const resultadoDiv = document.getElementById('resultado');
             resultadoDiv.innerHTML = 'Enviando...';
@@ -33,10 +37,7 @@
             try {
                 console.log('Enviando datos de prueba:', datosPrueba);
                 
-                // URL del script de Google Apps Script
-                const scriptUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://script.google.com/macros/s/AKfycbysoBEGQiTf3Gpv886Nw_UBPVGvK0-j_bug3CGuf5J8PZHdMKmtziU6wGJjBi9lIAz1Mw/exec');
-                
-                const response = await fetch(scriptUrl, {
+                const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -67,6 +68,85 @@
                 console.error('Error al enviar:', error);
                 resultadoDiv.innerHTML = `
                     <h2>Error de red</h2>
+                    <p>${error.message}</p>
+                    <p>Probando con proxy...</p>
+                `;
+                
+                // Si falla, intentar con proxy
+                setTimeout(testReservaConProxy, 1000);
+            }
+        }
+        
+        async function testReservaConProxy() {
+            const resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.innerHTML = 'Enviando con proxy...';
+            
+            // Datos de prueba
+            const datosPrueba = {
+                codigo_reserva: "TEST-PROXY-67890",
+                name: "test-proxy@example.com",
+                email_cliente: "test-proxy@example.com",
+                fecha: "28 de noviembre de 2025",
+                hora: "19:00",
+                origen: "Test Origen (Proxy)",
+                destino: "Test Destino (Proxy)",
+                pasajeros: "3",
+                telefono: "5544332211",
+                equipaje: "Sí",
+                maletas: "2",
+                origen_completo: "Dirección completa de origen (Proxy)",
+                destino_completo: "Dirección completa de destino (Proxy)"
+            };
+            
+            try {
+                console.log('Enviando datos de prueba con proxy:', datosPrueba);
+                
+                // Usar api.codetabs.com como proxy
+                const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(SCRIPT_URL);
+                
+                const response = await fetch(proxyUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datosPrueba)
+                });
+                
+                console.log('Respuesta con proxy:', response.status, response.statusText);
+                
+                if (response.ok) {
+                    // Para proxies, la respuesta puede venir como texto
+                    const responseText = await response.text();
+                    console.log('Datos de respuesta con proxy:', responseText);
+                    
+                    try {
+                        const responseData = JSON.parse(responseText);
+                        resultadoDiv.innerHTML = `
+                            <h2>Éxito con Proxy</h2>
+                            <p>Estado: ${response.status} ${response.statusText}</p>
+                            <p>Respuesta: ${JSON.stringify(responseData)}</p>
+                        `;
+                    } catch (parseError) {
+                        // Si no es JSON, mostrar como texto
+                        resultadoDiv.innerHTML = `
+                            <h2>Éxito con Proxy (respuesta no JSON)</h2>
+                            <p>Estado: ${response.status} ${response.statusText}</p>
+                            <p>Respuesta: ${responseText}</p>
+                        `;
+                    }
+                } else {
+                    const errorText = await response.text();
+                    console.error('Error con proxy:', errorText);
+                    resultadoDiv.innerHTML = `
+                        <h2>Error con Proxy</h2>
+                        <p>Estado: ${response.status} ${response.statusText}</p>
+                        <p>Detalles: ${errorText}</p>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error al enviar con proxy:', error);
+                resultadoDiv.innerHTML = `
+                    <h2>Error de red con Proxy</h2>
                     <p>${error.message}</p>
                 `;
             }
