@@ -903,19 +903,22 @@ function setupAutocomplete(inputId, suggestionsId) {
                 // Agregar manejo de errores y límites de tasa
                 let osmResults = [];
                 try {
-                    const response = await fetch(
-                        `https://nominatim.openstreetmap.org/search?` +
+                    // Construir la URL de Nominatim
+                    const nominatimUrl = `https://nominatim.openstreetmap.org/search?` +
                         `q=${encodeURIComponent(query)}&` +
                         `format=json&` +
                         `countrycodes=AR&` +
                         `limit=5&` +  // Pedir solo 5 resultados directamente
-                        `addressdetails=1`,
-                        {
-                            headers: {
-                                'User-Agent': 'Altior Traslados/1.0 (contacto@altiortraslados.com)'
-                            }
+                        `addressdetails=1`;
+                    
+                    // Usar proxy CORS para evitar problemas de cross-origin
+                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(nominatimUrl)}`;
+                    
+                    const response = await fetch(proxyUrl, {
+                        headers: {
+                            'User-Agent': 'Altior Traslados/1.0 (contacto@altiortraslados.com)'
                         }
-                    );
+                    });
                     
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
@@ -933,7 +936,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                     // En caso de error, continuar con array vacío
                     osmResults = [];
                 }
-                
+
                 // Filtrar resultados por área permitida
                 osmResults = osmResults.filter(item => 
                     isDireccionPermitida(item.display_name)
