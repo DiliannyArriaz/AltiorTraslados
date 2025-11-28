@@ -1,26 +1,17 @@
-// Google Apps Script con manejo correcto de CORS
+// Google Apps Script con manejo correcto de diferentes tipos de datos
 // Copia este código en el Editor de Google Apps Script
 
 function doGet(e) {
-  // Configurar encabezados CORS para todas las solicitudes
-  const output = ContentService.createTextOutput('');
+  // Página de confirmación normal
+  const output = ContentService.createTextOutput(`
+    <html>
+      <body>
+        <h1>Sistema de Reservas Altior Traslados</h1>
+        <p>El sistema está funcionando correctamente.</p>
+      </body>
+    </html>
+  `);
   
-  // Si es una solicitud OPTIONS (preflight), responder con encabezados CORS
-  if (e && e.parameter && e.parameter.action === 'options') {
-    output.setContent('OK');
-  } else {
-    // Página de confirmación normal
-    output.setContent(`
-      <html>
-        <body>
-          <h1>Sistema de Reservas Altior Traslados</h1>
-          <p>El sistema está funcionando correctamente.</p>
-        </body>
-      </html>
-    `);
-  }
-  
-  // Agregar encabezados CORS a todas las respuestas
   output.setMimeType(ContentService.MimeType.HTML);
   
   return output;
@@ -31,18 +22,27 @@ function doPost(e) {
     // Registrar información de depuración
     console.log('Solicitud POST recibida:', JSON.stringify(e));
     
-    // Parsear los datos recibidos
-    let data;
+    // Parsear los datos recibidos - manejar ambos formatos
+    let data = {};
+    
     if (e.postData && e.postData.contents) {
-      data = JSON.parse(e.postData.contents);
+      // Intentar parsear como JSON primero
+      try {
+        data = JSON.parse(e.postData.contents);
+        console.log('Datos recibidos en formato JSON:', JSON.stringify(data));
+      } catch (jsonError) {
+        // Si no es JSON, puede ser datos de formulario
+        console.log('No es JSON, intentando parsear como formulario');
+        data = parseFormData(e.postData.contents);
+        console.log('Datos recibidos en formato formulario:', JSON.stringify(data));
+      }
     } else if (e.parameter) {
       // Para solicitudes con parámetros en la URL
       data = e.parameter;
+      console.log('Datos recibidos como parámetros:', JSON.stringify(data));
     } else {
       throw new Error('No se pudieron obtener los datos de la solicitud');
     }
-    
-    console.log('Datos recibidos:', JSON.stringify(data));
     
     // Obtener la hoja de cálculo activa
     const sheet = SpreadsheetApp.getActiveSheet();
@@ -71,19 +71,19 @@ function doPost(e) {
     // Preparar datos para guardar
     const rowData = [
       new Date(),
-      data.codigo_reserva || '',
-      data.name || data.email_cliente || '',
-      data.email_cliente || '',
-      data.fecha || '',
-      data.hora || '',
-      data.origen || '',
-      data.destino || '',
-      data.pasajeros || '',
-      data.telefono || '',
-      data.equipaje || '',
-      data.maletas || '',
-      data.origen_completo || data.origen || '',
-      data.destino_completo || data.destino || ''
+      data.codigo_reserva || data['codigo_reserva'] || '',
+      data.name || data['name'] || data.email_cliente || data['email_cliente'] || '',
+      data.email_cliente || data['email_cliente'] || '',
+      data.fecha || data['fecha'] || '',
+      data.hora || data['hora'] || '',
+      data.origen || data['origen'] || '',
+      data.destino || data['destino'] || '',
+      data.pasajeros || data['pasajeros'] || '',
+      data.telefono || data['telefono'] || '',
+      data.equipaje || data['equipaje'] || '',
+      data.maletas || data['maletas'] || '',
+      data.origen_completo || data['origen_completo'] || data.origen || data['origen'] || '',
+      data.destino_completo || data['destino_completo'] || data.destino || data['destino'] || ''
     ];
     
     // Guardar en la hoja de cálculo
@@ -96,8 +96,8 @@ function doPost(e) {
       status: "success", 
       message: "Datos guardados correctamente",
       data: {
-        codigo_reserva: data.codigo_reserva,
-        email_cliente: data.email_cliente
+        codigo_reserva: data.codigo_reserva || data['codigo_reserva'] || '',
+        email_cliente: data.email_cliente || data['email_cliente'] || ''
       }
     }));
     output.setMimeType(ContentService.MimeType.JSON);
@@ -115,6 +115,28 @@ function doPost(e) {
     output.setMimeType(ContentService.MimeType.JSON);
     
     return output;
+  }
+}
+
+// Función para parsear datos de formulario
+function parseFormData(formDataString) {
+  try {
+    const data = {};
+    const pairs = formDataString.split('&');
+    
+    for (let i = 0; i < pairs.length; i++) {
+      const pair = pairs[i].split('=');
+      if (pair.length === 2) {
+        const key = decodeURIComponent(pair[0]);
+        const value = decodeURIComponent(pair[1].replace(/\+/g, ' '));
+        data[key] = value;
+      }
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Error al parsear datos de formulario:', error);
+    return {};
   }
 }
 
