@@ -2,32 +2,37 @@
 // Copia este código en el Editor de Google Apps Script
 
 function doGet(e) {
-  // Página de confirmación
-  return HtmlService.createHtmlOutput(`
-    <html>
-      <body>
-        <h1>Sistema de Reservas Altior Traslados</h1>
-        <p>El sistema está funcionando correctamente.</p>
-      </body>
-    </html>
-  `);
+  // Configurar encabezados CORS para todas las solicitudes
+  const output = ContentService.createTextOutput('');
+  
+  // Si es una solicitud OPTIONS (preflight), responder con encabezados CORS
+  if (e && e.parameter && e.parameter.action === 'options') {
+    output.setContent('OK');
+  } else {
+    // Página de confirmación normal
+    output.setContent(`
+      <html>
+        <body>
+          <h1>Sistema de Reservas Altior Traslados</h1>
+          <p>El sistema está funcionando correctamente.</p>
+        </body>
+      </html>
+    `);
+  }
+  
+  // Agregar encabezados CORS a todas las respuestas
+  output.setHeader('Access-Control-Allow-Origin', '*');
+  output.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  output.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  output.setHeader('Access-Control-Max-Age', '3600');
+  
+  return output;
 }
 
 function doPost(e) {
   try {
     // Registrar información de depuración
-    console.log('Solicitud recibida:', JSON.stringify(e));
-    
-    // Manejar solicitud OPTIONS (preflight) - necesario para CORS
-    if (e.request && e.request.method === 'OPTIONS') {
-      console.log('Solicitud OPTIONS recibida (preflight)');
-      const response = ContentService.createTextOutput('');
-      response.setHeader('Access-Control-Allow-Origin', '*');
-      response.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
-      response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-      response.setHeader('Access-Control-Max-Age', '3600');
-      return response;
-    }
+    console.log('Solicitud POST recibida:', JSON.stringify(e));
     
     // Parsear los datos recibidos
     let data;
@@ -102,8 +107,9 @@ function doPost(e) {
     
     // Agregar encabezados CORS
     output.setHeader('Access-Control-Allow-Origin', '*');
-    output.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
-    output.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    output.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    output.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    output.setHeader('Access-Control-Max-Age', '3600');
     
     return output;
       
@@ -119,11 +125,25 @@ function doPost(e) {
     
     // Agregar encabezados CORS
     output.setHeader('Access-Control-Allow-Origin', '*');
-    output.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
-    output.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    output.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    output.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    output.setHeader('Access-Control-Max-Age', '3600');
     
     return output;
   }
+}
+
+// Función para manejar solicitudes OPTIONS (preflight)
+function doOptions(e) {
+  console.log('Solicitud OPTIONS recibida:', JSON.stringify(e));
+  
+  const output = ContentService.createTextOutput('');
+  output.setHeader('Access-Control-Allow-Origin', '*');
+  output.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  output.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  output.setHeader('Access-Control-Max-Age', '3600');
+  
+  return output;
 }
 
 // Función para probar el script manualmente

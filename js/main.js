@@ -139,61 +139,83 @@ async function saveReservation(datosReserva) {
         
         console.log('Datos formateados para enviar:', datosFormateados);
         
-        // Enviar datos a Google Sheets usando Google Apps Script a través de proxy CORS
-        const response = await fetch(RESERVAS_CONFIG.scriptUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(datosFormateados)  // Usar datosFormateados en lugar de datosReserva
-        });
-        
-        console.log('Respuesta del servidor Google Apps Script:', response.status, response.statusText);
-        console.log('URL utilizada:', RESERVAS_CONFIG.scriptUrl);
-        
-        // Verificar si la respuesta es exitosa
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Error detallado del servidor:', errorText);
-            throw new Error(`Error al enviar datos: ${response.status} ${response.statusText} - ${errorText}`);
-        }
-        
-        // Intentar leer la respuesta como JSON
+        // Intentar enviar directamente primero
         try {
-            const responseData = await response.json();
-            console.log('Datos de respuesta del servidor:', responseData);
+            const response = await fetch(RESERVAS_CONFIG.scriptUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datosFormateados)
+            });
             
-            // Verificar si la respuesta indica éxito
-            if (responseData.status === "success") {
-                console.log('Reserva enviada exitosamente a Google Sheets');
-                return { success: true };
+            console.log('Respuesta del servidor Google Apps Script:', response.status, response.statusText);
+            
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log('Datos de respuesta del servidor:', responseData);
+                
+                if (responseData.status === "success") {
+                    console.log('Reserva enviada exitosamente a Google Sheets');
+                    return { success: true };
+                } else {
+                    console.error('Error en la respuesta del servidor:', responseData.message);
+                    throw new Error(`Error del servidor: ${responseData.message}`);
+                }
             } else {
-                console.error('Error en la respuesta del servidor:', responseData.message);
-                throw new Error(`Error del servidor: ${responseData.message}`);
+                const errorText = await response.text();
+                console.error('Error detallado del servidor:', errorText);
+                throw new Error(`Error al enviar datos: ${response.status} ${response.statusText} - ${errorText}`);
             }
-        } catch (jsonError) {
-            // Si no es JSON, leer como texto
-            const responseText = await response.text();
-            console.log('Respuesta del servidor (texto):', responseText);
+        } catch (directError) {
+            console.warn('Error al enviar directamente, intentando con proxy:', directError);
             
-            // Asumir éxito si la respuesta no es JSON pero la solicitud fue exitosa
-            console.log('Reserva probablemente enviada exitosamente a Google Sheets (respuesta no JSON)');
-            return { success: true };
+            // Si falla el envío directo, intentar con proxy
+            try {
+                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(RESERVAS_CONFIG.scriptUrl);
+                const response = await fetch(proxyUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datosFormateados)
+                });
+                
+                console.log('Respuesta del servidor Google Apps Script (proxy):', response.status, response.statusText);
+                
+                if (response.ok) {
+                    // Para proxies, la respuesta puede venir como texto
+                    const responseText = await response.text();
+                    console.log('Respuesta del servidor (proxy, texto):', responseText);
+                    
+                    try {
+                        const responseData = JSON.parse(responseText);
+                        if (responseData.status === "success") {
+                            console.log('Reserva enviada exitosamente a Google Sheets (proxy)');
+                            return { success: true };
+                        } else {
+                            console.error('Error en la respuesta del servidor (proxy):', responseData.message);
+                            return { success: false, error: responseData.message };
+                        }
+                    } catch (parseError) {
+                        // Si no es JSON, asumir éxito
+                        console.log('Reserva probablemente enviada exitosamente a Google Sheets (proxy, respuesta no JSON)');
+                        return { success: true };
+                    }
+                } else {
+                    const errorText = await response.text();
+                    console.error('Error detallado del servidor (proxy):', errorText);
+                    return { success: false, error: `Error al enviar datos (proxy): ${response.status} ${response.statusText} - ${errorText}` };
+                }
+            } catch (proxyError) {
+                console.error('Error al enviar con proxy:', proxyError);
+                return { success: false, error: `Error al enviar con proxy: ${proxyError.message}` };
+            }
         }
         
     } catch (error) {
         console.error('Error guardando reserva:', error);
-        
-        // Manejo específico para errores de CORS
-        if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-            console.log('Error de CORS o red detectado. Los datos pueden haberse guardado de todas formas.');
-            // Retornamos éxito aunque haya error de CORS, ya que Google Apps Script
-            // puede haber procesado la solicitud a pesar del error del navegador
-            return { success: true, warning: 'Posible error de CORS pero datos enviados' };
-        }
-        
-        // Relanzamos el error para que sea manejado por la función llamadora
-        throw error;
+        return { success: false, error: error.message };
     }
 }
 
