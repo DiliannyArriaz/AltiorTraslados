@@ -734,81 +734,28 @@ function searchLugaresComunes(query, lugaresComunes) {
     );
 }
 
-// Función para configurar el autocompletado
+// Función para configurar el autocompletado en un input
 function setupAutocomplete(inputId, suggestionsId) {
-    console.log(`Setting up autocomplete for ${inputId} with suggestions container ${suggestionsId}`);
+    console.log(`Setting up autocomplete for ${inputId}`);
+    
     const input = document.getElementById(inputId);
+    if (!input) {
+        console.error(`Input with id ${inputId} not found`);
+        return;
+    }
+    
+    console.log(`Found input for ${inputId}:`, input);
+    
     let suggestionsContainer = document.getElementById(suggestionsId);
-    console.log(`Input element for ${inputId}:`, input);
-    console.log(`Suggestions container for ${suggestionsId}:`, suggestionsContainer);
     let debounceTimer;
-    let isSelectingSuggestion = false; // Flag para evitar reabrir la lista al seleccionar
+    let isSelectingSuggestion = false;
     
-    // Cache para búsquedas recientes para reducir llamadas a la API
-    const searchCache = new Map();
-    const CACHE_TTL = 10 * 60 * 1000; // 10 minutos
-    
-    // Lugares comunes predefinidos (aeropuertos, estaciones, etc.)
-    const lugaresComunes = [
-        {
-            nombre: "Aeropuerto Ezeiza",
-            direccion: "Ministro Pistarini International Airport, Marinos del Fournier, Barrio Villa Guillermina, Ezeiza, Partido de Ezeiza, Buenos Aires, 1804, Argentina"
-        },
-        {
-            nombre: "Aeropuerto Aeroparque",
-            direccion: "Aeropuerto Internacional Jorge Newbery, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
-        },
-        {
-            nombre: "Aeropuerto El Palomar",
-            direccion: "Aeropuerto El Palomar, Partido de Morón, Buenos Aires, Argentina"
-        },
-        {
-            nombre: "Estación Retiro",
-            direccion: "Estación Retiro, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
-        },
-        {
-            nombre: "Estación Constitución",
-            direccion: "Estación Constitución, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
-        },
-        {
-            nombre: "Estación Once",
-            direccion: "Estación Once, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
-        },
-        {
-            nombre: "Puerto Madero",
-            direccion: "Puerto Madero, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
-        },
-        {
-            nombre: "Centro Cívico",
-            direccion: "Centro Cívico, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
-        },
-        {
-            nombre: "Palermo",
-            direccion: "Palermo, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
-        },
-        {
-            nombre: "Recoleta",
-            direccion: "Recoleta, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
-        },
-        {
-            nombre: "San Telmo",
-            direccion: "San Telmo, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
-        },
-        {
-            nombre: "La Boca",
-            direccion: "La Boca, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
-        },
-        {
-            nombre: "Microcentro",
-            direccion: "Microcentro, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
-        }
-    ];
-
+    // Crear contenedor de sugerencias si no existe
     if (!suggestionsContainer) {
+        console.log(`Creating suggestions container for ${inputId}`);
         suggestionsContainer = document.createElement('div');
         suggestionsContainer.id = suggestionsId;
         suggestionsContainer.className = 'autocomplete-suggestions';
-        // Crear contenedor de sugerencias con posición absoluta
         suggestionsContainer.style.cssText = `
             position: absolute;
             top: 100%;
@@ -823,30 +770,6 @@ function setupAutocomplete(inputId, suggestionsId) {
             overflow-y: auto;
             display: none;
         `;
-        
-        // Asegurarse de que el contenedor tenga un ID único
-        if (document.getElementById(suggestionsId)) {
-            console.warn(`Element with ID ${suggestionsId} already exists`);
-            // Si ya existe, eliminarlo primero
-            document.getElementById(suggestionsId).remove();
-            suggestionsContainer = document.createElement('div');
-            suggestionsContainer.id = suggestionsId;
-            suggestionsContainer.className = 'autocomplete-suggestions';
-            suggestionsContainer.style.cssText = `
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: white;
-                border: 1px solid #e5e7eb;
-                border-radius: 10px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-                z-index: 1000;
-                max-height: 200px;
-                overflow-y: auto;
-                display: none;
-            `;
-        }
         
         input.parentNode.style.position = 'relative';
         input.parentNode.appendChild(suggestionsContainer);
@@ -872,8 +795,8 @@ function setupAutocomplete(inputId, suggestionsId) {
         suggestionsContainer.innerHTML = '';
         suggestionsContainer.style.display = 'none';
 
-        // Para consultas muy cortas, no buscar en OSM
-        if (query.length < 4) {
+        // Para consultas muy cortas, no buscar
+        if (query.length < 3) {
             console.log(`Query too short for ${inputId}:`, query.length);
             suggestionsContainer.style.display = 'none';
             return;
@@ -904,49 +827,42 @@ function setupAutocomplete(inputId, suggestionsId) {
                 
                 if (cachedResult && (now - cachedResult.timestamp) < CACHE_TTL) {
                     console.log('Usando resultados de cache para:', query);
-                    let osmResults = cachedResult.data;
+                    let locationResults = cachedResult.data;
                     
                     // Filtrar resultados por área permitida
-                    osmResults = osmResults.filter(item => 
+                    locationResults = locationResults.filter(item => 
                         isDireccionPermitida(item.display_name)
                     );
                     
                     // Tomar solo los primeros 5 resultados
-                    osmResults = osmResults.slice(0, 5);
+                    locationResults = locationResults.slice(0, 5);
                     
-                    // Convertir resultados de OSM al mismo formato
-                    const osmFormatted = osmResults.map(result => ({
+                    // Convertir resultados al mismo formato
+                    const formattedResults = locationResults.map(result => ({
                         display_name: result.display_name,
-                        address: result.address,
+                        address: result.address || {},
                         lat: result.lat,
                         lon: result.lon,
                         isCommonPlace: false
                     }));
                     
                     // Mostrar resultados
-                    if (osmFormatted.length > 0) {
-                        displaySuggestions(osmFormatted);
+                    if (formattedResults.length > 0) {
+                        displaySuggestions(formattedResults);
                     } else {
                         suggestionsContainer.style.display = 'none';
                     }
                     return;
                 }
                 
-                // Buscar en OSM solo si no hay lugares comunes
-                // Agregar manejo de errores y límites de tasa
-                let osmResults = [];
+                // Buscar en LocationIQ solo si no hay lugares comunes
+                let locationResults = [];
                 try {
-                    // Construir la URL de Nominatim
-                    const nominatimUrl = `https://nominatim.openstreetmap.org/search?` +
-                        `q=${encodeURIComponent(query)}&` +
-                        `format=json&` +
-                        `countrycodes=AR&` +
-                        `limit=5&` +  // Pedir solo 5 resultados directamente
-                        `addressdetails=1`;
+                    // Usar LocationIQ API para autocompletado
+                    const locationIQUrl = `https://api.locationiq.com/v1/autocomplete.php?key=pk.6234567b586b647771556a706d6e446e626a676e64694c6e626a676e&q=${encodeURIComponent(query)}&limit=5&countrycodes=AR`;
                     
                     // Lista de proxies alternativos
                     const proxies = [
-                        'https://api.allorigins.win/raw?url=',
                         'https://corsproxy.io/?',
                         'https://api.codetabs.com/v1/proxy?quest='
                     ];
@@ -957,56 +873,72 @@ function setupAutocomplete(inputId, suggestionsId) {
                     
                     for (const proxy of proxies) {
                         try {
-                            const proxyUrl = proxy + encodeURIComponent(nominatimUrl);
-                            console.log(`Intentando con proxy para autocompletado: ${proxy}`);
+                            const proxyUrl = proxy + encodeURIComponent(locationIQUrl);
+                            console.log(`Intentando con proxy para LocationIQ: ${proxy}`);
                             
-                            response = await fetch(proxyUrl, {
-                                headers: {
-                                    'User-Agent': 'Altior Traslados/1.0 (contacto@altiortraslados.com)'
-                                }
-                            });
+                            response = await fetch(proxyUrl);
                             
                             if (response.ok) {
-                                console.log(`Éxito con proxy para autocompletado: ${proxy}`);
+                                console.log(`Éxito con proxy para LocationIQ: ${proxy}`);
                                 break;
                             } else {
-                                console.log(`Error con proxy ${proxy} para autocompletado: ${response.status}`);
+                                console.log(`Error con proxy ${proxy} para LocationIQ: ${response.status}`);
                                 lastError = new Error(`HTTP error! status: ${response.status}`);
                             }
                         } catch (proxyError) {
-                            console.log(`Error con proxy ${proxy} para autocompletado:`, proxyError);
+                            console.log(`Error con proxy ${proxy} para LocationIQ:`, proxyError);
                             lastError = proxyError;
                         }
                     }
                     
                     // Si ninguno de los proxies funcionó, lanzar el último error
                     if (!response || !response.ok) {
-                        throw lastError || new Error('Todos los proxies fallaron para autocompletado');
+                        throw lastError || new Error('Todos los proxies fallaron para LocationIQ');
                     }
                     
-                    osmResults = await response.json();
+                    const rawData = await response.json();
+                    
+                    // Convertir datos de LocationIQ al formato esperado
+                    locationResults = rawData.map(item => ({
+                        display_name: item.display_name,
+                        address: {
+                            house_number: item.address?.house_number,
+                            road: item.address?.road,
+                            neighbourhood: item.address?.neighbourhood,
+                            suburb: item.address?.suburb,
+                            city: item.address?.city,
+                            town: item.address?.town,
+                            municipality: item.address?.municipality,
+                            county: item.address?.county,
+                            state: item.address?.state,
+                            postcode: item.address?.postcode,
+                            country: item.address?.country
+                        },
+                        lat: item.lat,
+                        lon: item.lon
+                    }));
                     
                     // Guardar en cache
                     searchCache.set(cacheKey, {
-                        data: osmResults,
+                        data: locationResults,
                         timestamp: now
                     });
                 } catch (error) {
-                    console.error('Error fetching OSM suggestions:', error);
+                    console.error('Error fetching LocationIQ suggestions:', error);
                     // En caso de error, continuar con array vacío
-                    osmResults = [];
+                    locationResults = [];
                 }
-
+                
                 // Filtrar resultados por área permitida
-                osmResults = osmResults.filter(item => 
+                locationResults = locationResults.filter(item => 
                     isDireccionPermitida(item.display_name)
                 );
                 
                 // Tomar solo los primeros 5 resultados
-                osmResults = osmResults.slice(0, 5);
+                locationResults = locationResults.slice(0, 5);
                 
-                // Convertir resultados de OSM al mismo formato
-                const osmFormatted = osmResults.map(result => ({
+                // Convertir resultados al mismo formato
+                const formattedResults = locationResults.map(result => ({
                     display_name: result.display_name,
                     address: result.address,
                     lat: result.lat,
@@ -1015,8 +947,8 @@ function setupAutocomplete(inputId, suggestionsId) {
                 }));
                 
                 // Mostrar resultados
-                if (osmFormatted.length > 0) {
-                    displaySuggestions(osmFormatted);
+                if (formattedResults.length > 0) {
+                    displaySuggestions(formattedResults);
                 } else {
                     suggestionsContainer.style.display = 'none';
                 }
@@ -1024,7 +956,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                 console.error('Error fetching suggestions:', error);
                 suggestionsContainer.style.display = 'none';
             }
-        }, 1500); // Aumentar el tiempo de debounce a 1500ms para reducir llamadas a la API
+        }, 1000); // Reducir el tiempo de debounce a 1000ms
     });
 
     // Cerrar sugerencias al hacer clic fuera
@@ -1061,7 +993,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                     div.style.fontWeight = '600';
                     div.style.color = '#2C4A7C';
                 } else if (result.address) {
-                    // Para resultados de OSM, formatear la dirección
+                    // Para resultados de LocationIQ, formatear la dirección
                     const parts = [];
                     if (result.address.road) parts.push(result.address.road);
                     if (result.address.house_number) parts.push(result.address.house_number);
