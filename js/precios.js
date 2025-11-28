@@ -133,8 +133,19 @@ function determinarZonaFromDetails(address) {
         }
     }
 
+    // AEROPUERTOS - Verificación más robusta
+    // EZEIZA
+    if ((address.airport && (address.airport.includes('Ezeiza') || address.airport.includes('Ministro Pistarini'))) ||
+        (address.name && address.name.includes('Aeropuerto')) && 
+        (address.name.includes('Ezeiza') || address.name.includes('Internacional') || address.name.includes('Pistarini')) ||
+        (address.road && address.road.includes('Hermógenes Salgado'))) {
+        return 'EZEIZA';
+    }
+
     // AEROPARQUE
-    if (address.airport && address.airport.includes('Aeroparque')) {
+    if ((address.airport && address.airport.includes('Aeroparque')) ||
+        (address.name && address.name.includes('Aeroparque')) ||
+        (address.road && address.road.includes('Jorge Newbery'))) {
         return 'AEROPARQUE';
     }
 
@@ -187,7 +198,22 @@ function determinarZonaFromDetails(address) {
 
 // Función para determinar la zona según el origen o destino
 async function determinarZona(direccion, cachedDetails = null) {
-    // 0. Usar detalles cacheados si existen y son relevantes para la dirección actual (Optimización)
+    // 0. Verificaciones iniciales para aeropuertos (casos especiales)
+    const dirLower = direccion.toLowerCase();
+    
+    // Verificación rápida de aeropuertos por nombre
+    if (dirLower.includes('ezeiza') || dirLower.includes('pistarini') || 
+        (dirLower.includes('aeropuerto') && (dirLower.includes('internacional') || dirLower.includes('ezeiza'))) ||
+        dirLower.includes('ministro pistarini')) {
+        return 'EZEIZA';
+    }
+    
+    if (dirLower.includes('aeroparque') || (dirLower.includes('aeropuerto') && dirLower.includes('aeroparque')) ||
+        (dirLower.includes('jorge newbery')) || dirLower.includes('newbery')) {
+        return 'AEROPARQUE';
+    }
+
+    // 1. Usar detalles cacheados si existen y son relevantes para la dirección actual (Optimización)
     if (cachedDetails) {
         console.log('Usando detalles de dirección cacheados');
         
@@ -211,9 +237,11 @@ async function determinarZona(direccion, cachedDetails = null) {
             (direccionLower.includes('aeroparque') && cachedDetails.airport && cachedDetails.airport.includes('Aeroparque')) ||
             (direccionLower.includes('aeroparque') && cachedDetails.full_address && cachedDetails.full_address.includes('Aeroparque')) ||
             (direccionLower.includes('aeroparque') && cachedDetails.road && cachedDetails.road.includes('Aeroparque')) ||
+            (direccionLower.includes('aeroparque') && cachedDetails.name && cachedDetails.name.includes('Aeroparque')) ||
             (direccionLower.includes('ezeiza') && cachedDetails.full_address && cachedDetails.full_address.includes('Ezeiza')) ||
             (direccionLower.includes('ezeiza') && cachedDetails.airport && cachedDetails.airport.includes('Ezeiza')) ||
-            (direccionLower.includes('ezeiza') && cachedDetails.road && cachedDetails.road.includes('Ezeiza'))
+            (direccionLower.includes('ezeiza') && cachedDetails.road && cachedDetails.road.includes('Ezeiza')) ||
+            (direccionLower.includes('ezeiza') && cachedDetails.name && cachedDetails.name.includes('Ezeiza'))
         )) {
             esRelevante = true;
         }
@@ -234,7 +262,7 @@ async function determinarZona(direccion, cachedDetails = null) {
         }
     }
 
-    // 1. Intentar extraer CP directamente del texto
+    // 2. Intentar extraer CP directamente del texto
     // Patrón mejorado para manejar códigos postales como "C1426", "C 1426" y "C1426AGX"
     const cpRegex = /\b(?:C\s*)?(\d{4})(?:[a-zA-Z]*)?\b/gi;
     let match;
@@ -250,13 +278,13 @@ async function determinarZona(direccion, cachedDetails = null) {
         }
     }
 
-    // 2. Intentar con coincidencias de texto
+    // 3. Intentar con coincidencias de texto
     const zonaTexto = determinarZonaPorTexto(direccion);
     if (zonaTexto) {
         return zonaTexto;
     }
 
-    // 3. Si no se encuentra por texto, buscar con Nominatim
+    // 4. Si no se encuentra por texto, buscar con Nominatim
     // Implementar retry con backoff exponencial para manejar errores de red
     const maxRetries = 2; // Reducir intentos para evitar límites de tasa
     const baseDelay = 2000; // Aumentar tiempo de espera inicial a 2 segundos
@@ -348,16 +376,16 @@ function determinarZonaPorTexto(direccion) {
         return null;
     }
 
-    // EZEIZA
+    // EZEIZA - Verificación más robusta
     if (dir.includes('ezeiza') || dir.includes('pistarini') || 
-        (dir.includes('aeropuerto') && dir.includes('internacional')) ||
-        (dir.includes('aeropuerto') && dir.includes('ezeiza'))) {
+        (dir.includes('aeropuerto') && (dir.includes('internacional') || dir.includes('ezeiza'))) ||
+        dir.includes('ministro pistarini')) {
         return 'EZEIZA';
     }
 
-    // AEROPARQUE
+    // AEROPARQUE - Verificación más robusta
     if (dir.includes('aeroparque') || (dir.includes('aeropuerto') && dir.includes('aeroparque')) ||
-        (dir.includes('jorge newbery'))) {
+        (dir.includes('jorge newbery')) || dir.includes('newbery')) {
         return 'AEROPARQUE';
     }
 
@@ -371,7 +399,9 @@ function determinarZonaPorTexto(direccion) {
         dir.includes('colegiales') || dir.includes('belgrano') ||
         dir.includes('nuñez') || dir.includes('saavedra') ||
         dir.includes('villa urquiza') || dir.includes('villa crespo') ||
-        dir.includes('almagro') || dir.includes('caballito')) {
+        dir.includes('almagro') || dir.includes('caballito') ||
+        // Verificar si contiene "buenos aires" pero no es un aeropuerto
+        (dir.includes('buenos aires') && !dir.includes('ezeiza') && !dir.includes('aeroparque'))) {
         return 'CABA';
     }
 
