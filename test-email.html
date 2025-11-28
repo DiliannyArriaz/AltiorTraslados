@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test de Envío de Correo</title>
+</head>
+<body>
+    <h1>Test de Envío de Correo</h1>
+    <button onclick="testEmail()">Enviar Correo de Prueba</button>
+    <div id="resultado"></div>
+
+    <script>
+        async function testEmail() {
+            const resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.innerHTML = 'Enviando correo de prueba...';
+            
+            try {
+                // Enviar una solicitud simple para probar el endpoint
+                const response = await fetch('https://script.google.com/macros/s/AKfycbysoBEGQiTf3Gpv886Nw_UBPVGvK0-j_bug3CGuf5J8PZHdMKmtziU6wGJjBi9lIAz1Mw/exec', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        codigo_reserva: "TEST-EMAIL-001",
+                        email_cliente: "altior.traslados@gmail.com",
+                        fecha: "29 de noviembre de 2025",
+                        hora: "10:00",
+                        origen: "Test Origen Email",
+                        destino: "Test Destino Email",
+                        pasajeros: "2",
+                        telefono: "1122334455",
+                        equipaje: "Sí",
+                        maletas: "2",
+                        origen_completo: "Dirección completa de origen para email",
+                        destino_completo: "Dirección completa de destino para email",
+                        name: "Usuario de Prueba"
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    resultadoDiv.innerHTML = `
+                        <h2>Correo enviado</h2>
+                        <p>Respuesta: ${JSON.stringify(result)}</p>
+                        <p>Verifica tu bandeja de entrada y spam.</p>
+                    `;
+                } else {
+                    const errorText = await response.text();
+                    resultadoDiv.innerHTML = `
+                        <h2>Error al enviar correo</h2>
+                        <p>Status: ${response.status}</p>
+                        <p>Error: ${errorText}</p>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultadoDiv.innerHTML = `
+                    <h2>Error de red</h2>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
