@@ -660,46 +660,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const origenSimple = origenInput.value;
             const destinoSimple = destinoInput.value;
             
-            // Crear campos ocultos adicionales para fecha y hora
-            let fechaHidden = document.getElementById('fecha_hidden');
-            if (!fechaHidden) {
-                fechaHidden = document.createElement('input');
-                fechaHidden.type = 'hidden';
-                fechaHidden.id = 'fecha_hidden';
-                fechaHidden.name = 'fecha';
-                bookingForm.appendChild(fechaHidden);
-            }
-            fechaHidden.value = fechaFormateada;
-            
-            let horaHidden = document.getElementById('hora_hidden');
-            if (!horaHidden) {
-                horaHidden = document.createElement('input');
-                horaHidden.type = 'hidden';
-                horaHidden.id = 'hora_hidden';
-                horaHidden.name = 'hora';
-                bookingForm.appendChild(horaHidden);
-            }
-            horaHidden.value = hora;
-            
-            let origenHidden = document.getElementById('origen_hidden');
-            if (!origenHidden) {
-                origenHidden = document.createElement('input');
-                origenHidden.type = 'hidden';
-                origenHidden.id = 'origen_hidden';
-                origenHidden.name = 'origen';
-                bookingForm.appendChild(origenHidden);
-            }
-            origenHidden.value = origenSimple;
-            
-            let destinoHidden = document.getElementById('destino_hidden');
-            if (!destinoHidden) {
-                destinoHidden = document.createElement('input');
-                destinoHidden.type = 'hidden';
-                destinoHidden.id = 'destino_hidden';
-                destinoHidden.name = 'destino';
-                bookingForm.appendChild(destinoHidden);
-            }
-            destinoHidden.value = destinoSimple;
+            // Completar los campos ocultos adicionales
+            document.getElementById('fecha_hidden').value = fechaFormateada;
+            document.getElementById('hora_hidden').value = hora;
+            document.getElementById('origen_hidden').value = origenSimple;
+            document.getElementById('destino_hidden').value = destinoSimple;
             
             // Mostrar popup de confirmación de reserva inmediatamente
             showReservationPopup(codigoReserva, emailCliente);
