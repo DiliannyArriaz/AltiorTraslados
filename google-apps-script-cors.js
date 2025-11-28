@@ -21,10 +21,7 @@ function doGet(e) {
   }
   
   // Agregar encabezados CORS a todas las respuestas
-  output.setHeader('Access-Control-Allow-Origin', '*');
-  output.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  output.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  output.setHeader('Access-Control-Max-Age', '3600');
+  output.setMimeType(ContentService.MimeType.HTML);
   
   return output;
 }
@@ -94,7 +91,7 @@ function doPost(e) {
     
     console.log('Datos guardados exitosamente');
     
-    // Devolver respuesta con encabezados CORS
+    // Devolver respuesta
     const output = ContentService.createTextOutput(JSON.stringify({
       status: "success", 
       message: "Datos guardados correctamente",
@@ -105,45 +102,20 @@ function doPost(e) {
     }));
     output.setMimeType(ContentService.MimeType.JSON);
     
-    // Agregar encabezados CORS
-    output.setHeader('Access-Control-Allow-Origin', '*');
-    output.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    output.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    output.setHeader('Access-Control-Max-Age', '3600');
-    
     return output;
       
   } catch (error) {
     console.error('Error en doPost:', error);
     
-    // Devolver error con encabezados CORS
+    // Devolver error
     const output = ContentService.createTextOutput(JSON.stringify({
       status: "error",
       message: error.toString()
     }));
     output.setMimeType(ContentService.MimeType.JSON);
     
-    // Agregar encabezados CORS
-    output.setHeader('Access-Control-Allow-Origin', '*');
-    output.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    output.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    output.setHeader('Access-Control-Max-Age', '3600');
-    
     return output;
   }
-}
-
-// Función para manejar solicitudes OPTIONS (preflight)
-function doOptions(e) {
-  console.log('Solicitud OPTIONS recibida:', JSON.stringify(e));
-  
-  const output = ContentService.createTextOutput('');
-  output.setHeader('Access-Control-Allow-Origin', '*');
-  output.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  output.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  output.setHeader('Access-Control-Max-Age', '3600');
-  
-  return output;
 }
 
 // Función para probar el script manualmente
