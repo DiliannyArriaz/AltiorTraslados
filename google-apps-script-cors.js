@@ -114,7 +114,7 @@ function doPost(e) {
     // Devolver respuesta con encabezados CORS
     const output = ContentService.createTextOutput(JSON.stringify({
       status: "success", 
-      message: "Datos guardados correctamente",
+      message: "Datos guardados y correos enviados correctamente",
       data: {
         codigo_reserva: data.codigo_reserva || data['codigo_reserva'] || '',
         email_cliente: data.email_cliente || data['email_cliente'] || ''
@@ -201,7 +201,7 @@ Datos guardados en la hoja de cálculo.
   // Enviar email al cliente
   console.log('Enviando email al cliente:', clienteEmail);
   console.log('Asunto cliente:', clienteSubject);
-  console.log('Cuerpo cliente:', clienteBody.substring(0, 200) + '...'); // Mostrar solo parte del cuerpo
+  console.log('Cuerpo cliente (primeros 200 caracteres):', clienteBody.substring(0, 200) + '...');
   
   try {
     GmailApp.sendEmail(clienteEmail, clienteSubject, clienteBody);
@@ -217,7 +217,7 @@ Datos guardados en la hoja de cálculo.
   // Enviar email a la empresa
   console.log('Enviando email a la empresa:', empresaEmail);
   console.log('Asunto empresa:', empresaSubject);
-  console.log('Cuerpo empresa:', empresaBody.substring(0, 200) + '...'); // Mostrar solo parte del cuerpo
+  console.log('Cuerpo empresa (primeros 200 caracteres):', empresaBody.substring(0, 200) + '...');
   
   try {
     GmailApp.sendEmail(empresaEmail, empresaSubject, empresaBody);
