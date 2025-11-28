@@ -103,6 +103,7 @@ function doPost(e) {
     
     // Enviar correos de confirmación
     try {
+      console.log('Iniciando envío de correos de confirmación');
       sendConfirmationEmails(data);
       console.log('Correos de confirmación enviados exitosamente');
     } catch (emailError) {
@@ -141,6 +142,8 @@ function doPost(e) {
 function sendConfirmationEmails(data) {
   const clienteEmail = data.email_cliente || data['email_cliente'] || '';
   const codigoReserva = data.codigo_reserva || data['codigo_reserva'] || '';
+  
+  console.log('Preparando envío de correos para:', clienteEmail, 'con código:', codigoReserva);
   
   if (!clienteEmail) {
     console.log('No se puede enviar correo: no se proporcionó email del cliente');
@@ -197,21 +200,33 @@ Datos guardados en la hoja de cálculo.
   
   // Enviar email al cliente
   console.log('Enviando email al cliente:', clienteEmail);
+  console.log('Asunto cliente:', clienteSubject);
+  console.log('Cuerpo cliente:', clienteBody.substring(0, 200) + '...'); // Mostrar solo parte del cuerpo
+  
   try {
     GmailApp.sendEmail(clienteEmail, clienteSubject, clienteBody);
     console.log('Email enviado al cliente exitosamente');
   } catch (error) {
     console.error('Error al enviar email al cliente:', error);
+    console.error('Tipo de error:', typeof error);
+    console.error('Mensaje de error:', error.message);
+    console.error('Stack trace:', error.stack);
     throw error;
   }
   
   // Enviar email a la empresa
   console.log('Enviando email a la empresa:', empresaEmail);
+  console.log('Asunto empresa:', empresaSubject);
+  console.log('Cuerpo empresa:', empresaBody.substring(0, 200) + '...'); // Mostrar solo parte del cuerpo
+  
   try {
     GmailApp.sendEmail(empresaEmail, empresaSubject, empresaBody);
     console.log('Email enviado a la empresa exitosamente');
   } catch (error) {
     console.error('Error al enviar email a la empresa:', error);
+    console.error('Tipo de error:', typeof error);
+    console.error('Mensaje de error:', error.message);
+    console.error('Stack trace:', error.stack);
     throw error;
   }
   
