@@ -88,18 +88,13 @@ nav {
 }
 
 /* Estilos para enlace activo */
-.nav-link.active, .nav-cta.active, span.nav-link.active {
+.nav-link.active, .nav-cta.active {
     background: linear-gradient(135deg, #5B8DB8, #3B5998);
     color: white;
     box-shadow: 0 4px 15px rgba(59, 89, 152, 0.3);
-    padding: 12px 20px;
-    border-radius: 25px;
-    font-weight: 600;
-    transition: all 0.3s;
-    display: inline-block;
 }
 
-.nav-link.active:hover, .nav-cta.active:hover, span.nav-link.active:hover {
+.nav-link.active:hover, .nav-cta.active:hover {
     background: linear-gradient(135deg, #3B5998, #2C4A7C);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(59, 89, 152, 0.4);
