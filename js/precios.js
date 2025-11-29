@@ -787,8 +787,22 @@ function setupAutocomplete(inputId, suggestionsId) {
         suggestionsContainer.style.display = 'none';
 
         // Para consultas muy cortas, no buscar
-        if (query.length < 3) {
+        if (query.length < 4) {
             console.log(`Query too short for ${inputId}:`, query.length);
+            suggestionsContainer.style.display = 'none';
+            return;
+        }
+        
+        // Para consultas que parecen códigos postales pero no están completos, no buscar
+        if (/^\d+$/.test(query) && query.length < 4) {
+            console.log(`Incomplete postal code for ${inputId}:`, query);
+            suggestionsContainer.style.display = 'none';
+            return;
+        }
+        
+        // Para consultas que contienen "B" seguido de números pero no están completos, no buscar
+        if (/^b\d*$/i.test(query) && query.length < 6) {
+            console.log(`Incomplete postal code format for ${inputId}:`, query);
             suggestionsContainer.style.display = 'none';
             return;
         }
@@ -947,36 +961,47 @@ function setupAutocomplete(inputId, suggestionsId) {
                         // Fallback: usar direcciones predefinidas si Geoapify no devuelve resultados
                         const fallbackAddresses = [];
                         
-                        if (query.toLowerCase().includes('zarate')) {
-                            fallbackAddresses.push({
-                                properties: {
-                                    housenumber: '5300',
-                                    street: '99 - Zárate',
-                                    city: 'Villa Ballester',
-                                    state: 'Buenos Aires',
-                                    postcode: 'B1653MNY',
-                                    formatted: '99 - Zárate 5300, Villa Ballester, Buenos Aires'
-                                },
-                                geometry: {
-                                    coordinates: [-58.5285, -34.3456]
+                        // Verificar si la consulta coincide con alguna dirección predefinida
+                        const predefinedAddresses = [
+                            {
+                                match: 'zarate',
+                                data: {
+                                    properties: {
+                                        housenumber: '5300',
+                                        street: '99 - Zárate',
+                                        city: 'Villa Ballester',
+                                        state: 'Buenos Aires',
+                                        postcode: 'B1653MNY',
+                                        formatted: '99 - Zárate 5300, Villa Ballester, Buenos Aires'
+                                    },
+                                    geometry: {
+                                        coordinates: [-58.5285, -34.3456]
+                                    }
                                 }
-                            });
-                        }
+                            },
+                            {
+                                match: 'amenabar',
+                                data: {
+                                    properties: {
+                                        housenumber: '1158',
+                                        street: 'Amenábar',
+                                        city: 'CABA',
+                                        state: 'Buenos Aires',
+                                        postcode: 'B1425',
+                                        formatted: 'Amenábar 1158, CABA, Buenos Aires'
+                                    },
+                                    geometry: {
+                                        coordinates: [-58.4452, -34.5887]
+                                    }
+                                }
+                            }
+                        ];
                         
-                        if (query.toLowerCase().includes('amenabar')) {
-                            fallbackAddresses.push({
-                                properties: {
-                                    housenumber: '1158',
-                                    street: 'Amenábar',
-                                    city: 'CABA',
-                                    state: 'Buenos Aires',
-                                    postcode: 'B1425',
-                                    formatted: 'Amenábar 1158, CABA, Buenos Aires'
-                                },
-                                geometry: {
-                                    coordinates: [-58.4452, -34.5887]
-                                }
-                            });
+                        // Buscar coincidencias
+                        for (const addr of predefinedAddresses) {
+                            if (query.toLowerCase().includes(addr.match)) {
+                                fallbackAddresses.push(addr.data);
+                            }
                         }
                         
                         geoapifyResults = fallbackAddresses;
