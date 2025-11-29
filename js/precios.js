@@ -764,6 +764,77 @@ function isDireccionPermitida(direccion) {
     return isPermitida;
 }
 
+// Importar la función determinarZonaBasica
+function determinarZonaBasica(direccion) {
+    // Implementación simplificada de determinarZonaBasica
+    // En un entorno real, esto debería importarse desde determinar-zona-basica.js
+    const dir = direccion.toLowerCase();
+    
+    // EZEIZA
+    if (dir.includes('ezeiza') || dir.includes('pistarini') || 
+        (dir.includes('aeropuerto') && (dir.includes('internacional') || dir.includes('ezeiza'))) ||
+        dir.includes('ministro pistarini')) {
+        return 'EZEIZA';
+    }
+    
+    // AEROPARQUE
+    if (dir.includes('aeroparque') || (dir.includes('aeropuerto') && dir.includes('aeroparque')) ||
+        (dir.includes('jorge newbery')) || dir.includes('newbery')) {
+        return 'AEROPARQUE';
+    }
+    
+    // CABA
+    if (dir.includes('caba') || dir.includes('ciudad autónoma') || dir.includes('ciudad autonoma') ||
+        dir.includes('capital federal') ||
+        dir.includes('palermo') ||
+        dir.includes('recoleta') || dir.includes('san telmo') ||
+        dir.includes('la boca') || dir.includes('microcentro') ||
+        dir.includes('puerto madero') || dir.includes('centro cívico') ||
+        dir.includes('colegiales') || dir.includes('belgrano') ||
+        dir.includes('nuñez') || dir.includes('saavedra') ||
+        dir.includes('villa urquiza') || dir.includes('villa crespo') ||
+        dir.includes('almagro') || dir.includes('caballito') ||
+        // Verificar si contiene "buenos aires" pero no es un aeropuerto
+        (dir.includes('buenos aires') && !dir.includes('ezeiza') && !dir.includes('aeroparque'))) {
+        return 'CABA';
+    }
+    
+    // ZONA SUR
+    if (dir.includes('avellaneda') || dir.includes('lanús') || dir.includes('lanus')) return 'Avellaneda / Lanús';
+    if (dir.includes('wilde') || dir.includes('monte chingolo')) return 'Wilde / Monte Chingolo';
+    if (dir.includes('quilmes') || dir.includes('almirante brown') || dir.includes('alte brown')) return 'Quilmes / Alte Brown';
+    if (dir.includes('berazategui') || dir.includes('hudson')) return 'Berazategui / Hudson';
+    if (dir.includes('lomas de zamora')) return 'Lomas de Zamora';
+    if (dir.includes('canning') || dir.includes('spegazzini')) return 'Canning / Spegazzini';
+    if (dir.includes('la plata')) return 'La Plata';
+    
+    // ZONA OESTE
+    if (dir.includes('ramos mejía') || dir.includes('ramos mejia') || dir.includes('ciudadela')) return 'Ramos Mejía / Ciudadela';
+    if (dir.includes('morón') || dir.includes('moron') || dir.includes('haedo')) return 'Morón / Haedo';
+    if (dir.includes('caseros') || dir.includes('el palomar')) return 'Caseros / El Palomar';
+    if (dir.includes('hurlingham') || dir.includes('loma hermosa')) return 'Hurlingham / Loma Hermosa';
+    if (dir.includes('ituzaingó') || dir.includes('ituzaingo') || dir.includes('padua')) return 'Ituzaingó / Padua';
+    if (dir.includes('san miguel') || dir.includes('jose c. paz') || dir.includes('josé c. paz')) return 'San Miguel / José C. Paz';
+    if (dir.includes('merlo') || dir.includes('paso del rey')) return 'Merlo / Paso del Rey';
+    if (dir.includes('moreno') || dir.includes('francisco álvarez') || dir.includes('francisco alvarez')) return 'Moreno / Francisco Álvarez';
+    if (dir.includes('general rodríguez') || dir.includes('gral. rodríguez') || dir.includes('general rodriguez')) return 'Gral. Rodríguez';
+    if (dir.includes('luján') || dir.includes('lujan')) return 'Luján';
+    
+    // ZONA NORTE
+    if (dir.includes('vicente lópez') || dir.includes('vicente lopez') || dir.includes('olivos')) return 'Vicente López / Olivos';
+    if (dir.includes('san martín') || dir.includes('san martin') || dir.includes('san andrés') || dir.includes('san andres')) return 'San Martín / San Andrés';
+    if (dir.includes('san isidro') || dir.includes('boulogne')) return 'San Isidro / Boulogne';
+    if (dir.includes('villa ballester') || dir.includes('josé león suárez') || dir.includes('jose leon suarez') || dir.includes('lafayette')) return 'Villa Ballester / José León Suárez';
+    if (dir.includes('tigre') || dir.includes('pacheco')) return 'Tigre Centro / Pacheco';
+    if (dir.includes('don torcuato') || dir.includes('grand bourg')) return 'Don Torcuato / Grand Bourg';
+    if (dir.includes('benavídez') || dir.includes('benavidez') || dir.includes('milberg') || dir.includes('tortuguitas')) return 'Benavídez / Milberg / Tortuguitas';
+    if (dir.includes('ingeniero maschwitz') || dir.includes('ing. maschwitz') || dir.includes('del viso')) return 'Ing. Maschwitz / Del Viso';
+    if (dir.includes('pilar') || dir.includes('escobar')) return 'Pilar / Escobar';
+    if (dir.includes('campana') || dir.includes('cardales')) return 'Campana / Cardales';
+    
+    return null;
+}
+
 // Variable global para caché de búsquedas
 const searchCache = new Map();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
