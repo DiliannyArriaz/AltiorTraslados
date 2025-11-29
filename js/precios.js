@@ -603,7 +603,7 @@ function isDireccionPermitida(direccion) {
     
     // Partidos y localidades permitidos (área metropolitana de Buenos Aires y provincia de Buenos Aires)
     const partidosPermitidos = [
-        "buenos aires", "ciudad autónoma de buenos aires", "caba",
+        "buenos aires", "ciudad autónoma de buenos aires", "caba", "capital federal",
         "quilmes", "bernal", "wilde", "lanús", "lomas de zamora", 
         "adrogué", "monte grande", "ezeiza", "san justo", "ramos mejía",
         "morón", "caseros", "hurlingham", "san martín", "villa ballester",
@@ -617,19 +617,9 @@ function isDireccionPermitida(direccion) {
     ];
     
     // Verificar si alguna de las localidades permitidas está en la dirección
-    const isPermitida = partidosPermitidos.some(partido => 
+    return partidosPermitidos.some(partido => 
         direccionLower.includes(partido.toLowerCase())
     );
-    
-    // Si no está en la lista de partidos, verificar si podemos determinar la zona por texto
-    if (!isPermitida) {
-        // Intentar determinar la zona usando el sistema básico
-        const zona = determinarZonaBasica(direccion);
-        // Si podemos determinar la zona, entonces es una dirección permitida
-        return zona !== null;
-    }
-    
-    return isPermitida;
 }
 
 // Importar la función determinarZonaBasica
@@ -817,38 +807,25 @@ function setupAutocomplete(inputId, suggestionsId) {
                     // Asegurarse de que item.display_name no sea undefined
                     geoapifyResults = geoapifyResults.filter(item => {
                         const displayName = item.properties?.formatted || item.properties?.name;
-                        return displayName && isDireccionPermitida(displayName);
+                        // Verificar que la dirección esté en Buenos Aires o CABA
+                        const state = item.properties?.state || '';
+                        const city = item.properties?.city || '';
+                        const isInBA = state.toLowerCase().includes('buenos aires') || city.toLowerCase().includes('buenos aires') || city.toLowerCase().includes('caba') || city.toLowerCase().includes('capital federal');
+                        
+                        return displayName && isInBA;
                     });
                     
                     // Ordenar resultados para mostrar una mejor diversidad
-                    // Priorizar resultados que podemos determinar la zona, pero no excluir otros
+                    // Priorizar resultados que contienen códigos postales
                     geoapifyResults.sort((a, b) => {
                         const cpA = a.properties?.postcode ? parseInt(a.properties.postcode.replace(/\D/g, '')) : 0;
                         const cpB = b.properties?.postcode ? parseInt(b.properties.postcode.replace(/\D/g, '')) : 0;
                         
-                        // Verificar si los códigos postales están en nuestras zonas
-                        const zonaA = cpA >= 1000 && cpA <= 9999 ? determinarZonaPorCP(cpA) : null;
-                        const zonaB = cpB >= 1000 && cpB <= 9999 ? determinarZonaPorCP(cpB) : null;
-                        
-                        // Verificar si podemos determinar la zona por nombre de ciudad/localidad
-                        const nombreA = a.properties?.city || a.properties?.town || a.properties?.municipality || '';
-                        const nombreB = b.properties?.city || b.properties?.town || b.properties?.municipality || '';
-                        
-                        const zonaNombreA = nombreA ? determinarZonaBasica(nombreA) : null;
-                        const zonaNombreB = nombreB ? determinarZonaBasica(nombreB) : null;
-                        
-                        // Priorizar resultados donde podemos determinar la zona (por CP o por nombre)
-                        const puedeDeterminarA = zonaA || zonaNombreA;
-                        const puedeDeterminarB = zonaB || zonaNombreB;
-                        
-                        if (puedeDeterminarA && !puedeDeterminarB) return -1;
-                        if (!puedeDeterminarA && puedeDeterminarB) return 1;
-                        
-                        // Si ambos se pueden determinar o ninguno, mantener el orden original
-                        // pero dar ligera preferencia a resultados con códigos postales
+                        // Priorizar resultados con códigos postales
                         if (cpA > 0 && cpB === 0) return -1;
                         if (cpA === 0 && cpB > 0) return 1;
                         
+                        // Si ambos tienen o no tienen códigos postales, mantener el orden original
                         return 0;
                     });
                     
@@ -906,7 +883,8 @@ function setupAutocomplete(inputId, suggestionsId) {
                 try {
                     // Usar Geoapify API para autocompletado
                     // Agregar filtro para priorizar resultados en las zonas donde la empresa trabaja
-                    const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=20&filter=countrycode:ar`;
+                    // Filtrar específicamente por provincia de Buenos Aires y CABA
+                    const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=20&filter=countrycode:ar,state:Buenos Aires|city:Capital Federal`;
                     
                     // Lista de proxies alternativos
                     const proxies = [
@@ -961,38 +939,25 @@ function setupAutocomplete(inputId, suggestionsId) {
                 // Asegurarse de que el nombre no sea undefined
                 geoapifyResults = geoapifyResults.filter(item => {
                     const displayName = item.properties?.formatted || item.properties?.name;
-                    return displayName && isDireccionPermitida(displayName);
+                    // Verificar que la dirección esté en Buenos Aires o CABA
+                    const state = item.properties?.state || '';
+                    const city = item.properties?.city || '';
+                    const isInBA = state.toLowerCase().includes('buenos aires') || city.toLowerCase().includes('buenos aires') || city.toLowerCase().includes('caba') || city.toLowerCase().includes('capital federal');
+                                        
+                    return displayName && isInBA;
                 });
                 
                 // Ordenar resultados para mostrar una mejor diversidad
-                // Priorizar resultados que podemos determinar la zona, pero no excluir otros
+                // Priorizar resultados que contienen códigos postales
                 geoapifyResults.sort((a, b) => {
                     const cpA = a.properties?.postcode ? parseInt(a.properties.postcode.replace(/\D/g, '')) : 0;
                     const cpB = b.properties?.postcode ? parseInt(b.properties.postcode.replace(/\D/g, '')) : 0;
                     
-                    // Verificar si los códigos postales están en nuestras zonas
-                    const zonaA = cpA >= 1000 && cpA <= 9999 ? determinarZonaPorCP(cpA) : null;
-                    const zonaB = cpB >= 1000 && cpB <= 9999 ? determinarZonaPorCP(cpB) : null;
-                    
-                    // Verificar si podemos determinar la zona por nombre de ciudad/localidad
-                    const nombreA = a.properties?.city || a.properties?.town || a.properties?.municipality || '';
-                    const nombreB = b.properties?.city || b.properties?.town || b.properties?.municipality || '';
-                    
-                    const zonaNombreA = nombreA ? determinarZonaBasica(nombreA) : null;
-                    const zonaNombreB = nombreB ? determinarZonaBasica(nombreB) : null;
-                    
-                    // Priorizar resultados donde podemos determinar la zona (por CP o por nombre)
-                    const puedeDeterminarA = zonaA || zonaNombreA;
-                    const puedeDeterminarB = zonaB || zonaNombreB;
-                    
-                    if (puedeDeterminarA && !puedeDeterminarB) return -1;
-                    if (!puedeDeterminarA && puedeDeterminarB) return 1;
-                    
-                    // Si ambos se pueden determinar o ninguno, mantener el orden original
-                    // pero dar ligera preferencia a resultados con códigos postales
+                    // Priorizar resultados con códigos postales
                     if (cpA > 0 && cpB === 0) return -1;
                     if (cpA === 0 && cpB > 0) return 1;
                     
+                    // Si ambos tienen o no tienen códigos postales, mantener el orden original
                     return 0;
                 });
                 
