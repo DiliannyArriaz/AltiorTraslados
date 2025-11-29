@@ -124,12 +124,31 @@ function determinarZonaFromDetails(address) {
     }
 
     // FIX: Check by Postal Code
+    // Manejar casos donde address.postcode puede ser undefined o null
     if (address.postcode) {
         const cp = parseInt(address.postcode.replace(/\D/g, ''));
-        const zonaCP = determinarZonaPorCP(cp);
-        if (zonaCP) {
-            console.log(`Zona determinada por CP de detalles ${cp}: ${zonaCP}`);
-            return zonaCP;
+        if (!isNaN(cp) && cp >= 1000 && cp <= 9999) {
+            const zonaCP = determinarZonaPorCP(cp);
+            if (zonaCP) {
+                console.log(`Zona determinada por CP de detalles ${cp}: ${zonaCP}`);
+                return zonaCP;
+            }
+        }
+    }
+    
+    // Verificar también en otros campos donde podría estar el código postal
+    // Esto es útil cuando Geoapify devuelve el CP en diferentes campos
+    const possibleCPFields = ['postcode', 'postal_code', 'zip_code'];
+    for (const field of possibleCPFields) {
+        if (address[field]) {
+            const cp = parseInt(address[field].replace(/\D/g, ''));
+            if (!isNaN(cp) && cp >= 1000 && cp <= 9999) {
+                const zonaCP = determinarZonaPorCP(cp);
+                if (zonaCP) {
+                    console.log(`Zona determinada por CP en campo ${field} (${cp}): ${zonaCP}`);
+                    return zonaCP;
+                }
+            }
         }
     }
 
@@ -269,7 +288,7 @@ async function determinarZona(direccion, cachedDetails = null) {
 
     while ((match = cpRegex.exec(direccion)) !== null) {
         const cp = parseInt(match[1]);
-        if (cp >= 1000 && cp <= 9999) {
+        if (!isNaN(cp) && cp >= 1000 && cp <= 9999) {
             const zonaCP = determinarZonaPorCP(cp);
             if (zonaCP) {
                 console.log(`Zona determinada por CP extraído del texto (${cp}): ${zonaCP}`);
@@ -709,6 +728,9 @@ function searchLugaresComunes(query, lugaresComunes) {
 
 // Función para verificar si una dirección está en el área permitida
 function isDireccionPermitida(direccion) {
+    // Verificar que la dirección no sea undefined o null
+    if (!direccion) return false;
+    
     const direccionLower = direccion.toLowerCase();
     
     // Partidos y localidades permitidos (área metropolitana de Buenos Aires)
@@ -717,7 +739,8 @@ function isDireccionPermitida(direccion) {
         "quilmes", "bernal", "wilde", "lanús", "lomas de zamora", 
         "adrogué", "monte grande", "ezeiza", "san justo", "ramos mejía",
         "morón", "caseros", "hurlingham", "san martín", "villa ballester",
-        "olivos", "martínez", "san isidro", "vicente lópez"
+        "olivos", "martínez", "san isidro", "vicente lópez",
+        "zarate", "serodino", "villa general josé tomas guido", "general las heras"
     ];
     
     // Verificar si alguna de las localidades permitidas está en la dirección
@@ -837,17 +860,19 @@ function setupAutocomplete(inputId, suggestionsId) {
                     let geoapifyResults = cachedResult.data;
                     
                     // Filtrar resultados por área permitida
+                    // Asegurarse de que item.display_name no sea undefined
                     geoapifyResults = geoapifyResults.filter(item => 
-                        isDireccionPermitida(item.display_name)
+                        item.display_name && isDireccionPermitida(item.display_name)
                     );
                     
                     // Tomar solo los primeros 5 resultados
                     geoapifyResults = geoapifyResults.slice(0, 5);
                     
                     // Convertir resultados al mismo formato
+                    // Asegurarse de que result.properties exista antes de acceder a sus propiedades
                     const formattedResults = geoapifyResults.map(result => ({
-                        display_name: result.properties?.formatted || result.properties?.name,
-                        address: {
+                        display_name: (result.properties?.formatted || result.properties?.name) ?? 'Dirección sin nombre',
+                        address: result.properties ? {
                             house_number: result.properties?.housenumber,
                             road: result.properties?.street,
                             neighbourhood: result.properties?.neighbourhood,
@@ -859,9 +884,9 @@ function setupAutocomplete(inputId, suggestionsId) {
                             state: result.properties?.state,
                             postcode: result.properties?.postcode,
                             country: result.properties?.country
-                        },
-                        lat: result.geometry?.coordinates[1],
-                        lon: result.geometry?.coordinates[0],
+                        } : {},
+                        lat: result.geometry?.coordinates?.[1],
+                        lon: result.geometry?.coordinates?.[0],
                         isCommonPlace: false
                     }));
                     
@@ -930,17 +955,20 @@ function setupAutocomplete(inputId, suggestionsId) {
                 }
                 
                 // Filtrar resultados por área permitida
-                geoapifyResults = geoapifyResults.filter(item => 
-                    isDireccionPermitida(item.properties?.formatted || item.properties?.name)
-                );
+                // Asegurarse de que el nombre no sea undefined
+                geoapifyResults = geoapifyResults.filter(item => {
+                    const displayName = item.properties?.formatted || item.properties?.name;
+                    return displayName && isDireccionPermitida(displayName);
+                });
                 
                 // Tomar solo los primeros 5 resultados
                 geoapifyResults = geoapifyResults.slice(0, 5);
                 
                 // Convertir resultados al mismo formato
+                // Asegurarse de que result.properties exista antes de acceder a sus propiedades
                 const formattedResults = geoapifyResults.map(result => ({
-                    display_name: result.properties?.formatted || result.properties?.name,
-                    address: {
+                    display_name: (result.properties?.formatted || result.properties?.name) ?? 'Dirección sin nombre',
+                    address: result.properties ? {
                         house_number: result.properties?.housenumber,
                         road: result.properties?.street,
                         neighbourhood: result.properties?.neighbourhood,
@@ -952,9 +980,9 @@ function setupAutocomplete(inputId, suggestionsId) {
                         state: result.properties?.state,
                         postcode: result.properties?.postcode,
                         country: result.properties?.country
-                    },
-                    lat: result.geometry?.coordinates[1],
-                    lon: result.geometry?.coordinates[0],
+                    } : {},
+                    lat: result.geometry?.coordinates?.[1],
+                    lon: result.geometry?.coordinates?.[0],
                     isCommonPlace: false
                 }));
                 
