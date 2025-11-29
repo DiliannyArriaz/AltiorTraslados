@@ -75,22 +75,6 @@ function initOSMAutocomplete() {
     console.log('Sistema de autocompletado antiguo desactivado');
 }
 
-// Enviar datos por correo electrónico usando Formspree
-async function sendEmail(datos) {
-    try {
-        // Enviar datos usando fetch para evitar redirección
-        await fetch('https://formspree.io/f/mgvrzkbd', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(datos)
-        });
-    } catch (error) {
-        console.error('Error enviando email:', error);
-    }
-}
-
 // Enviar notificación de reserva a ambos destinatarios
 async function sendReservationEmails(datos) {
     try {
