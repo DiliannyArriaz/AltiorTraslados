@@ -921,8 +921,21 @@ function setupAutocomplete(inputId, suggestionsId) {
                         throw lastError || new Error('Todos los proxies fallaron para Geoapify');
                     }
                     
-                    const rawData = await response.json();
-                    geoapifyResults = rawData.features || [];
+                    // Verificar que la respuesta tenga contenido antes de parsear
+                    const responseText = await response.text();
+                    if (!responseText) {
+                        console.warn('Respuesta vacía de Geoapify');
+                        geoapifyResults = [];
+                    } else {
+                        try {
+                            const rawData = JSON.parse(responseText);
+                            geoapifyResults = rawData.features || [];
+                        } catch (parseError) {
+                            console.error('Error al parsear respuesta de Geoapify:', parseError);
+                            console.error('Respuesta recibida:', responseText);
+                            geoapifyResults = [];
+                        }
+                    }
                     
                     // Guardar en cache
                     searchCache.set(cacheKey, {
