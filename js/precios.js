@@ -897,25 +897,40 @@ function setupAutocomplete(inputId, suggestionsId) {
                     
                     // Convertir resultados al mismo formato
                     // Asegurarse de que result.properties exista antes de acceder a sus propiedades
-                    const formattedResults = geoapifyResults.map(result => ({
-                        display_name: (result.properties?.formatted || result.properties?.name) ?? 'Dirección sin nombre',
-                        address: result.properties ? {
-                            house_number: result.properties?.housenumber,
-                            road: result.properties?.street,
-                            neighbourhood: result.properties?.neighbourhood,
-                            suburb: result.properties?.suburb,
-                            city: result.properties?.city,
-                            town: result.properties?.town,
-                            municipality: result.properties?.municipality,
-                            county: result.properties?.county,
-                            state: result.properties?.state,
-                            postcode: result.properties?.postcode,
-                            country: result.properties?.country
-                        } : {},
-                        lat: result.geometry?.coordinates?.[1],
-                        lon: result.geometry?.coordinates?.[0],
-                        isCommonPlace: false
-                    }));
+                    const formattedResults = geoapifyResults.map(result => {
+                        // Determinar zona antes de formatear
+                        let zonaDeterminada = null;
+                        if (result.properties?.postcode) {
+                            const cpMatch = result.properties.postcode.match(/\d+/);
+                            if (cpMatch) {
+                                const cp = parseInt(cpMatch[0]);
+                                if (cp >= 1000 && cp <= 9999) {
+                                    zonaDeterminada = determinarZonaPorCP(cp);
+                                }
+                            }
+                        }
+                        
+                        return {
+                            display_name: (result.properties?.formatted || result.properties?.name) ?? 'Dirección sin nombre',
+                            address: result.properties ? {
+                                house_number: result.properties?.housenumber,
+                                road: result.properties?.street,
+                                neighbourhood: result.properties?.neighbourhood,
+                                suburb: result.properties?.suburb,
+                                city: result.properties?.city,
+                                town: result.properties?.town,
+                                municipality: result.properties?.municipality,
+                                county: result.properties?.county,
+                                state: result.properties?.state,
+                                postcode: result.properties?.postcode,
+                                country: result.properties?.country
+                            } : {},
+                            zonaDeterminada: zonaDeterminada,
+                            lat: result.geometry?.coordinates?.[1],
+                            lon: result.geometry?.coordinates?.[0],
+                            isCommonPlace: false
+                        };
+                    });
                     
                     // Mostrar resultados
                     if (formattedResults.length > 0) {
@@ -1016,25 +1031,40 @@ function setupAutocomplete(inputId, suggestionsId) {
                 
                 // Convertir resultados al mismo formato
                 // Asegurarse de que result.properties exista antes de acceder a sus propiedades
-                const formattedResults = geoapifyResults.map(result => ({
-                    display_name: (result.properties?.formatted || result.properties?.name) ?? 'Dirección sin nombre',
-                    address: result.properties ? {
-                        house_number: result.properties?.housenumber,
-                        road: result.properties?.street,
-                        neighbourhood: result.properties?.neighbourhood,
-                        suburb: result.properties?.suburb,
-                        city: result.properties?.city,
-                        town: result.properties?.town,
-                        municipality: result.properties?.municipality,
-                        county: result.properties?.county,
-                        state: result.properties?.state,
-                        postcode: result.properties?.postcode,
-                        country: result.properties?.country
-                    } : {},
-                    lat: result.geometry?.coordinates?.[1],
-                    lon: result.geometry?.coordinates?.[0],
-                    isCommonPlace: false
-                }));
+                const formattedResults = geoapifyResults.map(result => {
+                    // Determinar zona antes de formatear
+                    let zonaDeterminada = null;
+                    if (result.properties?.postcode) {
+                        const cpMatch = result.properties.postcode.match(/\d+/);
+                        if (cpMatch) {
+                            const cp = parseInt(cpMatch[0]);
+                            if (cp >= 1000 && cp <= 9999) {
+                                zonaDeterminada = determinarZonaPorCP(cp);
+                            }
+                        }
+                    }
+                    
+                    return {
+                        display_name: (result.properties?.formatted || result.properties?.name) ?? 'Dirección sin nombre',
+                        address: result.properties ? {
+                            house_number: result.properties?.housenumber,
+                            road: result.properties?.street,
+                            neighbourhood: result.properties?.neighbourhood,
+                            suburb: result.properties?.suburb,
+                            city: result.properties?.city,
+                            town: result.properties?.town,
+                            municipality: result.properties?.municipality,
+                            county: result.properties?.county,
+                            state: result.properties?.state,
+                            postcode: result.properties?.postcode,
+                            country: result.properties?.country
+                        } : {},
+                        zonaDeterminada: zonaDeterminada,
+                        lat: result.geometry?.coordinates?.[1],
+                        lon: result.geometry?.coordinates?.[0],
+                        isCommonPlace: false
+                    };
+                });
                 
                 // Mostrar resultados
                 if (formattedResults.length > 0) {
@@ -1115,6 +1145,11 @@ function setupAutocomplete(inputId, suggestionsId) {
                                 }
                             }
                         }
+                    }
+                    
+                    // Si ya tenemos información de zona en el resultado, mostrarla
+                    if (result.zonaDeterminada) {
+                        parts.push(`Zona: ${result.zonaDeterminada}`);
                     }
                     
                     if (parts.length > 0) {
