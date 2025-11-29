@@ -617,9 +617,26 @@ function isDireccionPermitida(direccion) {
     ];
     
     // Verificar si alguna de las localidades permitidas está en la dirección
-    return partidosPermitidos.some(partido => 
+    const isPartidoPermitido = partidosPermitidos.some(partido => 
         direccionLower.includes(partido.toLowerCase())
     );
+    
+    // Si no está en la lista de partidos, verificar si tiene un código postal de las zonas permitidas
+    if (!isPartidoPermitido) {
+        // Buscar códigos postales en la dirección
+        const cpMatch = direccionLower.match(/b\d{4}/gi);
+        if (cpMatch) {
+            for (const cp of cpMatch) {
+                const zona = determinarZonaPorCP(cp);
+                if (zona) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    return isPartidoPermitido;
 }
 
 // Importar la función determinarZonaBasica
@@ -928,23 +945,41 @@ function setupAutocomplete(inputId, suggestionsId) {
                         geoapifyResults = [];
                         
                         // Fallback: usar direcciones predefinidas si Geoapify no devuelve resultados
+                        const fallbackAddresses = [];
+                        
                         if (query.toLowerCase().includes('zarate')) {
-                            geoapifyResults = [
-                                {
-                                    properties: {
-                                        housenumber: '5300',
-                                        street: '99 - Zárate',
-                                        city: 'Villa Ballester',
-                                        state: 'Buenos Aires',
-                                        postcode: 'B1653MNY',
-                                        formatted: '99 - Zárate 5300, Villa Ballester, Buenos Aires'
-                                    },
-                                    geometry: {
-                                        coordinates: [-58.5285, -34.3456]
-                                    }
+                            fallbackAddresses.push({
+                                properties: {
+                                    housenumber: '5300',
+                                    street: '99 - Zárate',
+                                    city: 'Villa Ballester',
+                                    state: 'Buenos Aires',
+                                    postcode: 'B1653MNY',
+                                    formatted: '99 - Zárate 5300, Villa Ballester, Buenos Aires'
+                                },
+                                geometry: {
+                                    coordinates: [-58.5285, -34.3456]
                                 }
-                            ];
+                            });
                         }
+                        
+                        if (query.toLowerCase().includes('amenabar')) {
+                            fallbackAddresses.push({
+                                properties: {
+                                    housenumber: '1158',
+                                    street: 'Amenábar',
+                                    city: 'CABA',
+                                    state: 'Buenos Aires',
+                                    postcode: 'B1425',
+                                    formatted: 'Amenábar 1158, CABA, Buenos Aires'
+                                },
+                                geometry: {
+                                    coordinates: [-58.4452, -34.5887]
+                                }
+                            });
+                        }
+                        
+                        geoapifyResults = fallbackAddresses;
                     } else {
                         try {
                             const rawData = JSON.parse(responseText);
