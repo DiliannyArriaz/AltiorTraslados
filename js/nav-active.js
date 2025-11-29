@@ -19,20 +19,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Verificar si el enlace corresponde a la página actual
         if (currentPage === 'index.html' || currentPage === '') {
-            // Página principal - activar "Reservar Ahora" si el href es #reservar
-            if (href === '#reservar') {
+            // Página principal - activar "Reservar Ahora" si el href es #reservar o index.html#reservar
+            if (href === '#reservar' || href === 'index.html#reservar') {
                 link.classList.add('active');
             }
         } else if (currentPage === 'precios.html') {
-            // Página de precios - activar el enlace a precios.html
-            if (href === 'precios.html') {
-                link.classList.add('active');
-            }
+            // Página de precios - no hay un enlace a "precios.html" en esta página
+            // El enlace "Precios" no existe como enlace en la página de precios
         } else if (currentPage === 'cancelar.html') {
-            // Página de cancelación - activar el enlace a cancelar.html
-            if (href === 'cancelar.html') {
-                link.classList.add('active');
-            }
+            // Página de cancelación - no hay un enlace a "cancelar.html" en esta página
+            // El enlace "Cancelar Reserva" no existe como enlace en la página de cancelación
         }
     });
 });
