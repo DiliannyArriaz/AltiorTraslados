@@ -31,7 +31,7 @@ const ZONAS_CP = {
     'Vicente López / Olivos': [ 'B1636', 'B1638', 'B1602'],
     'San Martín / San Andrés': ['B1650', 'B1651'],
     'San Isidro / Boulogne': ['B1642', 'B1609', 'B1640', 'B1641', 'B1643', 'B1644', 'B1646'],
-    'Villa Ballester / José León Suárez': ['B1653', 'B1655'],
+    'Villa Ballester / José León Suárez': ['B1653', 'B1655', 'B1659'],
     'Tigre Centro / Pacheco': [ 'B1648', 'B1617', 'B1618'],
     'Don Torcuato / Grand Bourg': ['B1611', 'B1615'],
     'Benavídez / Milberg / Tortuguitas': ['B1621', 'B1619', 'B1667'],
@@ -39,3 +39,47 @@ const ZONAS_CP = {
     'Pilar / Escobar': ['B1629', 'B1625', 'B1630'],
     'Campana / Cardales': ['B2804', 'B2814']
 };
+
+// Función mejorada para determinar zona por código postal
+function determinarZonaPorCP(cp) {
+    // Convertir a número si es string
+    if (typeof cp === 'string') {
+        // Extraer solo los dígitos
+        const match = cp.match(/\d+/);
+        if (match) {
+            cp = parseInt(match[0]);
+        } else {
+            return null;
+        }
+    }
+    
+    // Verificar que sea un número válido
+    if (typeof cp !== 'number' || isNaN(cp)) {
+        return null;
+    }
+    
+    // Buscar en todas las zonas
+    for (const [zona, codigos] of Object.entries(ZONAS_CP)) {
+        // Si es un array de códigos específicos
+        if (Array.isArray(codigos)) {
+            // Verificar si el código está en el array (como string o como número)
+            if (codigos.includes(cp) || codigos.includes(`B${cp}`) || codigos.includes(cp.toString())) {
+                return zona;
+            }
+        }
+        // Si es un objeto con rango mínimo y máximo
+        else if (typeof codigos === 'object' && codigos.min && codigos.max) {
+            if (cp >= codigos.min && cp <= codigos.max) {
+                return zona;
+            }
+        }
+    }
+    
+    // Si no se encuentra en ninguna zona específica, verificar rangos generales
+    if (cp >= 1000 && cp <= 1499) {
+        return 'CABA / Aeroparque';
+    }
+    
+    // No se pudo determinar la zona
+    return null;
+}

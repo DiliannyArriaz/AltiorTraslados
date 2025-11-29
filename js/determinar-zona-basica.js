@@ -199,7 +199,7 @@ function determinarZonaPorTextoBasica(direccion) {
     if (dir.includes('vicente lópez') || dir.includes('vicente lopez') || dir.includes('olivos')) return 'Vicente López / Olivos';
     if (dir.includes('san martín') || dir.includes('san martin') || dir.includes('san andrés') || dir.includes('san andres')) return 'San Martín / San Andrés';
     if (dir.includes('san isidro') || dir.includes('boulogne')) return 'San Isidro / Boulogne';
-    if (dir.includes('villa ballester') || dir.includes('josé león suárez') || dir.includes('jose leon suarez')) return 'Villa Ballester / José León Suárez';
+    if (dir.includes('villa ballester') || dir.includes('josé león suárez') || dir.includes('jose leon suarez') || dir.includes('lafayette')) return 'Villa Ballester / José León Suárez';
     if (dir.includes('tigre') || dir.includes('pacheco')) return 'Tigre Centro / Pacheco';
     if (dir.includes('don torcuato') || dir.includes('grand bourg')) return 'Don Torcuato / Grand Bourg';
     if (dir.includes('benavídez') || dir.includes('benavidez') || dir.includes('milberg') || dir.includes('tortuguitas')) return 'Benavídez / Milberg / Tortuguitas';

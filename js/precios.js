@@ -744,13 +744,24 @@ function isDireccionPermitida(direccion) {
         "moreno", "francisco álvarez", "merlo", "paso del rey", "ituzaingó", "padua",
         "san miguel", "josé c. paz", "tigre", "pacheco", "don torcuato", "grand bourg",
         "benavídez", "milberg", "tortuguitas", "ingeniero maschwitz", "del viso",
-        "pilar", "escobar", "campana", "cardales", "luján", "general rodríguez"
+        "pilar", "escobar", "campana", "cardales", "luján", "general rodríguez",
+        "lafayette"
     ];
     
     // Verificar si alguna de las localidades permitidas está en la dirección
-    return partidosPermitidos.some(partido => 
+    const isPermitida = partidosPermitidos.some(partido => 
         direccionLower.includes(partido.toLowerCase())
     );
+    
+    // Si no está en la lista de partidos, verificar si podemos determinar la zona por texto
+    if (!isPermitida) {
+        // Intentar determinar la zona usando el sistema básico
+        const zona = determinarZonaBasica(direccion);
+        // Si podemos determinar la zona, entonces es una dirección permitida
+        return zona !== null;
+    }
+    
+    return isPermitida;
 }
 
 // Variable global para caché de búsquedas
@@ -870,8 +881,8 @@ function setupAutocomplete(inputId, suggestionsId) {
                         return displayName && isDireccionPermitida(displayName);
                     });
                     
-                    // Priorizar resultados que tienen códigos postales válidos en nuestras zonas
-                    // Pero también mantener una buena diversidad de resultados
+                    // Ordenar resultados para mostrar una mejor diversidad
+                    // Priorizar resultados que podemos determinar la zona, pero no excluir otros
                     geoapifyResults.sort((a, b) => {
                         const cpA = a.properties?.postcode ? parseInt(a.properties.postcode.replace(/\D/g, '')) : 0;
                         const cpB = b.properties?.postcode ? parseInt(b.properties.postcode.replace(/\D/g, '')) : 0;
@@ -880,11 +891,21 @@ function setupAutocomplete(inputId, suggestionsId) {
                         const zonaA = cpA >= 1000 && cpA <= 9999 ? determinarZonaPorCP(cpA) : null;
                         const zonaB = cpB >= 1000 && cpB <= 9999 ? determinarZonaPorCP(cpB) : null;
                         
-                        // Priorizar resultados con códigos postales válidos en nuestras zonas
-                        if (zonaA && !zonaB) return -1;
-                        if (!zonaA && zonaB) return 1;
+                        // Verificar si podemos determinar la zona por nombre de ciudad/localidad
+                        const nombreA = a.properties?.city || a.properties?.town || a.properties?.municipality || '';
+                        const nombreB = b.properties?.city || b.properties?.town || b.properties?.municipality || '';
                         
-                        // Si ambos tienen zonas válidas o ambos no tienen, mantener el orden original
+                        const zonaNombreA = nombreA ? determinarZonaBasica(nombreA) : null;
+                        const zonaNombreB = nombreB ? determinarZonaBasica(nombreB) : null;
+                        
+                        // Priorizar resultados donde podemos determinar la zona (por CP o por nombre)
+                        const puedeDeterminarA = zonaA || zonaNombreA;
+                        const puedeDeterminarB = zonaB || zonaNombreB;
+                        
+                        if (puedeDeterminarA && !puedeDeterminarB) return -1;
+                        if (!puedeDeterminarA && puedeDeterminarB) return 1;
+                        
+                        // Si ambos se pueden determinar o ninguno, mantener el orden original
                         // pero dar ligera preferencia a resultados con códigos postales
                         if (cpA > 0 && cpB === 0) return -1;
                         if (cpA === 0 && cpB > 0) return 1;
@@ -892,8 +913,8 @@ function setupAutocomplete(inputId, suggestionsId) {
                         return 0;
                     });
                     
-                    // Tomar solo los primeros 12 resultados
-                    geoapifyResults = geoapifyResults.slice(0, 12);
+                    // Tomar solo los primeros 18 resultados
+                    geoapifyResults = geoapifyResults.slice(0, 18);
                     
                     // Convertir resultados al mismo formato
                     // Asegurarse de que result.properties exista antes de acceder a sus propiedades
@@ -946,7 +967,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                 try {
                     // Usar Geoapify API para autocompletado
                     // Agregar filtro para priorizar resultados en las zonas donde la empresa trabaja
-                    const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=15&filter=countrycode:ar`;
+                    const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=20&filter=countrycode:ar`;
                     
                     // Lista de proxies alternativos
                     const proxies = [
@@ -1004,8 +1025,8 @@ function setupAutocomplete(inputId, suggestionsId) {
                     return displayName && isDireccionPermitida(displayName);
                 });
                 
-                // Priorizar resultados que tienen códigos postales válidos en nuestras zonas
-                // Pero también mantener una buena diversidad de resultados
+                // Ordenar resultados para mostrar una mejor diversidad
+                // Priorizar resultados que podemos determinar la zona, pero no excluir otros
                 geoapifyResults.sort((a, b) => {
                     const cpA = a.properties?.postcode ? parseInt(a.properties.postcode.replace(/\D/g, '')) : 0;
                     const cpB = b.properties?.postcode ? parseInt(b.properties.postcode.replace(/\D/g, '')) : 0;
@@ -1014,11 +1035,21 @@ function setupAutocomplete(inputId, suggestionsId) {
                     const zonaA = cpA >= 1000 && cpA <= 9999 ? determinarZonaPorCP(cpA) : null;
                     const zonaB = cpB >= 1000 && cpB <= 9999 ? determinarZonaPorCP(cpB) : null;
                     
-                    // Priorizar resultados con códigos postales válidos en nuestras zonas
-                    if (zonaA && !zonaB) return -1;
-                    if (!zonaA && zonaB) return 1;
+                    // Verificar si podemos determinar la zona por nombre de ciudad/localidad
+                    const nombreA = a.properties?.city || a.properties?.town || a.properties?.municipality || '';
+                    const nombreB = b.properties?.city || b.properties?.town || b.properties?.municipality || '';
                     
-                    // Si ambos tienen zonas válidas o ambos no tienen, mantener el orden original
+                    const zonaNombreA = nombreA ? determinarZonaBasica(nombreA) : null;
+                    const zonaNombreB = nombreB ? determinarZonaBasica(nombreB) : null;
+                    
+                    // Priorizar resultados donde podemos determinar la zona (por CP o por nombre)
+                    const puedeDeterminarA = zonaA || zonaNombreA;
+                    const puedeDeterminarB = zonaB || zonaNombreB;
+                    
+                    if (puedeDeterminarA && !puedeDeterminarB) return -1;
+                    if (!puedeDeterminarA && puedeDeterminarB) return 1;
+                    
+                    // Si ambos se pueden determinar o ninguno, mantener el orden original
                     // pero dar ligera preferencia a resultados con códigos postales
                     if (cpA > 0 && cpB === 0) return -1;
                     if (cpA === 0 && cpB > 0) return 1;
@@ -1026,8 +1057,8 @@ function setupAutocomplete(inputId, suggestionsId) {
                     return 0;
                 });
                 
-                // Tomar solo los primeros 12 resultados
-                geoapifyResults = geoapifyResults.slice(0, 12);
+                // Tomar solo los primeros 18 resultados
+                geoapifyResults = geoapifyResults.slice(0, 18);
                 
                 // Convertir resultados al mismo formato
                 // Asegurarse de que result.properties exista antes de acceder a sus propiedades
@@ -1131,17 +1162,28 @@ function setupAutocomplete(inputId, suggestionsId) {
                         parts.unshift(`${result.address.road} ${result.address.house_number}`);
                     }
                     
-                    // Mostrar el código postal si está disponible y es válido
+                    // Mostrar el código postal si está disponible
                     if (result.address.postcode) {
                         // Extraer solo los dígitos del código postal
                         const cpMatch = result.address.postcode.match(/\d+/);
                         if (cpMatch) {
                             const cp = parseInt(cpMatch[0]);
                             if (cp >= 1000 && cp <= 9999) {
+                                parts.push(`CP: ${cp}`);
+                                
+                                // Determinar y mostrar la zona
                                 const zona = determinarZonaPorCP(cp);
                                 if (zona) {
-                                    parts.push(`CP: ${cp}`);
                                     parts.push(`Zona: ${zona}`);
+                                } else {
+                                    // Si no podemos determinar la zona por CP, intentar por nombre
+                                    const nombreCiudad = result.address.city || result.address.town || result.address.municipality;
+                                    if (nombreCiudad) {
+                                        const zonaNombre = determinarZonaBasica(nombreCiudad);
+                                        if (zonaNombre) {
+                                            parts.push(`Zona: ${zonaNombre}`);
+                                        }
+                                    }
                                 }
                             }
                         }
