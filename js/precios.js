@@ -866,8 +866,24 @@ function setupAutocomplete(inputId, suggestionsId) {
                         return displayName && isDireccionPermitida(displayName);
                     });
                     
-                    // Tomar solo los primeros 5 resultados
-                    geoapifyResults = geoapifyResults.slice(0, 5);
+                    // Priorizar resultados que tienen códigos postales válidos en nuestras zonas
+                    geoapifyResults.sort((a, b) => {
+                        const cpA = a.properties?.postcode ? parseInt(a.properties.postcode.replace(/\D/g, '')) : 0;
+                        const cpB = b.properties?.postcode ? parseInt(b.properties.postcode.replace(/\D/g, '')) : 0;
+                        
+                        // Verificar si los códigos postales están en nuestras zonas
+                        const zonaA = cpA >= 1000 && cpA <= 9999 ? determinarZonaPorCP(cpA) : null;
+                        const zonaB = cpB >= 1000 && cpB <= 9999 ? determinarZonaPorCP(cpB) : null;
+                        
+                        // Priorizar resultados con códigos postales válidos en nuestras zonas
+                        if (zonaA && !zonaB) return -1;
+                        if (!zonaA && zonaB) return 1;
+                        
+                        return 0;
+                    });
+                    
+                    // Tomar solo los primeros 8 resultados
+                    geoapifyResults = geoapifyResults.slice(0, 8);
                     
                     // Convertir resultados al mismo formato
                     // Asegurarse de que result.properties exista antes de acceder a sus propiedades
@@ -904,7 +920,8 @@ function setupAutocomplete(inputId, suggestionsId) {
                 let geoapifyResults = [];
                 try {
                     // Usar Geoapify API para autocompletado
-                    const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=5&filter=countrycode:ar`;
+                    // Agregar filtro para priorizar resultados en las zonas donde la empresa trabaja
+                    const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=10&filter=countrycode:ar`;
                     
                     // Lista de proxies alternativos
                     const proxies = [
@@ -962,8 +979,24 @@ function setupAutocomplete(inputId, suggestionsId) {
                     return displayName && isDireccionPermitida(displayName);
                 });
                 
-                // Tomar solo los primeros 5 resultados
-                geoapifyResults = geoapifyResults.slice(0, 5);
+                // Priorizar resultados que tienen códigos postales válidos en nuestras zonas
+                geoapifyResults.sort((a, b) => {
+                    const cpA = a.properties?.postcode ? parseInt(a.properties.postcode.replace(/\D/g, '')) : 0;
+                    const cpB = b.properties?.postcode ? parseInt(b.properties.postcode.replace(/\D/g, '')) : 0;
+                    
+                    // Verificar si los códigos postales están en nuestras zonas
+                    const zonaA = cpA >= 1000 && cpA <= 9999 ? determinarZonaPorCP(cpA) : null;
+                    const zonaB = cpB >= 1000 && cpB <= 9999 ? determinarZonaPorCP(cpB) : null;
+                    
+                    // Priorizar resultados con códigos postales válidos en nuestras zonas
+                    if (zonaA && !zonaB) return -1;
+                    if (!zonaA && zonaB) return 1;
+                    
+                    return 0;
+                });
+                
+                // Tomar solo los primeros 8 resultados
+                geoapifyResults = geoapifyResults.slice(0, 8);
                 
                 // Convertir resultados al mismo formato
                 // Asegurarse de que result.properties exista antes de acceder a sus propiedades
@@ -1038,12 +1071,18 @@ function setupAutocomplete(inputId, suggestionsId) {
                     const parts = [];
                     if (result.address.road) parts.push(result.address.road);
                     if (result.address.house_number) parts.push(result.address.house_number);
-                    if (result.address.neighbourhood) parts.push(result.address.neighbourhood);
-                    if (result.address.city || result.address.town || result.address.municipality) {
-                        parts.push(result.address.city || result.address.town || result.address.municipality);
+                    
+                    // Mostrar el código postal si está disponible y es válido
+                    if (result.address.postcode) {
+                        const cp = parseInt(result.address.postcode.replace(/\D/g, ''));
+                        if (cp >= 1000 && cp <= 9999) {
+                            const zona = determinarZonaPorCP(cp);
+                            if (zona) {
+                                parts.push(result.address.postcode);
+                                parts.push(zona);
+                            }
+                        }
                     }
-                    // Mostrar el código postal si está disponible
-                    if (result.address.postcode) parts.push(result.address.postcode);
                     
                     if (parts.length > 0) {
                         displayText = parts.join(', ');
