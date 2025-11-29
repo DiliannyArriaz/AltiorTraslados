@@ -1103,12 +1103,16 @@ function setupAutocomplete(inputId, suggestionsId) {
                     
                     // Mostrar el código postal si está disponible y es válido
                     if (result.address.postcode) {
-                        const cp = parseInt(result.address.postcode.replace(/\D/g, ''));
-                        if (cp >= 1000 && cp <= 9999) {
-                            const zona = determinarZonaPorCP(cp);
-                            if (zona) {
-                                parts.push(`CP: ${result.address.postcode}`);
-                                parts.push(`Zona: ${zona}`);
+                        // Extraer solo los dígitos del código postal
+                        const cpMatch = result.address.postcode.match(/\d+/);
+                        if (cpMatch) {
+                            const cp = parseInt(cpMatch[0]);
+                            if (cp >= 1000 && cp <= 9999) {
+                                const zona = determinarZonaPorCP(cp);
+                                if (zona) {
+                                    parts.push(`CP: ${cp}`);
+                                    parts.push(`Zona: ${zona}`);
+                                }
                             }
                         }
                     }
