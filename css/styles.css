@@ -878,13 +878,568 @@ footer {
 }
 
 @media (max-width: 768px) {
+    .cancel-section {
+        padding: 100px 20px 40px;
+    }
+    
+    .cancel-section .cancel-info {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .cancel-section .cancel-info-text {
+        padding: 20px;
+    }
+    
+    .cancel-section .cancel-info-text p {
+        font-size: 1em;
+    }
+    
+    .info-card {
+        padding: 20px;
+    }
+    
+    .cancel-form-container .booking-form {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cancel-section {
+        padding: 100px 15px 30px;
+    }
+    
+    .info-card {
+        padding: 15px;
+    }
+    
+    .contact-options {
+        gap: 10px;
+    }
+    
+    .contact-option {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+}
+
+/* WhatsApp Contact Section */
+.whatsapp-contact {
+    margin-top: 30px;
+    padding: 25px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    text-align: center;
+    border: 1px solid rgba(91, 141, 184, 0.1);
+}
+
+.whatsapp-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.whatsapp-header i {
+    color: #25D366;
+    font-size: 1.8em;
+}
+
+.whatsapp-header h3 {
+    margin: 0;
+    color: #2C4A7C;
+    font-size: 1.4em;
+}
+
+.whatsapp-contact p {
+    margin: 15px 0;
+    color: #5B8DB8;
+    line-height: 1.6;
+}
+
+.btn-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 25px;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+/* Precios Section */
+.precios-section {
+    padding: 100px 20px 60px;
+    background: linear-gradient(135deg, #f5f8fc 0%, #e8f0f8 100%);
+    min-height: 100vh;
+}
+
+.precios-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.precios-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+    gap: 20px;
+}
+
+.tab-btn {
+    padding: 15px 30px;
+    background: #ffffff;
+    border: 2px solid #e8f0f8;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #2C4A7C;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.tab-btn:hover {
+    background: #e8f0f8;
+    transform: translateY(-2px);
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #5B8DB8, #3B5998);
+    color: white;
+    border-color: #3B5998;
+    box-shadow: 0 6px 20px rgba(59, 89, 152, 0.3);
+}
+
+.precios-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.precios-header h2 {
+    color: #2C4A7C;
+    font-size: 2.2em;
+    margin-bottom: 15px;
+}
+
+.precios-header p {
+    color: #5B8DB8;
+    font-size: 1.1em;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.precios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.precio-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(91, 141, 184, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 250px;
+}
+
+.precio-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(59, 89, 152, 0.2);
+}
+
+.precio-title {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: #2C4A7C;
+    margin-bottom: 15px;
+}
+
+.precio-amount {
+    font-size: 2.5em;
+    font-weight: 800;
+    background: linear-gradient(135deg, #3B5998, #5B8DB8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 15px;
+}
+
+.precio-description {
+    color: #6c757d;
+    font-size: 1em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.precio-note {
+    color: #2C4A7C;
+    font-size: 0.9em;
+    font-weight: 600;
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px dashed #e8f0f8;
+}
+
+.precio-connection-note {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 20px 0 30px 0;
+    border: 1px solid #e8f0f8;
+}
+
+.precio-connection-note p {
+    margin: 0;
+    color: #2C4A7C;
+    font-weight: 600;
+    font-size: 0.95em;
+}
+
+.precio-connection-note .precio-standard,
+.precio-connection-note .precio-extra {
+    font-weight: 700;
+    margin: 0 5px;
+}
+
+.precios-note {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 25px;
+    border: 1px solid #e8f0f8;
+}
+
+.precios-note p {
+    margin: 0;
+    color: #2C4A7C;
+    font-weight: 600;
+}
+
+.precios-subtitle {
+    text-align: center;
+    margin: 50px 0 30px;
+}
+
+.precios-subtitle h3 {
+    color: #2C4A7C;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+.subzonas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+.subzona-group {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(91, 141, 184, 0.1);
+}
+
+.subzona-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 2px solid #e8f0f8;
+    margin-bottom: 15px;
+}
+
+.subzona-header h4 {
+    color: #2C4A7C;
+    font-size: 1.4em;
+    margin: 0;
+}
+
+.subzona-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #e8f0f8;
+    gap: 15px;
+}
+
+.subzona-item:last-child {
+    border-bottom: none;
+}
+
+.subzona-item span {
+    font-size: 1em;
+    color: #495057;
+    font-weight: 500;
+    flex: 1;
+}
+
+.subzona-precios {
+    display: flex;
+    gap: 15px;
+    min-width: 180px;
+}
+
+.precio-standard, .precio-extra {
+    font-weight: 700;
+    font-size: 1em;
+    min-width: 70px;
+}
+
+.precio-standard {
+    background: linear-gradient(135deg, #5B8DB8, #3B5998);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    font-size: 1.1em;
+}
+
+.precio-extra {
+    background: linear-gradient(135deg, #3B5998, #2C4A7C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    font-size: 1.1em;
+}
+
+.precio-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.precio-label {
+    font-size: 0.85em;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Responsive para tablets */
+@media (max-width: 1024px) {
+    .precios-section {
+        padding: 100px 15px 40px 15px;
+    }
+    
+    .precios-tabs {
+        gap: 10px;
+    }
+    
+    .tab-btn {
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+    
+    .precios-header h2 {
+        font-size: 1.8em;
+    }
+    
+    .precio-amount {
+        font-size: 2em;
+    }
+    
+    .subzonas-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .precios-section {
+        padding: 100px 10px 30px 10px;
+    }
+    
+    .precios-tabs {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .tab-btn {
+        width: 100%;
+        padding: 15px;
+    }
+    
+    .precios-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .precio-card {
+        padding: 20px;
+    }
+    
+    .precio-title {
+        font-size: 1.2em;
+    }
+    
+    .precio-amount {
+        font-size: 1.8em;
+    }
+    
+    .precios-header h2 {
+        font-size: 1.5em;
+    }
+    
+    .subzona-group {
+        padding: 20px;
+    }
+    
+    .subzona-group h4 {
+        font-size: 1.2em;
+    }
+    
+    .subzona-item {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .subzona-precios {
+        width: auto;
+        justify-content: flex-end;
+        flex: 1;
+    }
+    
+    .subzona-item span {
+        font-size: 0.9em;
+    }
+    
+    .precio-standard, .precio-extra {
+        font-size: 0.9em;
+        font-weight: 700;
+    }
+}
+
+/* Responsive para móviles pequeños */
+@media (max-width: 480px) {
+    .precios-section {
+        padding: 100px 5px 20px 5px;
+    }
+    
+    .precios-header h2 {
+        font-size: 1.3em;
+    }
+    
+    .precio-card {
+        padding: 15px;
+    }
+    
+    .precio-title {
+        font-size: 1.1em;
+    }
+    
+    .precio-amount {
+        font-size: 1.5em;
+    }
+    
+    .subzona-group {
+        padding: 15px;
+    }
+    
+    .subzona-group h4 {
+        font-size: 1.1em;
+    }
+    
+    .subzona-item span {
+        font-size: 0.9em;
+    }
+    
+    .precio-standard, .precio-extra {
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 1024px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        gap: 50px;
+    }
+
+    .hero-text h1 {
+        font-size: 3em;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-features {
+        grid-template-columns: 1fr;
+    }
+
+    .section-header h2 {
+        font-size: 2em;
+    }
+
+    .features,
+    .fleet,
+    .cta {
+        padding: 60px 20px;
+    }
+
+    /* Ajustes para tablet */
+    .nav-container {
+        flex-direction: row;
+    }
+
+    .nav-right {
+        gap: 15px;
+    }
+
+    .phone-number {
+        font-size: 0.9em;
+    }
+
+    .nav-cta {
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+
+    .whatsapp-contact {
+        padding: 20px 15px;
+        margin-top: 25px;
+    }
+
+    .whatsapp-header h3 {
+        font-size: 1.2em;
+    }
+
+    .btn-whatsapp {
+        padding: 12px 20px;
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 768px) {
     nav {
         padding: 10px 20px;
     }
 
     .nav-container {
         position: relative;
-        flex-wrap: wrap;
     }
 
     .logo-section {
@@ -893,21 +1448,22 @@ footer {
     }
 
     .hamburger-menu {
-        display: none;
+        display: flex;
     }
 
     .nav-right {
-        position: static;
-        background: transparent;
-        flex-direction: row;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.98);
+        flex-direction: column;
         gap: 15px;
-        padding: 0;
-        box-shadow: none;
-        border-radius: 0;
-        display: flex;
-        z-index: auto;
-        margin-left: auto;
-        width: auto;
+        padding: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 0 0 15px 15px;
+        display: none;
+        z-index: 1001;
     }
 
     .nav-right.active {
@@ -915,11 +1471,6 @@ footer {
     }
 
     .phone-number {
-        display: none;
-    }
-
-    .nav-link, .nav-cta {
-        padding: 8px 12px;
         font-size: 0.9em;
     }
 
@@ -1595,375 +2146,4 @@ footer {
     border-radius: 5px;
     border: 1px solid #e8f0f8;
     white-space: nowrap;
-}
-
-/* Precios Section Styles */
-.precios-section {
-    padding: 80px 20px;
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-    min-height: 100vh;
-}
-
-.precios-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.precios-section .section-header {
-    text-align: center;
-    margin-bottom: 50px;
-}
-
-.precios-section .section-header h1 {
-    font-size: 2.8em;
-    color: #2C4A7C;
-    margin-bottom: 15px;
-    background: linear-gradient(135deg, #2C4A7C, #3B5998);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.precios-section .section-header p {
-    font-size: 1.2em;
-    color: #5B8DB8;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-/* Tabs Styles */
-.precios-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 40px;
-}
-
-.tab-btn {
-    padding: 15px 30px;
-    background: white;
-    border: 2px solid #e8f0f8;
-    border-radius: 12px;
-    font-size: 1.1em;
-    font-weight: 600;
-    color: #5B8DB8;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-
-.tab-btn:hover {
-    background: #f8f9fa;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-.tab-btn.active {
-    background: linear-gradient(135deg, #5B8DB8, #3B5998);
-    color: white;
-    border-color: #3B5998;
-    box-shadow: 0 6px 20px rgba(59, 89, 152, 0.3);
-}
-
-.tab-btn.active:hover {
-    background: linear-gradient(135deg, #3B5998, #2C4A7C);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(59, 89, 152, 0.4);
-}
-
-/* Tab Content Styles */
-.tab-content {
-    display: none;
-}
-
-.tab-content.active {
-    display: block;
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.precios-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.precios-header h2 {
-    font-size: 2.2em;
-    color: #2C4A7C;
-    margin-bottom: 10px;
-}
-
-.precios-header p {
-    font-size: 1.1em;
-    color: #5B8DB8;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-/* Precios Grid Styles */
-.precios-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-bottom: 40px;
-}
-
-.precio-card {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s;
-    border: 1px solid rgba(91, 141, 184, 0.1);
-}
-
-.precio-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
-
-.precio-title {
-    font-size: 1.4em;
-    font-weight: 700;
-    color: #2C4A7C;
-    margin-bottom: 15px;
-}
-
-.precio-amount {
-    font-size: 2.5em;
-    font-weight: 800;
-    color: #3B5998;
-    margin-bottom: 15px;
-    background: linear-gradient(135deg, #3B5998, #5B8DB8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.precio-description {
-    font-size: 1em;
-    color: #5B8DB8;
-    margin-bottom: 20px;
-    line-height: 1.6;
-}
-
-.precio-note {
-    font-size: 0.9em;
-    color: #7f8c8d;
-    font-style: italic;
-    padding: 12px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border-left: 3px solid #5B8DB8;
-}
-
-/* Connection Note Styles */
-.precio-connection-note {
-    background: linear-gradient(135deg, #5B8DB8, #3B5998);
-    color: white;
-    padding: 25px;
-    border-radius: 15px;
-    text-align: center;
-    margin: 40px 0;
-    box-shadow: 0 10px 30px rgba(59, 89, 152, 0.2);
-}
-
-.precio-connection-note p {
-    font-size: 1.2em;
-    margin: 0;
-    font-weight: 500;
-}
-
-.precio-standard {
-    font-weight: 700;
-    color: #FFD700;
-}
-
-.precio-extra {
-    font-weight: 700;
-    color: #FF6B6B;
-}
-
-/* Precios Subtitle Styles */
-.precios-subtitle {
-    text-align: center;
-    margin: 50px 0 30px;
-}
-
-.precios-subtitle h3 {
-    font-size: 1.8em;
-    color: #2C4A7C;
-    margin-bottom: 10px;
-}
-
-/* Subzonas Grid Styles */
-.subzonas-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 30px;
-}
-
-.subzona-group {
-    background: white;
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(91, 141, 184, 0.1);
-}
-
-.subzona-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #f8f9fa;
-}
-
-.subzona-header h4 {
-    font-size: 1.4em;
-    color: #2C4A7C;
-    margin: 0;
-}
-
-.subzona-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    border-bottom: 1px solid #f8f9fa;
-}
-
-.subzona-item:last-child {
-    border-bottom: none;
-}
-
-.subzona-item span:first-child {
-    font-size: 1em;
-    color: #34495e;
-    flex: 1;
-}
-
-.subzona-precios {
-    display: flex;
-    gap: 15px;
-}
-
-.subzona-precios span {
-    font-weight: 600;
-    font-size: 0.95em;
-    padding: 5px 12px;
-    border-radius: 6px;
-    min-width: 80px;
-    text-align: center;
-}
-
-.subzona-precios .precio-standard {
-    background: rgba(59, 89, 152, 0.1);
-    color: #3B5998;
-}
-
-.subzona-precios .precio-extra {
-    background: rgba(255, 107, 107, 0.1);
-    color: #FF6B6B;
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .precios-section {
-        padding: 60px 15px;
-    }
-    
-    .precios-section .section-header h1 {
-        font-size: 2.2em;
-    }
-    
-    .precios-section .section-header p {
-        font-size: 1em;
-    }
-    
-    .precios-tabs {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .tab-btn {
-        width: 100%;
-        max-width: 300px;
-        margin-bottom: 10px;
-    }
-    
-    .precios-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .precio-card {
-        padding: 20px;
-    }
-    
-    .precio-amount {
-        font-size: 2em;
-    }
-    
-    .subzonas-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .subzona-group {
-        padding: 20px;
-    }
-    
-    .subzona-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    
-    .tipo-servicios {
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .subzona-precios {
-        flex-direction: column;
-        gap: 5px;
-        align-items: flex-end;
-    }
-    
-    .precio-connection-note p {
-        font-size: 1em;
-    }
-}
-
-@media (max-width: 480px) {
-    .precios-section .section-header h1 {
-        font-size: 1.8em;
-    }
-    
-    .precios-header h2 {
-        font-size: 1.5em;
-    }
-    
-    .subzona-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    
-    .subzona-precios {
-        align-items: flex-start;
-        width: 100%;
-        justify-content: flex-start;
-    }
-    
-    .subzona-precios span {
-        min-width: auto;
-    }
 }

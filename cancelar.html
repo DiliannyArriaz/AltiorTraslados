@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-    <!-- EmailJS SDK (para envÃ­o de correos) -->
+    <!-- EmailJS SDK (para envío de correos) -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         .cancel-section .section-header {
@@ -29,7 +29,7 @@
             margin: 0 auto;
         }
         
-        /* Asegurar que el popup estÃ© oculto por defecto */
+        /* Asegurar que el popup esté oculto por defecto */
         #confirmationPopup {
             display: none !important;
         }
@@ -86,7 +86,7 @@
             <div class="nav-right">
                 <a href="index.html" class="nav-link">Inicio</a>
                 <a href="precios.html" class="nav-link">Precios</a>
-                <a href="#" class="nav-link active" aria-current="page">Cancelar Reserva</a>
+                <a href="cancelar.html" class="nav-link active">Cancelar Reserva</a>
                 <a href="index.html#reservar" class="nav-cta">Reservar Ahora</a>
                 <div class="phone-number">
                     <i class="fas fa-phone"></i>
@@ -101,32 +101,32 @@
         <div class="features-container">
             <div class="section-header">
                 <h1>Cancelar Reserva</h1>
-                <p>Ingrese su cÃ³digo de reserva para cancelar su traslado</p>
+                <p>Ingrese su código de reserva para cancelar su traslado</p>
             </div>
 
             <div class="cancel-info">
                 <div class="info-card">
-                    <h3><i class="fas fa-info-circle"></i> CÃ³mo cancelar su reserva</h3>
+                    <h3><i class="fas fa-info-circle"></i> Cómo cancelar su reserva</h3>
                     <ul>
-                        <li>Localice su cÃ³digo de reserva en el correo de confirmaciÃ³n</li>
-                        <li>Ingrese el cÃ³digo en el formulario a continuaciÃ³n</li>
-                        <li>Confirme la cancelaciÃ³n siguiendo las instrucciones</li>
-                        <li>RecibirÃ¡ un correo de confirmaciÃ³n de cancelaciÃ³n</li>
+                        <li>Localice su código de reserva en el correo de confirmación</li>
+                        <li>Ingrese el código en el formulario a continuación</li>
+                        <li>Confirme la cancelación siguiendo las instrucciones</li>
+                        <li>Recibirá un correo de confirmación de cancelación</li>
                     </ul>
                 </div>
 
                 <div class="info-card">
-                    <h3><i class="fas fa-exclamation-circle"></i> PolÃ­ticas de cancelaciÃ³n</h3>
+                    <h3><i class="fas fa-exclamation-circle"></i> Políticas de cancelación</h3>
                     <ul>
-                        <li>Cancelaciones con mÃ¡s de 24 horas de anticipaciÃ³n: Reembolso completo</li>
+                        <li>Cancelaciones con más de 24 horas de anticipación: Reembolso completo</li>
                         <li>Cancelaciones con menos de 24 horas: Reembolso del 50%</li>
-                        <li>Cancelaciones el mismo dÃ­a del servicio: Sin reembolso</li>
+                        <li>Cancelaciones el mismo día del servicio: Sin reembolso</li>
                         <li>En caso de vuelo cancelado: Reembolso completo con comprobante</li>
                     </ul>
                 </div>
 
                 <div class="info-card">
-                    <h3><i class="fas fa-question-circle"></i> Â¿Necesita ayuda?</h3>
+                    <h3><i class="fas fa-question-circle"></i> ¿Necesita ayuda?</h3>
                     <p>Si tiene alguna duda sobre su reserva o necesita asistencia, puede contactarnos:</p>
                     <div class="contact-options">
                         <div class="contact-option">
@@ -139,7 +139,7 @@
                         </div>
                         <div class="contact-option">
                             <i class="fas fa-phone"></i>
-                            <span>TelÃ©fono: +54 9 11 2251-6700</span>
+                            <span>Teléfono: +54 9 11 2251-6700</span>
                         </div>
                     </div>
                 </div>
@@ -148,7 +148,7 @@
             <div class="cancel-form-container">
                 <form id="cancelForm" class="booking-form">
                     <div class="form-group">
-                        <label>CÃ³digo de Reserva</label>
+                        <label>Código de Reserva</label>
                         <input type="text" id="codigoReserva" name="codigoReserva" placeholder="Ej: ALT-XXXXXX-XXXXX"
                             required>
                     </div>
@@ -163,13 +163,13 @@
         </div>
     </section>
 
-    <!-- Popup de confirmaciÃ³n -->
+    <!-- Popup de confirmación -->
     <div id="confirmationPopup" class="popup-overlay" style="display: none;">
         <div class="popup-content">
             <span class="popup-close">&times;</span>
-            <h3>Â¡Reserva Cancelada!</h3>
+            <h3>¡Reserva Cancelada!</h3>
             <p>Su reserva ha sido cancelada exitosamente.</p>
-            <p>RecibirÃ¡ un correo de confirmaciÃ³n con los detalles de la cancelaciÃ³n y cualquier reembolso aplicable.</p>
+            <p>Recibirá un correo de confirmación con los detalles de la cancelación y cualquier reembolso aplicable.</p>
         </div>
     </div>
 
@@ -208,14 +208,15 @@
 
     <script src="js/hamburger-menu.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/nav-active.js"></script>
     <script>
-        // Funcionalidad del formulario de cancelaciÃ³n
+        // Funcionalidad del formulario de cancelación
         document.addEventListener('DOMContentLoaded', function() {
             const cancelForm = document.getElementById('cancelForm');
             const popup = document.getElementById('confirmationPopup');
             const closeButtons = document.querySelectorAll('.popup-close');
             
-            // Asegurar que el popup estÃ© oculto al cargar la pÃ¡gina
+            // Asegurar que el popup esté oculto al cargar la página
             if (popup) {
                 popup.style.display = 'none';
             }
@@ -226,12 +227,12 @@
                     
                     const codigoReserva = document.getElementById('codigoReserva').value;
                     
-                    // ValidaciÃ³n bÃ¡sica del cÃ³digo de reserva
+                    // Validación básica del código de reserva
                     if (codigoReserva && codigoReserva.length >= 10) {
-                        // Procesar cancelaciÃ³n usando el backend real
+                        // Procesar cancelación usando el backend real
                         procesarCancelacionConBackend(codigoReserva);
                     } else {
-                        alert('Por favor ingrese un cÃ³digo de reserva vÃ¡lido (mÃ­nimo 10 caracteres).');
+                        alert('Por favor ingrese un código de reserva válido (mínimo 10 caracteres).');
                     }
                 });
             }
@@ -256,7 +257,7 @@
                 });
             }
             
-            // FunciÃ³n para procesar la cancelaciÃ³n usando el backend real
+            // Función para procesar la cancelación usando el backend real
             async function procesarCancelacionConBackend(codigoReserva) {
                 try {
                     // Mostrar indicador de carga
@@ -265,26 +266,26 @@
                     boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
                     boton.disabled = true;
                     
-                    // Verificar que el cÃ³digo de reserva sea vÃ¡lido usando el backend
+                    // Verificar que el código de reserva sea válido usando el backend
                     const verificacion = await verificarCodigoReservaBackend(codigoReserva);
                     
                     if (!verificacion.exito || !verificacion.valido) {
-                        // Restaurar botÃ³n
+                        // Restaurar botón
                         boton.innerHTML = textoOriginal;
                         boton.disabled = false;
-                        alert(verificacion.mensaje || 'CÃ³digo de reserva no vÃ¡lido o ya cancelado');
+                        alert(verificacion.mensaje || 'Código de reserva no válido o ya cancelado');
                         return;
                     }
                     
                     // Cancelar la reserva usando el backend
                     const resultado = await cancelarReservaBackend(codigoReserva);
                     
-                    // Restaurar botÃ³n
+                    // Restaurar botón
                     boton.innerHTML = textoOriginal;
                     boton.disabled = false;
                     
                     if (resultado.exito && resultado.cancelada) {
-                        // Mostrar popup de confirmaciÃ³n
+                        // Mostrar popup de confirmación
                         if (popup) {
                             popup.style.display = 'flex';
                         }
@@ -293,17 +294,17 @@
                         alert(resultado.mensaje || 'Error al cancelar la reserva');
                     }
                 } catch (error) {
-                    // Restaurar botÃ³n
+                    // Restaurar botón
                     const boton = cancelForm.querySelector('button[type="submit"]');
                     boton.innerHTML = 'Cancelar Reserva';
                     boton.disabled = false;
                     
-                    console.error('Error al procesar cancelaciÃ³n:', error);
-                    alert('Error al procesar la cancelaciÃ³n. Por favor intente nuevamente.');
+                    console.error('Error al procesar cancelación:', error);
+                    alert('Error al procesar la cancelación. Por favor intente nuevamente.');
                 }
             }
             
-            // FunciÃ³n para verificar cÃ³digo de reserva usando el backend
+            // Función para verificar código de reserva usando el backend
             async function verificarCodigoReservaBackend(codigoReserva) {
                 try {
                     const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/verificar-reserva`, {
@@ -315,20 +316,20 @@
                     });
                     
                     if (!response.ok) {
-                        throw new Error('Error en la verificaciÃ³n');
+                        throw new Error('Error en la verificación');
                     }
                     
                     return await response.json();
                 } catch (error) {
-                    console.error('Error al verificar cÃ³digo de reserva:', error);
+                    console.error('Error al verificar código de reserva:', error);
                     return {
                         exito: false,
-                        mensaje: 'Error al verificar el cÃ³digo de reserva'
+                        mensaje: 'Error al verificar el código de reserva'
                     };
                 }
             }
             
-            // FunciÃ³n para cancelar reserva usando el backend
+            // Función para cancelar reserva usando el backend
             async function cancelarReservaBackend(codigoReserva) {
                 try {
                     const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/cancelar-reserva`, {
