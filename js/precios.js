@@ -582,140 +582,8 @@ async function calcularPrecio(origen, destino, numMaletas, origenDetails = null,
     return null;
 }
 
-// Variable para rastrear si la burbuja ya ha mostrado un precio válido
-let burbujaMostrada = false;
-
-// Función para mostrar el precio en el formulario
-async function mostrarPrecio() {
-    const origenInput = document.getElementById('origen');
-    const destinoInput = document.getElementById('destino');
-    const maletasInput = document.getElementById('maletas');
-    const equipajeCheckbox = document.getElementById('equipaje');
-    let precioContainer = document.getElementById('precioContainer');
-
-    // Si no existe el contenedor de precio, crearlo
-    if (!precioContainer) {
-        const precioDiv = document.createElement('div');
-        precioDiv.id = 'precioContainer';
-        precioDiv.className = 'precio-container';
-        precioDiv.innerHTML = `
-            <div class="precio-header">
-                <h3>Precio Estimado</h3>
-            </div>
-            <div class="precio-valor" id="precioValor">-</div>
-            <div class="precio-detalle" id="precioDetalle">Ingrese origen y destino</div>
-        `;
-
-        // Agregar al body para que no modifique el layout
-        document.body.appendChild(precioDiv);
-        precioContainer = precioDiv;
-        
-        // Hacer visible la burbuja desde el principio
-        precioContainer.classList.add('visible');
-    }
-
-    const origen = origenInput.value;
-    const destino = destinoInput.value;
-
-    // Mostrar estado de carga solo si ambos campos tienen contenido significativo
-    if (origen.length > 3 && destino.length > 3) {
-        // Solo mostrar "Calculando..." si realmente vamos a calcular un precio
-        // Verificar si tenemos datos suficientes para calcular
-        const origenDetails = origenInput.dataset.address ? JSON.parse(origenInput.dataset.address) : null;
-        const destinoDetails = destinoInput.dataset.address ? JSON.parse(destinoInput.dataset.address) : null;
-        
-        // Si tenemos datos cacheados o direcciones completas, mostrar "Calculando..."
-        if (origenDetails || destinoDetails || 
-            (origen.includes(',') && destino.includes(','))) {
-            document.getElementById('precioValor').textContent = 'Calculando...';
-            document.getElementById('precioDetalle').textContent = '';
-        }
-    }
-
-    let numMaletas = 0;
-    let tieneEquipaje = false;
-
-    if (equipajeCheckbox && equipajeCheckbox.checked) {
-        numMaletas = parseInt(maletasInput.value) || 0;
-        tieneEquipaje = true;
-    }
-
-    // Obtener detalles cacheados
-    const origenDetails = origenInput.dataset.address ? JSON.parse(origenInput.dataset.address) : null;
-    const destinoDetails = destinoInput.dataset.address ? JSON.parse(destinoInput.dataset.address) : null;
-
-    try {
-        const precio = await calcularPrecio(origen, destino, numMaletas, origenDetails, destinoDetails);
-
-        const precioValor = document.getElementById('precioValor');
-        const precioDetalle = document.getElementById('precioDetalle');
-
-        if (precio && precio > 0) {
-            precioValor.textContent = `$${precio.toLocaleString('es-AR')}`;
-            if (tieneEquipaje) {
-                precioDetalle.textContent = `${numMaletas > 3 ? 'Kangoo' : 'Urbano'} (${numMaletas} maletas)`;
-            } else {
-                precioDetalle.textContent = 'Precio base (Sin equipaje)';
-            }
-            
-            // Marcar que la burbuja ya ha mostrado un precio válido
-            burbujaMostrada = true;
-        } else {
-            // Solo mostrar mensaje inicial si la burbuja nunca ha mostrado un precio
-            if (!burbujaMostrada) {
-                if (!origen && !destino) {
-                    precioValor.textContent = '-';
-                    precioDetalle.textContent = 'Ingrese origen y destino';
-                }
-            } else {
-                // Si ya se mostró un precio, mantener el último precio o mostrar mensaje de cálculo
-                if (origen.length > 3 && destino.length > 3) {
-                    // Verificar si tenemos datos suficientes para calcular
-                    const origenDetails = origenInput.dataset.address ? JSON.parse(origenInput.dataset.address) : null;
-                    const destinoDetails = destinoInput.dataset.address ? JSON.parse(destinoInput.dataset.address) : null;
-                    
-                    // Solo mostrar "Calculando..." si realmente vamos a calcular un precio
-                    if (origenDetails || destinoDetails || 
-                        (origen.includes(',') && destino.includes(','))) {
-                        precioValor.textContent = 'Calculando...';
-                        precioDetalle.textContent = '';
-                    } else {
-                        // Si no tenemos datos suficientes, mantener el último precio mostrado
-                        // o mostrar un mensaje más informativo
-                        if (precioValor.textContent === 'Calculando...') {
-                            precioValor.textContent = '-';
-                            precioDetalle.textContent = 'Complete ambos campos para calcular precio';
-                        }
-                    }
-                } else {
-                    // Si uno de los campos está vacío, mostrar mensaje inicial
-                    precioValor.textContent = '-';
-                    precioDetalle.textContent = 'Ingrese origen y destino';
-                }
-            }
-        }
-    } catch (error) {
-        console.error('Error al calcular precio:', error);
-        
-        // Mantener la burbuja visible incluso si hay error
-        if (burbujaMostrada) {
-            const precioValor = document.getElementById('precioValor');
-            const precioDetalle = document.getElementById('precioDetalle');
-            
-            // Mantener el último precio mostrado o mostrar mensaje de error
-            if (precioValor.textContent === '-' || precioValor.textContent === 'Calculando...') {
-                precioDetalle.textContent = 'Error al calcular precio';
-            }
-        } else {
-            // Si nunca se mostró un precio, mostrar mensaje de error
-            const precioValor = document.getElementById('precioValor');
-            const precioDetalle = document.getElementById('precioDetalle');
-            precioValor.textContent = '-';
-            precioDetalle.textContent = 'Error al calcular precio';
-        }
-    }
-}
-
+// Sistema de burbuja eliminado
+// La determinación de precios se hará de forma dinámica sin mostrar una burbuja flotante
 // Función para buscar lugares comunes que coincidan
 function searchLugaresComunes(query, lugaresComunes) {
     if (!query.trim()) return [];
@@ -1347,13 +1215,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
     console.log('Finished setting up autocompletes');
 
-    async function actualizarPrecio() {
-        await mostrarPrecio();
-    }
-
-    if (origenInput) origenInput.addEventListener('input', actualizarPrecio);
-    if (destinoInput) destinoInput.addEventListener('input', actualizarPrecio);
-    if (maletasInput) maletasInput.addEventListener('input', actualizarPrecio);
+    // Sistema de actualización de precio eliminado
+    // La determinación de precios se hará de forma dinámica sin mostrar una burbuja flotante
 
     if (equipajeCheckbox) {
         // Remover cualquier listener previo para evitar duplicados
@@ -1364,7 +1227,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 luggageDetails.classList.remove('active');
             }
-            mostrarPrecio();
+            // Sistema de burbuja eliminado
         };
 
         // Remover listeners antiguos y agregar el nuevo
