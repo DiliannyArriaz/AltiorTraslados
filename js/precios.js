@@ -1085,8 +1085,21 @@ function setupAutocomplete(inputId, suggestionsId) {
                 } else if (result.address) {
                     // Para resultados de Geoapify, formatear la dirección
                     const parts = [];
-                    if (result.address.road) parts.push(result.address.road);
-                    if (result.address.house_number) parts.push(result.address.house_number);
+                    
+                    // Agregar siempre el nombre de display como base
+                    if (result.display_name && result.display_name !== 'Dirección sin nombre') {
+                        parts.push(result.display_name);
+                    } else {
+                        // Si no hay nombre de display, construir desde partes disponibles
+                        if (result.address.road) parts.push(result.address.road);
+                        if (result.address.house_number) parts.push(result.address.house_number);
+                    }
+                    
+                    // Si no hay nombre de display pero sí tenemos calle y número, combinarlos
+                    if ((!result.display_name || result.display_name === 'Dirección sin nombre') && 
+                        result.address.road && result.address.house_number) {
+                        parts.unshift(`${result.address.road} ${result.address.house_number}`);
+                    }
                     
                     // Mostrar el código postal si está disponible y es válido
                     if (result.address.postcode) {
@@ -1094,14 +1107,14 @@ function setupAutocomplete(inputId, suggestionsId) {
                         if (cp >= 1000 && cp <= 9999) {
                             const zona = determinarZonaPorCP(cp);
                             if (zona) {
-                                parts.push(result.address.postcode);
-                                parts.push(zona);
+                                parts.push(`CP: ${result.address.postcode}`);
+                                parts.push(`Zona: ${zona}`);
                             }
                         }
                     }
                     
                     if (parts.length > 0) {
-                        displayText = parts.join(', ');
+                        displayText = parts.join(' - ');
                     } else {
                         // Si no hay partes específicas, usar el nombre de display
                         displayText = result.display_name;
@@ -1125,7 +1138,8 @@ function setupAutocomplete(inputId, suggestionsId) {
                     // Activar flag antes de cambiar el valor
                     isSelectingSuggestion = true;
                     
-                    input.value = result.display_name;
+                    // Usar el texto formateado para el input
+                    input.value = displayText;
                     // Cachear detalles de la dirección
                     if (result.isCommonPlace) {
                         input.dataset.address = JSON.stringify({
