@@ -861,9 +861,10 @@ function setupAutocomplete(inputId, suggestionsId) {
                     
                     // Filtrar resultados por área permitida
                     // Asegurarse de que item.display_name no sea undefined
-                    geoapifyResults = geoapifyResults.filter(item => 
-                        item.display_name && isDireccionPermitida(item.display_name)
-                    );
+                    geoapifyResults = geoapifyResults.filter(item => {
+                        const displayName = item.properties?.formatted || item.properties?.name;
+                        return displayName && isDireccionPermitida(displayName);
+                    });
                     
                     // Tomar solo los primeros 5 resultados
                     geoapifyResults = geoapifyResults.slice(0, 5);
@@ -996,7 +997,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                 console.error('Error fetching suggestions:', error);
                 suggestionsContainer.style.display = 'none';
             }
-        }, 1000); // Reducir el tiempo de debounce a 1000ms
+        }, 300); // Reducir el tiempo de debounce a 300ms para una respuesta más rápida
     });
 
     // Cerrar sugerencias al hacer clic fuera
@@ -1041,11 +1042,18 @@ function setupAutocomplete(inputId, suggestionsId) {
                     if (result.address.city || result.address.town || result.address.municipality) {
                         parts.push(result.address.city || result.address.town || result.address.municipality);
                     }
+                    // Mostrar el código postal si está disponible
                     if (result.address.postcode) parts.push(result.address.postcode);
                     
                     if (parts.length > 0) {
                         displayText = parts.join(', ');
+                    } else {
+                        // Si no hay partes específicas, usar el nombre de display
+                        displayText = result.display_name;
                     }
+                } else {
+                    // Si no hay dirección, usar el nombre de display
+                    displayText = result.display_name;
                 }
                 
                 div.innerHTML = `<strong>${displayText}</strong>`;
