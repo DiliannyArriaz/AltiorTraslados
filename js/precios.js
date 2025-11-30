@@ -669,6 +669,7 @@ function determinarZonaBasica(direccion) {
         dir.includes('nuñez') || dir.includes('saavedra') ||
         dir.includes('villa urquiza') || dir.includes('villa crespo') ||
         dir.includes('almagro') || dir.includes('caballito') ||
+        dir.includes('cabildo') ||
         // Verificar si contiene "buenos aires" pero no es un aeropuerto
         (dir.includes('buenos aires') && !dir.includes('ezeiza') && !dir.includes('aeroparque'))) {
         return 'CABA';
@@ -787,7 +788,7 @@ function setupAutocomplete(inputId, suggestionsId) {
         suggestionsContainer.style.display = 'none';
 
         // Para consultas muy cortas, no buscar
-        if (query.length < 4) {
+        if (query.length < 3) {
             console.log(`Query too short for ${inputId}:`, query.length);
             suggestionsContainer.style.display = 'none';
             return;
@@ -1122,11 +1123,12 @@ function setupAutocomplete(inputId, suggestionsId) {
                 } else {
                     // Si no hay resultados formateados, mostrar un mensaje
                     suggestionsContainer.style.display = 'block';
-                    suggestionsContainer.innerHTML = '<div class="autocomplete-item" style="padding: 12px 16px; color: #666;">No se encontraron resultados. Intente con otra dirección o escriba más caracteres.</div>';
+                    suggestionsContainer.innerHTML = '<div class="autocomplete-item" style="padding: 12px 16px; color: #666;">No se encontraron resultados. Intente con otra dirección o escriba más caracteres. Ejemplo: "Cabildo 42" o "Avenida Cabildo 42".</div>';
                 }
             } catch (error) {
                 console.error('Error fetching suggestions para consulta:', query, error);
-                suggestionsContainer.style.display = 'none';
+                suggestionsContainer.style.display = 'block';
+                suggestionsContainer.innerHTML = '<div class="autocomplete-item" style="padding: 12px 16px; color: #666;">Error al buscar direcciones. Intente nuevamente.</div>';
             }
         }, 300); // Reducir el tiempo de debounce a 300ms para una respuesta más rápida
     });
