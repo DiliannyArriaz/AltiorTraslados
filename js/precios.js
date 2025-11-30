@@ -669,7 +669,7 @@ function determinarZonaBasica(direccion) {
         dir.includes('nuñez') || dir.includes('saavedra') ||
         dir.includes('villa urquiza') || dir.includes('villa crespo') ||
         dir.includes('almagro') || dir.includes('caballito') ||
-        dir.includes('cabildo') ||
+        dir.includes('cabildo') || dir.includes('palermo') ||
         // Verificar si contiene "buenos aires" pero no es un aeropuerto
         (dir.includes('buenos aires') && !dir.includes('ezeiza') && !dir.includes('aeroparque'))) {
         return 'CABA';
@@ -918,7 +918,8 @@ function setupAutocomplete(inputId, suggestionsId) {
                     // Filtrar específicamente por provincia de Buenos Aires y CABA, y enfocarse en direcciones con números
                     // URL mejorada para Geoapify con filtros menos restrictivos
                     // Removido el filtro de estado para permitir más resultados
-                    const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=20&filter=countrycode:ar&type=street`;
+                    // Aumentado el límite para obtener más resultados
+                    const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=30&filter=countrycode:ar`;
                     
                     // Lista de proxies alternativos
                     const proxies = [
@@ -999,6 +1000,22 @@ function setupAutocomplete(inputId, suggestionsId) {
                                         coordinates: [-58.4452, -34.5887]
                                     }
                                 }
+                            },
+                            {
+                                match: 'cabildo',
+                                data: {
+                                    properties: {
+                                        housenumber: '42',
+                                        street: 'Avenida Cabildo',
+                                        city: 'CABA',
+                                        state: 'Buenos Aires',
+                                        postcode: 'C1425',
+                                        formatted: 'Avenida Cabildo 42, CABA, Buenos Aires'
+                                    },
+                                    geometry: {
+                                        coordinates: [-58.4458, -34.5881]
+                                    }
+                                }
                             }
                         ];
                         
@@ -1053,12 +1070,14 @@ function setupAutocomplete(inputId, suggestionsId) {
                     const city = item.properties?.city || '';
                     
                     // Permitir resultados si están en Buenos Aires, CABA, o no tienen estado definido (posiblemente válidos)
+                    // También permitir resultados sin información de estado pero con información de ciudad
                     const isInBA = state.toLowerCase().includes('buenos aires') || 
                                   city.toLowerCase().includes('buenos aires') || 
                                   city.toLowerCase().includes('caba') || 
                                   city.toLowerCase().includes('capital federal') ||
                                   state === '' ||  // Permitir resultados sin estado definido
-                                  !state;  // Permitir resultados con estado undefined/null
+                                  !state ||  // Permitir resultados con estado undefined/null
+                                  (state === '' && city !== '');  // Permitir resultados con ciudad pero sin estado
                     
                     return isInBA;
                 });
@@ -1123,12 +1142,12 @@ function setupAutocomplete(inputId, suggestionsId) {
                 } else {
                     // Si no hay resultados formateados, mostrar un mensaje
                     suggestionsContainer.style.display = 'block';
-                    suggestionsContainer.innerHTML = '<div class="autocomplete-item" style="padding: 12px 16px; color: #666;">No se encontraron resultados. Intente con otra dirección o escriba más caracteres. Ejemplo: "Cabildo 42" o "Avenida Cabildo 42".</div>';
+                    suggestionsContainer.innerHTML = '<div class="autocomplete-item" style="padding: 12px 16px; color: #666;">No se encontraron resultados. Intente con otra dirección o escriba más caracteres. Ejemplos: "Cabildo 42", "Avenida Cabildo 42", "Zarate 5300".</div>';
                 }
             } catch (error) {
                 console.error('Error fetching suggestions para consulta:', query, error);
                 suggestionsContainer.style.display = 'block';
-                suggestionsContainer.innerHTML = '<div class="autocomplete-item" style="padding: 12px 16px; color: #666;">Error al buscar direcciones. Intente nuevamente.</div>';
+                suggestionsContainer.innerHTML = '<div class="autocomplete-item" style="padding: 12px 16px; color: #666;">Error al buscar direcciones. Intente nuevamente. Si el problema persiste, intente con direcciones conocidas como "Cabildo 42" o "Zarate 5300".</div>';
             }
         }, 300); // Reducir el tiempo de debounce a 300ms para una respuesta más rápida
     });
