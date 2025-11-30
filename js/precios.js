@@ -915,7 +915,9 @@ function setupAutocomplete(inputId, suggestionsId) {
                     // Usar Geoapify API para autocompletado
                     // Agregar filtro para priorizar resultados en las zonas donde la empresa trabaja
                     // Filtrar específicamente por provincia de Buenos Aires y CABA, y enfocarse en direcciones con números
-                    const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=20&filter=countrycode:ar,state:Buenos Aires|city:Capital Federal&type=street`;
+                    // URL mejorada para Geoapify con filtros menos restrictivos
+                    // Removido el filtro de estado para permitir más resultados
+                    const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=20&filter=countrycode:ar&type=street`;
                     
                     // Lista de proxies alternativos
                     const proxies = [
@@ -954,6 +956,8 @@ function setupAutocomplete(inputId, suggestionsId) {
                     
                     // Verificar que la respuesta tenga contenido antes de parsear
                     const responseText = await response.text();
+                    console.log('Respuesta cruda de Geoapify para consulta:', query, responseText);
+                    
                     if (!responseText) {
                         console.warn('Respuesta vacía de Geoapify para consulta:', query);
                         geoapifyResults = [];
@@ -1029,14 +1033,33 @@ function setupAutocomplete(inputId, suggestionsId) {
                 
                 // Filtrar resultados por área permitida
                 // Asegurarse de que el nombre no sea undefined
+                // Filtrado más permisivo para incluir más resultados válidos
                 geoapifyResults = geoapifyResults.filter(item => {
                     const displayName = item.properties?.formatted || item.properties?.name;
+                    
+                    // Si no hay nombre para mostrar, descartar
+                    if (!displayName) return false;
+                    
+                    // Verificar que la dirección esté en Argentina
+                    const country = item.properties?.country || '';
+                    const isArgentina = country.toLowerCase().includes('argentina') || country.toLowerCase().includes('argentine');
+                    
+                    // Si no está en Argentina, descartar
+                    if (!isArgentina) return false;
+                    
                     // Verificar que la dirección esté en Buenos Aires o CABA
                     const state = item.properties?.state || '';
                     const city = item.properties?.city || '';
-                    const isInBA = state.toLowerCase().includes('buenos aires') || city.toLowerCase().includes('buenos aires') || city.toLowerCase().includes('caba') || city.toLowerCase().includes('capital federal');
-                                        
-                    return displayName && isInBA;
+                    
+                    // Permitir resultados si están en Buenos Aires, CABA, o no tienen estado definido (posiblemente válidos)
+                    const isInBA = state.toLowerCase().includes('buenos aires') || 
+                                  city.toLowerCase().includes('buenos aires') || 
+                                  city.toLowerCase().includes('caba') || 
+                                  city.toLowerCase().includes('capital federal') ||
+                                  state === '' ||  // Permitir resultados sin estado definido
+                                  !state;  // Permitir resultados con estado undefined/null
+                    
+                    return isInBA;
                 });
                 
                 // Ordenar resultados para mostrar una mejor diversidad
@@ -1099,7 +1122,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                 } else {
                     // Si no hay resultados formateados, mostrar un mensaje
                     suggestionsContainer.style.display = 'block';
-                    suggestionsContainer.innerHTML = '<div class="autocomplete-item" style="padding: 12px 16px; color: #666;">No se encontraron resultados. Intente con otra dirección.</div>';
+                    suggestionsContainer.innerHTML = '<div class="autocomplete-item" style="padding: 12px 16px; color: #666;">No se encontraron resultados. Intente con otra dirección o escriba más caracteres.</div>';
                 }
             } catch (error) {
                 console.error('Error fetching suggestions para consulta:', query, error);
