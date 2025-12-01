@@ -264,8 +264,18 @@ function setupAutocomplete(inputId, suggestionsId) {
             suggestionsContainer.style.display = 'none';
             return;
         }
+        
+        // Verificar si el texto parece una dirección completa (con número)
+        // Solo buscar si el texto contiene una calle y un número
+        const hasStreetAndNumber = /\d/.test(query) && query.length >= 6;
+        if (!hasStreetAndNumber) {
+            console.log(`Query doesn't look like a complete address for ${inputId}:`, query);
+            suggestionsContainer.style.display = 'none';
+            return;
+        }
 
         clearTimeout(debounceTimer);
+        // Aumentar el tiempo de debounce a 1000ms para reducir búsquedas frecuentes
         debounceTimer = setTimeout(async () => {
             try {
                 
