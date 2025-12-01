@@ -448,6 +448,11 @@ select:focus {
     color: #5B8DB8;
 }
 
+.features {
+    padding: 80px 20px 40px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -511,7 +516,7 @@ select:focus {
 
 /* Fleet Section */
 .fleet {
-    padding: 120px 40px;
+    padding: 80px 40px;
     background: linear-gradient(135deg, #f5f8fc 0%, #e8f0f8 100%);
 }
 
