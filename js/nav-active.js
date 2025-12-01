@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (currentPath === 'precios.html') {
         console.log('Iniciando manejo de pestañas de precios');
         
-        // Esperar un poco más para asegurar que todo el DOM esté cargado
-        setTimeout(function() {
+        // Función para inicializar las pestañas
+        function initializeTabs() {
             const tabBtns = document.querySelectorAll('.tab-btn');
             const tabContents = document.querySelectorAll('.tab-content');
             
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Verificar que tengamos ambos elementos
             if (tabBtns.length === 0 || tabContents.length === 0) {
                 console.warn('No se encontraron elementos de pestañas o contenidos');
-                return;
+                return false;
             }
             
             // Verificar que todos los contenidos necesarios existan
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (!allContentsExist) {
                 console.warn('Algunos contenidos de pestañas no se encontraron');
-                return;
+                return false;
             }
             
             // Función para cambiar de pestaña
@@ -87,12 +87,29 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Asignar eventos a los botones
             tabBtns.forEach(btn => {
-                btn.addEventListener('click', changeTab);
-                btn.addEventListener('touchstart', changeTab);
+                // Remover eventos anteriores si existen
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+                
+                // Asignar nuevos eventos
+                newBtn.addEventListener('click', changeTab);
+                newBtn.addEventListener('touchstart', changeTab);
             });
             
             console.log('Pestañas inicializadas correctamente');
-        }, 500); // Dar más tiempo para que el DOM se cargue completamente
+            return true;
+        }
+        
+        // Intentar inicializar inmediatamente
+        const initialized = initializeTabs();
+        
+        // Si no se pudo inicializar, intentar nuevamente después de un breve momento
+        if (!initialized) {
+            // Usar requestAnimationFrame en lugar de setTimeout para evitar CSP
+            requestAnimationFrame(function() {
+                initializeTabs();
+            });
+        }
     }
 });
 
