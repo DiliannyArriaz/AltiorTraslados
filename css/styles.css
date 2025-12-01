@@ -87,7 +87,7 @@ nav {
     color: #3B5998;
 }
 
-/* Estilos para enlace activo */
+/* Hombres para enlace activo */
 .nav-link.active, .nav-cta.active {
     background: linear-gradient(135deg, #5B8DB8, #3B5998);
     color: white;
@@ -998,6 +998,7 @@ footer {
     text-decoration: none;
     border-radius: 12px;
     font-weight: 600;
+
 }
 
 /* Precios Section */
@@ -1033,9 +1034,6 @@ footer {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     min-height: 50px; /* Asegurar altura mínima para móviles */
     min-width: 120px; /* Asegurar ancho mínimo para móviles */
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
 }
 
 .tab-btn:hover {
@@ -1055,7 +1053,7 @@ footer {
     display: none;
 }
 
-.tab-content:target {
+.tab-content.active {
     display: block;
 }
 
