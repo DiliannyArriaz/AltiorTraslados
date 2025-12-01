@@ -382,7 +382,9 @@ function setupAutocomplete(inputId, suggestionsId) {
                     if (formattedResults.length > 0) {
                         displaySuggestions(formattedResults);
                     } else {
-                        suggestionsContainer.style.display = 'none';
+                        // Si no hay resultados formateados, mostrar un mensaje
+                        suggestionsContainer.style.display = 'block';
+                        suggestionsContainer.innerHTML = '<div class="autocomplete-item" style="padding: 12px 16px; color: #666;">No se encontraron resultados. Intente con otra dirección o escriba más caracteres. Ejemplos: "Cabildo 42", "Avenida Cabildo 42", "Zarate 5300".</div>';
                     }
                     return;
                 }
