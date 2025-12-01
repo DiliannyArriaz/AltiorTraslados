@@ -1,6 +1,63 @@
 
+// Lugares comunes predefinidos (aeropuertos, estaciones, etc.)
+const lugaresComunes = [
+    { nombre: "Aeropuerto Ezeiza", direccion: "Aeropuerto Internacional Ministro Pistarini, Ezeiza, Buenos Aires" },
+    { nombre: "Aeropuerto Aeroparque", direccion: "Aeropuerto Jorge Newbery, Ciudad Autónoma de Buenos Aires" },
+    {
+        nombre: "Aeropuerto El Palomar",
+        direccion: "Aeropuerto El Palomar, Partido de Morón, Buenos Aires, Argentina"
+    },
+    {
+        nombre: "Estación Retiro",
+        direccion: "Estación Retiro, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+    },
+    {
+        nombre: "Estación Constitución",
+        direccion: "Estación Constitución, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+    },
+    {
+        nombre: "Estación Once",
+        direccion: "Estación Once, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+    },
+    {
+        nombre: "Puerto Madero",
+        direccion: "Puerto Madero, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+    },
+    {
+        nombre: "Centro Cívico",
+        direccion: "Centro Cívico, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+    },
+    {
+        nombre: "Palermo",
+        direccion: "Palermo, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+    },
+    {
+        nombre: "Recoleta",
+        direccion: "Recoleta, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+    },
+    {
+        nombre: "San Telmo",
+        direccion: "San Telmo, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+    },
+    {
+        nombre: "La Boca",
+        direccion: "La Boca, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+    },
+    {
+        nombre: "Microcentro",
+        direccion: "Microcentro, Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+    }
+];
 
-
+// Función para buscar lugares comunes que coincidan
+function searchLugaresComunes(query, lugaresComunes) {
+    if (!query.trim()) return [];
+    
+    const searchTerm = query.toLowerCase();
+    return lugaresComunes.filter(lugar => 
+        lugar.nombre.toLowerCase().includes(searchTerm)
+    );
+}
 
 // Zonas disponibles para selección
 const ZONAS_DISPONIBLES = [
