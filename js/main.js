@@ -72,7 +72,6 @@ const partidosPermitidos = [
 const ZONAS_DISPONIBLES = [
     'CABA',
     'EZEIZA',
-    'AEROPARQUE',
     'Avellaneda / Lanús',
     'Wilde / Monte Chingolo',
     'Quilmes / Alte Brown',
@@ -589,6 +588,51 @@ function showReturnMessage() {
 document.addEventListener('DOMContentLoaded', function() {
     showReturnMessage();
     initOSMAutocomplete();
+    
+    // Configurar el checkbox de equipaje
+    const equipajeCheckbox = document.getElementById('equipaje');
+    const luggageDetails = document.getElementById('luggageDetails');
+    const checkboxContainer = document.querySelector('.checkbox-container');
+    
+    if (equipajeCheckbox && luggageDetails) {
+        // Función para mostrar/ocultar detalles de equipaje
+        function toggleLuggageDetails() {
+            if (equipajeCheckbox.checked) {
+                luggageDetails.style.display = 'block';
+                luggageDetails.classList.add('active');
+            } else {
+                luggageDetails.style.display = 'none';
+                luggageDetails.classList.remove('active');
+            }
+        }
+        
+        // Agregar event listener al checkbox
+        equipajeCheckbox.addEventListener('change', toggleLuggageDetails);
+        
+        // Agregar event listener al contenedor para mejor UX
+        if (checkboxContainer) {
+            checkboxContainer.addEventListener('click', function(e) {
+                // Prevenir el doble toggle si se hace clic directamente en el checkbox
+                if (e.target !== equipajeCheckbox) {
+                    equipajeCheckbox.checked = !equipajeCheckbox.checked;
+                    // Disparar el evento change manualmente para asegurar que se ejecute
+                    equipajeCheckbox.dispatchEvent(new Event('change'));
+                }
+            });
+        }
+        
+        // Inicializar el estado correcto
+        toggleLuggageDetails();
+    }
+    
+    // Configurar fecha mínima para el campo de fecha
+    const fechaInput = document.getElementById('fecha');
+    if (fechaInput) {
+        // Establecer la fecha mínima como hoy
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0];
+        fechaInput.setAttribute('min', formattedDate);
+    }
 });
 
 function formatDate(dateString) {
@@ -682,6 +726,202 @@ document.addEventListener('DOMContentLoaded', function() {
             zonaSelect.appendChild(option);
         });
     }
+    
+    // Obtener referencias a los elementos de origen y destino
+    const origenSelect = document.getElementById('origen');
+    const destinoSelect = document.getElementById('destino');
+    
+    // Función para actualizar las opciones de un select
+    function updateSelectOptions(selectElement, selectedValue, otherSelectValue) {
+        // Guardar el valor seleccionado actualmente
+        const currentValue = selectElement.value;
+        
+        // Limpiar las opciones actuales
+        selectElement.innerHTML = '';
+        
+        // Si el otro select tiene un aeropuerto seleccionado, mostrar campo de texto
+        if (otherSelectValue === 'Aeropuerto Ezeiza' || otherSelectValue === 'Aeropuerto Aeroparque') {
+            // Agregar opción para ingresar dirección manualmente
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = 'Ingrese dirección manualmente';
+            selectElement.appendChild(option);
+            
+            // Si ya había una dirección ingresada, mantenerla
+            if (currentValue && currentValue !== 'Aeropuerto Ezeiza' && currentValue !== 'Aeropuerto Aeroparque') {
+                const addressOption = document.createElement('option');
+                addressOption.value = currentValue;
+                addressOption.textContent = currentValue;
+                selectElement.appendChild(addressOption);
+                selectElement.value = currentValue;
+            }
+        } else {
+            // Mostrar las opciones de aeropuertos
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Seleccione aeropuerto';
+            selectElement.appendChild(defaultOption);
+            
+            const ezeizaOption = document.createElement('option');
+            ezeizaOption.value = 'Aeropuerto Ezeiza';
+            ezeizaOption.textContent = 'Aeropuerto Ezeiza';
+            selectElement.appendChild(ezeizaOption);
+            
+            const aeroparqueOption = document.createElement('option');
+            aeroparqueOption.value = 'Aeropuerto Aeroparque';
+            aeroparqueOption.textContent = 'Aeropuerto Aeroparque';
+            selectElement.appendChild(aeroparqueOption);
+            
+            // Si había un aeropuerto seleccionado, mantenerlo
+            if (currentValue === 'Aeropuerto Ezeiza' || currentValue === 'Aeropuerto Aeroparque') {
+                selectElement.value = currentValue;
+            }
+        }
+    }
+    
+    // Agregar event listeners para manejar cambios en los selects
+    if (origenSelect && destinoSelect) {
+        origenSelect.addEventListener('change', function() {
+            const selectedValue = this.value;
+            const otherValue = destinoSelect.value;
+            
+            // Si se selecciona una dirección manual (no un aeropuerto), convertir el otro select en dropdown de aeropuertos
+            if (selectedValue && selectedValue !== 'Aeropuerto Ezeiza' && selectedValue !== 'Aeropuerto Aeroparque') {
+                // Actualizar destino para mostrar solo aeropuertos
+                destinoSelect.innerHTML = '';
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Seleccione aeropuerto';
+                destinoSelect.appendChild(defaultOption);
+                
+                const ezeizaOption = document.createElement('option');
+                ezeizaOption.value = 'Aeropuerto Ezeiza';
+                ezeizaOption.textContent = 'Aeropuerto Ezeiza';
+                destinoSelect.appendChild(ezeizaOption);
+                
+                const aeroparqueOption = document.createElement('option');
+                aeroparqueOption.value = 'Aeropuerto Aeroparque';
+                aeroparqueOption.textContent = 'Aeropuerto Aeroparque';
+                destinoSelect.appendChild(aeroparqueOption);
+            } 
+            // Si se selecciona un aeropuerto, convertir el otro select en campo de texto
+            else if (selectedValue === 'Aeropuerto Ezeiza' || selectedValue === 'Aeropuerto Aeroparque') {
+                // Actualizar destino para permitir dirección manual
+                destinoSelect.innerHTML = '';
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'Ingrese dirección manualmente';
+                destinoSelect.appendChild(option);
+            }
+            // Si se deselecciona, restaurar ambos a aeropuertos
+            else {
+                // Restaurar origen
+                origenSelect.innerHTML = '';
+                const defaultOption1 = document.createElement('option');
+                defaultOption1.value = '';
+                defaultOption1.textContent = 'Seleccione aeropuerto';
+                origenSelect.appendChild(defaultOption1);
+                
+                const ezeizaOption1 = document.createElement('option');
+                ezeizaOption1.value = 'Aeropuerto Ezeiza';
+                ezeizaOption1.textContent = 'Aeropuerto Ezeiza';
+                origenSelect.appendChild(ezeizaOption1);
+                
+                const aeroparqueOption1 = document.createElement('option');
+                aeroparqueOption1.value = 'Aeropuerto Aeroparque';
+                aeroparqueOption1.textContent = 'Aeropuerto Aeroparque';
+                origenSelect.appendChild(aeroparqueOption1);
+                
+                // Restaurar destino
+                destinoSelect.innerHTML = '';
+                const defaultOption2 = document.createElement('option');
+                defaultOption2.value = '';
+                defaultOption2.textContent = 'Seleccione aeropuerto';
+                destinoSelect.appendChild(defaultOption2);
+                
+                const ezeizaOption2 = document.createElement('option');
+                ezeizaOption2.value = 'Aeropuerto Ezeiza';
+                ezeizaOption2.textContent = 'Aeropuerto Ezeiza';
+                destinoSelect.appendChild(ezeizaOption2);
+                
+                const aeroparqueOption2 = document.createElement('option');
+                aeroparqueOption2.value = 'Aeropuerto Aeroparque';
+                aeroparqueOption2.textContent = 'Aeropuerto Aeroparque';
+                destinoSelect.appendChild(aeroparqueOption2);
+            }
+        });
+        
+        destinoSelect.addEventListener('change', function() {
+            const selectedValue = this.value;
+            const otherValue = origenSelect.value;
+            
+            // Si se selecciona una dirección manual (no un aeropuerto), convertir el otro select en dropdown de aeropuertos
+            if (selectedValue && selectedValue !== 'Aeropuerto Ezeiza' && selectedValue !== 'Aeropuerto Aeroparque') {
+                // Actualizar origen para mostrar solo aeropuertos
+                origenSelect.innerHTML = '';
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Seleccione aeropuerto';
+                origenSelect.appendChild(defaultOption);
+                
+                const ezeizaOption = document.createElement('option');
+                ezeizaOption.value = 'Aeropuerto Ezeiza';
+                ezeizaOption.textContent = 'Aeropuerto Ezeiza';
+                origenSelect.appendChild(ezeizaOption);
+                
+                const aeroparqueOption = document.createElement('option');
+                aeroparqueOption.value = 'Aeropuerto Aeroparque';
+                aeroparqueOption.textContent = 'Aeropuerto Aeroparque';
+                origenSelect.appendChild(aeroparqueOption);
+            } 
+            // Si se selecciona un aeropuerto, convertir el otro select en campo de texto
+            else if (selectedValue === 'Aeropuerto Ezeiza' || selectedValue === 'Aeropuerto Aeroparque') {
+                // Actualizar origen para permitir dirección manual
+                origenSelect.innerHTML = '';
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'Ingrese dirección manualmente';
+                origenSelect.appendChild(option);
+            }
+            // Si se deselecciona, restaurar ambos a aeropuertos
+            else {
+                // Restaurar origen
+                origenSelect.innerHTML = '';
+                const defaultOption1 = document.createElement('option');
+                defaultOption1.value = '';
+                defaultOption1.textContent = 'Seleccione aeropuerto';
+                origenSelect.appendChild(defaultOption1);
+                
+                const ezeizaOption1 = document.createElement('option');
+                ezeizaOption1.value = 'Aeropuerto Ezeiza';
+                ezeizaOption1.textContent = 'Aeropuerto Ezeiza';
+                origenSelect.appendChild(ezeizaOption1);
+                
+                const aeroparqueOption1 = document.createElement('option');
+                aeroparqueOption1.value = 'Aeropuerto Aeroparque';
+                aeroparqueOption1.textContent = 'Aeropuerto Aeroparque';
+                origenSelect.appendChild(aeroparqueOption1);
+                
+                // Restaurar destino
+                destinoSelect.innerHTML = '';
+                const defaultOption2 = document.createElement('option');
+                defaultOption2.value = '';
+                defaultOption2.textContent = 'Seleccione aeropuerto';
+                destinoSelect.appendChild(defaultOption2);
+                
+                const ezeizaOption2 = document.createElement('option');
+                ezeizaOption2.value = 'Aeropuerto Ezeiza';
+                ezeizaOption2.textContent = 'Aeropuerto Ezeiza';
+                destinoSelect.appendChild(ezeizaOption2);
+                
+                const aeroparqueOption2 = document.createElement('option');
+                aeroparqueOption2.value = 'Aeropuerto Aeroparque';
+                aeroparqueOption2.textContent = 'Aeropuerto Aeroparque';
+                destinoSelect.appendChild(aeroparqueOption2);
+            }
+        });
+    }
+    
     const bookingForm = document.getElementById('bookingForm');
     if (bookingForm) {
         bookingForm.addEventListener('submit', async function(e) {
@@ -703,6 +943,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const telefono = document.getElementById('telefono').value;
             const tieneEquipaje = document.getElementById('equipaje').checked;
             const maletas = tieneEquipaje ? document.getElementById('maletas').value : 'Sin equipaje';
+            // Obtener el valor de la zona seleccionada
+            const zona = document.getElementById('zona').value;
             
             // Generar código de reserva único
             const codigoReserva = generateReservationCode();
@@ -717,6 +959,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('maletas_hidden').value = maletas;
             document.getElementById('pasajeros_hidden').value = pasajeros;
             document.getElementById('telefono_hidden').value = telefono;
+            // Actualizar el valor del campo oculto de la zona
+            document.getElementById('zona_hidden').value = zona;
             
             // También necesitamos pasar la fecha y hora formateadas
             // Para mantener compatibilidad con el formato anterior

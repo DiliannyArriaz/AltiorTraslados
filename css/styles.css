@@ -123,6 +123,10 @@ nav {
     flex-direction: column;
     cursor: pointer;
     padding: 5px;
+    min-height: 40px; /* Asegurar altura mínima para móviles */
+    min-width: 40px; /* Asegurar ancho mínimo para móviles */
+    justify-content: center;
+    align-items: center;
 }
 
 .hamburger-line {
@@ -309,6 +313,7 @@ select {
     transition: all 0.3s;
     background: #f5f8fc;
     font-family: inherit;
+    min-height: 50px; /* Asegurar altura mínima para móviles */
 }
 
 input:focus,
@@ -351,6 +356,8 @@ select:focus {
     accent-color: #3B5998;
     position: relative;
     z-index: 2;
+    min-height: 22px; /* Asegurar altura mínima para móviles */
+    min-width: 22px; /* Asegurar ancho mínimo para móviles */
 }
 
 .checkbox-container label {
@@ -402,6 +409,7 @@ select:focus {
     justify-content: center;
     gap: 12px;
     box-shadow: 0 6px 20px rgba(59, 89, 152, 0.3);
+    min-height: 55px; /* Asegurar altura mínima para móviles */
 }
 
 .btn-submit:hover {
@@ -627,6 +635,8 @@ select:focus {
     font-weight: 600;
     transition: all 0.3s;
     box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+    min-height: 60px; /* Asegurar altura mínima para móviles */
+    min-width: 200px; /* Asegurar ancho mínimo para móviles */
 }
 
 .cta-button:hover {
@@ -1000,6 +1010,8 @@ footer {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    min-height: 50px; /* Asegurar altura mínima para móviles */
+    min-width: 120px; /* Asegurar ancho mínimo para móviles */
 }
 
 .tab-btn:hover {
@@ -1249,190 +1261,72 @@ footer {
     }
     
     .tab-btn {
-        padding: 12px 20px;
+        padding: 14px 25px;
         font-size: 1em;
+        min-height: 48px;
     }
     
-    .precios-header h2 {
-        font-size: 1.8em;
+    .nav-cta {
+        padding: 11px 25px;
+        min-height: 43px;
+        min-width: 130px;
     }
     
-    .precio-amount {
-        font-size: 2em;
+    .cta-button {
+        padding: 18px 40px;
+        font-size: 1.2em;
+        min-height: 55px;
+        min-width: 180px;
     }
     
-    .subzonas-grid {
-        grid-template-columns: 1fr;
+    .btn-submit {
+        padding: 16px;
+        font-size: 1.1em;
+        min-height: 50px;
+    }
+    
+    .btn-whatsapp {
+        padding: 14px 25px;
+        font-size: 1em;
+        min-height: 48px;
+        min-width: 160px;
+    }
+    
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    input[type="tel"],
+    input[type="email"],
+    select {
+        padding: 13px 16px;
+        min-height: 48px;
+    }
+    
+    .checkbox-container input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        min-height: 20px;
+        min-width: 20px;
+    }
+    
+    .autocomplete-item {
+        padding: 11px 15px;
+        min-height: 43px;
+    }
+    
+    .hamburger-menu {
+        min-height: 38px;
+        min-width: 38px;
+    }
+    
+    .hamburger-line {
+        width: 23px;
+        height: 3px;
+        margin: 2.5px 0;
     }
 }
 
 /* Responsive para móviles */
-@media (max-width: 768px) {
-    .precios-section {
-        padding: 100px 10px 30px 10px;
-    }
-    
-    .precios-tabs {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .tab-btn {
-        width: 100%;
-        padding: 15px;
-    }
-    
-    .precios-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .precio-card {
-        padding: 20px;
-    }
-    
-    .precio-title {
-        font-size: 1.2em;
-    }
-    
-    .precio-amount {
-        font-size: 1.8em;
-    }
-    
-    .precios-header h2 {
-        font-size: 1.5em;
-    }
-    
-    .subzona-group {
-        padding: 20px;
-    }
-    
-    .subzona-group h4 {
-        font-size: 1.2em;
-    }
-    
-    .subzona-item {
-        flex-direction: row;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .subzona-precios {
-        width: auto;
-        justify-content: flex-end;
-        flex: 1;
-    }
-    
-    .subzona-item span {
-        font-size: 0.9em;
-    }
-    
-    .precio-standard, .precio-extra {
-        font-size: 0.9em;
-        font-weight: 700;
-    }
-}
-
-/* Responsive para móviles pequeños */
-@media (max-width: 480px) {
-    .precios-section {
-        padding: 100px 5px 20px 5px;
-    }
-    
-    .precios-header h2 {
-        font-size: 1.3em;
-    }
-    
-    .precio-card {
-        padding: 15px;
-    }
-    
-    .precio-title {
-        font-size: 1.1em;
-    }
-    
-    .precio-amount {
-        font-size: 1.5em;
-    }
-    
-    .subzona-group {
-        padding: 15px;
-    }
-    
-    .subzona-group h4 {
-        font-size: 1.1em;
-    }
-    
-    .subzona-item span {
-        font-size: 0.9em;
-    }
-    
-    .precio-standard, .precio-extra {
-        font-size: 0.9em;
-    }
-}
-
-@media (max-width: 1024px) {
-    .hero-content {
-        grid-template-columns: 1fr;
-        gap: 50px;
-    }
-
-    .hero-text h1 {
-        font-size: 3em;
-    }
-
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-
-    .hero-features {
-        grid-template-columns: 1fr;
-    }
-
-    .section-header h2 {
-        font-size: 2em;
-    }
-
-    .features,
-    .fleet,
-    .cta {
-        padding: 60px 20px;
-    }
-
-    /* Ajustes para tablet */
-    .nav-container {
-        flex-direction: row;
-    }
-
-    .nav-right {
-        gap: 15px;
-    }
-
-    .phone-number {
-        font-size: 0.9em;
-    }
-
-    .nav-cta {
-        padding: 10px 20px;
-        font-size: 0.9em;
-    }
-
-    .whatsapp-contact {
-        padding: 20px 15px;
-        margin-top: 25px;
-    }
-
-    .whatsapp-header h3 {
-        font-size: 1.2em;
-    }
-
-    .btn-whatsapp {
-        padding: 12px 20px;
-        font-size: 0.95em;
-    }
-}
-
 @media (max-width: 768px) {
     nav {
         padding: 10px 20px;
@@ -1648,85 +1542,126 @@ footer {
     .btn-whatsapp i {
         font-size: 1.1em;
     }
+
+    .precios-tabs {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .tab-btn {
+        padding: 16px 20px;
+        font-size: 1em;
+        min-height: 50px;
+        min-width: 100%;
+        margin-bottom: 10px;
+    }
 }
 
+/* Responsive para móviles pequeños */
 @media (max-width: 480px) {
-
-    /* Ajustes adicionales para móviles pequeños */
-    .hero-text h1 {
-        font-size: 1.8em;
+    .precios-section {
+        padding: 100px 5px 20px 5px;
     }
-
-    .hero-text .subtitle {
-        font-size: 1.1em;
-    }
-
-    .booking-form {
-        padding: 25px 15px;
-    }
-
-    .form-group {
-        margin-bottom: 18px;
-    }
-
-    .btn-submit {
-        padding: 16px;
-        font-size: 1em;
-    }
-
-    .section-header h2 {
-        font-size: 1.7em;
-    }
-
-    .feature-card {
-        padding: 20px;
-    }
-
-    .feature-card h3 {
+    
+    .precios-header h2 {
         font-size: 1.3em;
     }
-
-    .cta h2 {
-        font-size: 1.7em;
+    
+    .precio-card {
+        padding: 15px;
     }
-
+    
+    .precio-title {
+        font-size: 1.1em;
+    }
+    
+    .precio-amount {
+        font-size: 1.5em;
+    }
+    
+    .subzona-group {
+        padding: 15px;
+    }
+    
+    .subzona-group h4 {
+        font-size: 1.1em;
+    }
+    
+    .subzona-item span {
+        font-size: 0.9em;
+    }
+    
+    .precio-standard, .precio-extra {
+        font-size: 0.9em;
+        font-weight: 700;
+    }
+    
+    .tab-btn {
+        padding: 15px 15px;
+        font-size: 0.95em;
+        min-height: 45px;
+    }
+    
+    .nav-cta {
+        padding: 9px 18px;
+        font-size: 0.85em;
+        min-height: 38px;
+        min-width: 110px;
+    }
+    
     .cta-button {
         padding: 14px 25px;
         font-size: 1em;
+        min-height: 45px;
+        min-width: 140px;
     }
-
-    .social-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2em;
+    
+    .btn-submit {
+        padding: 14px;
+        font-size: 0.95em;
+        min-height: 45px;
     }
-
-    .footer-social .social-icon {
-        width: 45px;
-        height: 45px;
-        font-size: 1.3em;
-    }
-
-    .whatsapp-header {
-        gap: 8px;
-    }
-
-    .whatsapp-header i {
-        font-size: 1.5em;
-    }
-
-    .whatsapp-header h3 {
-        font-size: 1.1em;
-    }
-
+    
     .btn-whatsapp {
-        padding: 10px 15px;
+        padding: 12px 20px;
         font-size: 0.9em;
-        gap: 8px;
+        min-height: 42px;
+        min-width: 140px;
     }
-
-    .btn-whatsapp i {
-        font-size: 1.1em;
+    
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    input[type="tel"],
+    input[type="email"],
+    select {
+        padding: 11px 14px;
+        font-size: 0.9em;
+        min-height: 42px;
+    }
+    
+    .checkbox-container input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        min-height: 16px;
+        min-width: 16px;
+    }
+    
+    .autocomplete-item {
+        padding: 9px 12px;
+        font-size: 0.8em;
+        min-height: 38px;
+    }
+    
+    .hamburger-menu {
+        min-height: 32px;
+        min-width: 32px;
+    }
+    
+    .hamburger-line {
+        width: 18px;
+        height: 2px;
+        margin: 1.5px 0;
     }
     
     /* Ajustes específicos para formulario en móviles pequeños */
@@ -1743,35 +1678,6 @@ footer {
     .form-row {
         grid-template-columns: 1fr;
         gap: 15px;
-    }
-    
-    input[type="text"],
-    input[type="date"],
-    input[type="time"],
-    input[type="tel"],
-    input[type="email"],
-    select {
-        padding: 12px 15px;
-        font-size: 0.95em;
-    }
-    
-    .btn-submit {
-        padding: 15px;
-        font-size: 1em;
-    }
-    
-    .whatsapp-contact {
-        padding: 15px 10px;
-        margin-top: 20px;
-    }
-    
-    .whatsapp-header h3 {
-        font-size: 1em;
-    }
-    
-    .btn-whatsapp {
-        padding: 10px 15px;
-        font-size: 0.9em;
     }
 }
 
