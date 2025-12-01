@@ -167,6 +167,11 @@ nav {
     padding: 60px 20px;
 }
 
+.precios-hero .hero-content {
+    justify-items: center;
+    align-items: center;
+}
+
 .hero::before {
     content: '';
     position: absolute;
