@@ -105,8 +105,8 @@ const ZONAS_DISPONIBLES = [
 // Sistema de autocompletado desactivado temporalmente
 // Se utiliza el sistema implementado en precios.js
 function initOSMAutocomplete() {
-    // No hacer nada - el sistema de autocompletado se maneja en precios.js
-    console.log('Sistema de autocompletado antiguo desactivado');
+    // No hacer nada - el sistema de autocompletado se ha eliminado completamente
+    console.log('Sistema de autocompletado eliminado completamente');
 }
 
 // Enviar notificación de reserva a ambos destinatarios
@@ -637,9 +637,9 @@ function exportReservations() {
 // Handle booking form submission
 document.addEventListener('DOMContentLoaded', function() {
     // Poblar el dropdown de zona
-    const zonaBusquedaSelect = document.getElementById('zona-busqueda');
+    const zonaSelect = document.getElementById('zona');
     
-    if (zonaBusquedaSelect) {
+    if (zonaSelect) {
         // Importar las zonas disponibles desde precios.js
         const zonas = ZONAS_DISPONIBLES || [
             'CABA',
@@ -679,7 +679,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const option = document.createElement('option');
             option.value = zona;
             option.textContent = zona;
-            zonaBusquedaSelect.appendChild(option);
+            zonaSelect.appendChild(option);
         });
     }
     const bookingForm = document.getElementById('bookingForm');
