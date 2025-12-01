@@ -602,11 +602,10 @@ function exportReservations() {
 
 // Handle booking form submission
 document.addEventListener('DOMContentLoaded', function() {
-    // Poblar los dropdowns de zonas
-    const zonaOrigenSelect = document.getElementById('zona-origen');
-    const zonaDestinoSelect = document.getElementById('zona-destino');
+    // Poblar el dropdown de zona
+    const zonaBusquedaSelect = document.getElementById('zona-busqueda');
     
-    if (zonaOrigenSelect && zonaDestinoSelect) {
+    if (zonaBusquedaSelect) {
         // Importar las zonas disponibles desde precios.js
         const zonas = ZONAS_DISPONIBLES || [
             'CABA',
@@ -641,17 +640,12 @@ document.addEventListener('DOMContentLoaded', function() {
             'Campana / Cardales'
         ];
         
-        // Agregar las opciones a ambos select
+        // Agregar las opciones al select
         zonas.forEach(zona => {
-            const optionOrigen = document.createElement('option');
-            optionOrigen.value = zona;
-            optionOrigen.textContent = zona;
-            zonaOrigenSelect.appendChild(optionOrigen);
-            
-            const optionDestino = document.createElement('option');
-            optionDestino.value = zona;
-            optionDestino.textContent = zona;
-            zonaDestinoSelect.appendChild(optionDestino);
+            const option = document.createElement('option');
+            option.value = zona;
+            option.textContent = zona;
+            zonaBusquedaSelect.appendChild(option);
         });
     }
     const bookingForm = document.getElementById('bookingForm');

@@ -397,13 +397,22 @@ function setupAutocomplete(inputId, suggestionsId) {
                 // Buscar en Geoapify solo si no hay lugares comunes
                 let geoapifyResults = [];
                 try {
+                    // Obtener la zona seleccionada
+                    const zonaSeleccionada = document.getElementById('zona-busqueda')?.value;
+                    
+                    // Construir el texto de búsqueda con la zona
+                    let searchText = query;
+                    if (zonaSeleccionada) {
+                        searchText = `${query}, ${zonaSeleccionada}`;
+                    }
+                    
                     // Usar Geoapify API para autocompletado
                     // Agregar filtro para priorizar resultados en las zonas donde la empresa trabaja
                     // Filtrar específicamente por provincia de Buenos Aires y CABA, y enfocarse en direcciones con números
                     // URL mejorada para Geoapify con filtros menos restrictivos
                     // Removido el filtro de estado para permitir más resultados
                     // Aumentado el límite para obtener más resultados
-                    const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=30&filter=countrycode:ar`;
+                    const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(searchText)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=30&filter=countrycode:ar`;
                     
                     // Lista de proxies alternativos
                     const proxies = [
@@ -549,21 +558,33 @@ function setupAutocomplete(inputId, suggestionsId) {
                     // Si no está en Argentina, descartar
                     if (!isArgentina) return false;
                     
-                    // Verificar que la dirección esté en Buenos Aires o CABA
-                    const state = item.properties?.state || '';
-                    const city = item.properties?.city || '';
+                    // Si hay una zona seleccionada, verificar que el resultado esté en esa zona
+                    const zonaSeleccionada = document.getElementById('zona-busqueda')?.value;
+                    if (zonaSeleccionada) {
+                        // Verificar si la dirección contiene la zona seleccionada
+                        const addressText = `${item.properties?.formatted || ''} ${item.properties?.city || ''} ${item.properties?.state || ''}`.toLowerCase();
+                        if (!addressText.includes(zonaSeleccionada.toLowerCase())) {
+                            return false;
+                        }
+                    } else {
+                        // Si no hay zona seleccionada, verificar que la dirección esté en Buenos Aires o CABA
+                        const state = item.properties?.state || '';
+                        const city = item.properties?.city || '';
+                        
+                        // Permitir resultados si están en Buenos Aires, CABA, o no tienen estado definido (posiblemente válidos)
+                        // También permitir resultados sin información de estado pero con información de ciudad
+                        const isInBA = state.toLowerCase().includes('buenos aires') || 
+                                      city.toLowerCase().includes('buenos aires') || 
+                                      city.toLowerCase().includes('caba') || 
+                                      city.toLowerCase().includes('capital federal') ||
+                                      state === '' ||  // Permitir resultados sin estado definido
+                                      !state ||  // Permitir resultados con estado undefined/null
+                                      (state === '' && city !== '');  // Permitir resultados con ciudad pero sin estado
+                        
+                        if (!isInBA) return false;
+                    }
                     
-                    // Permitir resultados si están en Buenos Aires, CABA, o no tienen estado definido (posiblemente válidos)
-                    // También permitir resultados sin información de estado pero con información de ciudad
-                    const isInBA = state.toLowerCase().includes('buenos aires') || 
-                                  city.toLowerCase().includes('buenos aires') || 
-                                  city.toLowerCase().includes('caba') || 
-                                  city.toLowerCase().includes('capital federal') ||
-                                  state === '' ||  // Permitir resultados sin estado definido
-                                  !state ||  // Permitir resultados con estado undefined/null
-                                  (state === '' && city !== '');  // Permitir resultados con ciudad pero sin estado
-                    
-                    return isInBA;
+                    return true;
                 });
                 
                 // Ordenar resultados para mostrar una mejor diversidad
