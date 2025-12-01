@@ -409,18 +409,6 @@ function setupAutocomplete(inputId, suggestionsId) {
                     // Convertir resultados al mismo formato
                     // Asegurarse de que result.properties exista antes de acceder a sus propiedades
                     const formattedResults = filteredResults.map(result => {
-                        // Determinar zona antes de formatear
-                        let zonaDeterminada = null;
-                        if (result.properties?.postcode) {
-                            const cpMatch = result.properties.postcode.match(/\d+/);
-                            if (cpMatch) {
-                                const cp = parseInt(cpMatch[0]);
-                                if (cp >= 1000 && cp <= 9999) {
-                                    zonaDeterminada = determinarZonaPorCP(cp);
-                                }
-                            }
-                        }
-                        
                         return {
                             display_name: (result.properties?.formatted || result.properties?.name) ?? 'Dirección sin nombre',
                             address: result.properties ? {
@@ -436,7 +424,6 @@ function setupAutocomplete(inputId, suggestionsId) {
                                 postcode: result.properties?.postcode,
                                 country: result.properties?.country
                             } : {},
-                            zonaDeterminada: zonaDeterminada,
                             lat: result.geometry?.coordinates?.[1],
                             lon: result.geometry?.coordinates?.[0],
                             isCommonPlace: false
@@ -804,18 +791,6 @@ function setupAutocomplete(inputId, suggestionsId) {
     // Convertir resultados al mismo formato
     // Asegurarse de que result.properties exista antes de acceder a sus propiedades
     const formattedResults = filteredResults.map(result => {
-        // Determinar zona antes de formatear
-        let zonaDeterminada = null;
-        if (result.properties?.postcode) {
-            const cpMatch = result.properties.postcode.match(/\d+/);
-            if (cpMatch) {
-                const cp = parseInt(cpMatch[0]);
-                if (cp >= 1000 && cp <= 9999) {
-                    zonaDeterminada = determinarZonaPorCP(cp);
-                }
-            }
-        }
-        
         return {
             display_name: (result.properties?.formatted || result.properties?.name) ?? 'Dirección sin nombre',
             address: result.properties ? {
@@ -831,7 +806,6 @@ function setupAutocomplete(inputId, suggestionsId) {
                 postcode: result.properties?.postcode,
                 country: result.properties?.country
             } : {},
-            zonaDeterminada: zonaDeterminada,
             lat: result.geometry?.coordinates?.[1],
             lon: result.geometry?.coordinates?.[0],
             isCommonPlace: false
@@ -898,21 +872,6 @@ function setupAutocomplete(inputId, suggestionsId) {
                             const cp = parseInt(cpMatch[0]);
                             if (cp >= 1000 && cp <= 9999) {
                                 parts.push(`CP: ${cp}`);
-                                
-                                // Determinar y mostrar la zona
-                                const zona = determinarZonaPorCP(cp);
-                                if (zona) {
-                                    parts.push(`Zona: ${zona}`);
-                                } else {
-                                    // Si no podemos determinar la zona por CP, intentar por nombre
-                                    const nombreCiudad = result.address.city || result.address.town || result.address.municipality;
-                                    if (nombreCiudad) {
-                                        const zonaNombre = determinarZonaBasica(nombreCiudad);
-                                        if (zonaNombre) {
-                                            parts.push(`Zona: ${zonaNombre}`);
-                                        }
-                                    }
-                                }
                             }
                         }
                     }
