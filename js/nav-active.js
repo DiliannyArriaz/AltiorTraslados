@@ -1,10 +1,7 @@
 // Función para manejar la navegación activa
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Iniciando nav-active.js');
-    
     // Obtener la ruta actual
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-    console.log('Página actual:', currentPath);
     
     // Obtener todos los enlaces de navegación
     const navLinks = document.querySelectorAll('.nav-link');
@@ -19,97 +16,46 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Manejar las pestañas de precios si estamos en la página de precios
     if (currentPath === 'precios.html') {
-        console.log('Iniciando manejo de pestañas de precios');
-        
-        // Función para inicializar las pestañas
-        function initializeTabs() {
+        // Función para cambiar de pestaña
+        function changeTab(event) {
+            // Prevenir el comportamiento por defecto
+            event.preventDefault();
+            
+            // Obtener el botón que fue clickeado
+            const clickedBtn = event.currentTarget;
+            
+            // Obtener todos los botones y contenidos
             const tabBtns = document.querySelectorAll('.tab-btn');
             const tabContents = document.querySelectorAll('.tab-content');
             
-            console.log('Pestañas encontradas:', tabBtns.length);
-            console.log('Contenidos encontrados:', tabContents.length);
-            
-            // Verificar que tengamos ambos elementos
-            if (tabBtns.length === 0 || tabContents.length === 0) {
-                console.warn('No se encontraron elementos de pestañas o contenidos');
-                return false;
-            }
-            
-            // Verificar que todos los contenidos necesarios existan
-            let allContentsExist = true;
-            tabBtns.forEach(btn => {
-                const tabId = btn.getAttribute('data-tab');
-                const contentId = tabId + '-content';
-                const content = document.getElementById(contentId);
-                if (!content) {
-                    console.error('Falta el contenido para la pestaña:', tabId);
-                    allContentsExist = false;
-                } else {
-                    console.log('Encontrado contenido para pestaña:', tabId);
-                }
+            // Remover clase active de todos los botones y contenidos
+            tabBtns.forEach(b => {
+                b.classList.remove('active');
             });
             
-            if (!allContentsExist) {
-                console.warn('Algunos contenidos de pestañas no se encontraron');
-                return false;
-            }
-            
-            // Función para cambiar de pestaña
-            function changeTab(event) {
-                // Prevenir el comportamiento por defecto
-                event.preventDefault();
-                
-                // Obtener el botón que fue clickeado
-                const clickedBtn = event.currentTarget;
-                console.log('Cambiando a pestaña:', clickedBtn.getAttribute('data-tab'));
-                
-                // Remover clase active de todos los botones y contenidos
-                tabBtns.forEach(b => {
-                    b.classList.remove('active');
-                });
-                
-                tabContents.forEach(c => {
-                    c.classList.remove('active');
-                });
-                
-                // Agregar clase active al botón clickeado
-                clickedBtn.classList.add('active');
-                
-                // Mostrar el contenido correspondiente
-                const tabId = clickedBtn.getAttribute('data-tab');
-                const contentId = tabId + '-content';
-                const content = document.getElementById(contentId);
-                
-                if (content) {
-                    content.classList.add('active');
-                }
-            }
-            
-            // Asignar eventos a los botones
-            tabBtns.forEach(btn => {
-                // Remover eventos anteriores si existen
-                const newBtn = btn.cloneNode(true);
-                btn.parentNode.replaceChild(newBtn, btn);
-                
-                // Asignar nuevos eventos
-                newBtn.addEventListener('click', changeTab);
-                newBtn.addEventListener('touchstart', changeTab);
+            tabContents.forEach(c => {
+                c.classList.remove('active');
             });
             
-            console.log('Pestañas inicializadas correctamente');
-            return true;
+            // Agregar clase active al botón clickeado
+            clickedBtn.classList.add('active');
+            
+            // Mostrar el contenido correspondiente
+            const tabId = clickedBtn.getAttribute('data-tab');
+            const contentId = tabId + '-content';
+            const content = document.getElementById(contentId);
+            
+            if (content) {
+                content.classList.add('active');
+            }
         }
         
-        // Intentar inicializar inmediatamente
-        const initialized = initializeTabs();
-        
-        // Si no se pudo inicializar, intentar nuevamente después de un breve momento
-        if (!initialized) {
-            // Usar requestAnimationFrame en lugar de setTimeout para evitar CSP
-            requestAnimationFrame(function() {
-                initializeTabs();
-            });
-        }
+        // Asignar eventos a los botones directamente cuando el DOM esté listo
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', changeTab);
+            btn.addEventListener('touchstart', changeTab);
+        });
     }
 });
 
