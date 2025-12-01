@@ -4,72 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Precios - Altior Traslados</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/styles.css?v=1.0.1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <!-- Social Media Sidebar -->
-    <div class="social-sidebar">
-        <a href="https://wa.me/5491122516700" target="_blank" class="social-icon whatsapp">
-            <i class="fab fa-whatsapp"></i>
-        </a>
-        <a href="mailto:altior.traslados@gmail.com" class="social-icon email">
-            <i class="fas fa-envelope"></i>
-        </a>
-        <a href="https://www.facebook.com/p/Altior-Traslados-100075517674744" target="_blank"
-            class="social-icon facebook">
-            <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="#" class="social-icon instagram">
-            <i class="fab fa-instagram"></i>
-        </a>
-    </div>
-
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <div class="logo-section">
-                <svg class="logo" viewBox="0 0 100 100">
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <svg viewBox="0 0 100 100" width="60" height="60">
                     <polygon points="50,15 85,75 50,60 15,75" fill="#5B8DB8" />
                     <polygon points="50,15 50,60 85,75" fill="#3B5998" />
                     <polygon points="50,15 15,75 50,60" fill="#2C4A7C" />
                 </svg>
-                <div class="brand-name">ALTIOR TRASLADOS</div>
+                <div class="brand">ALTIOR TRASLADOS</div>
             </div>
             
-            <!-- Hamburger Menu -->
-            <div class="hamburger-menu">
-                <div class="hamburger-line"></div>
-                <div class="hamburger-line"></div>
-                <div class="hamburger-line"></div>
-            </div>
-            
-            <div class="nav-right">
-                <a href="index.html" class="nav-link">Inicio</a>
-                <a href="precios.html" class="nav-link active">Precios</a>
-                <a href="cancelar.html" class="nav-link">Cancelar Reserva</a>
-                <a href="index.html#reservar" class="nav-cta">Reservar Ahora</a>
-                <div class="phone-number">
-                    <i class="fas fa-phone"></i>
-                    <span>+54 9 11 2251-6700</span>
+            <nav>
+                <div class="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
-            </div>
+                <div class="nav-right">
+                    <a href="index.html" class="nav-link">Inicio</a>
+                    <a href="precios.html" class="nav-link active">Precios</a>
+                    <a href="cancelar.html" class="nav-link">Cancelar Reserva</a>
+                </div>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <!-- Precios Section -->
+    <!-- Hero Section -->
+    <section class="hero precios-hero">
+        <div class="hero-content">
+            <h1>Nuestros Precios</h1>
+            <p>Transparentes, competitivos y sin sorpresas</p>
+        </div>
+    </section>
+
+    <!-- Sección de Precios -->
     <section class="precios-section">
-        <div class="precios-container">
-            <div class="section-header">
-                <h1>Tarifas de Nuestros Servicios</h1>
-                <p>Consulta nuestros precios por zona y tipo de vehículo</p>
-            </div>
-
+        <div class="container">
             <!-- Tabs para Ezeiza y Aeroparque -->
             <div class="precios-tabs">
-                <button class="tab-btn active" data-tab="ezeiza">Aeropuerto Ezeiza</button>
-                <button class="tab-btn" data-tab="aeroparque">Aeropuerto Aeroparque</button>
+                <a href="#ezeiza-content" class="tab-btn active">Aeropuerto Ezeiza</a>
+                <a href="#aeroparque-content" class="tab-btn">Aeropuerto Aeroparque</a>
             </div>
 
             <!-- Contenido de Ezeiza -->
@@ -271,57 +251,22 @@
                         <div class="subzona-item">
                             <span>San Isidro / Boulogne</span>
                             <div class="subzona-precios">
-                                <span class="precio-standard">$59.900</span>
-                                <span class="precio-extra">$74.900</span>
-                            </div>
-                        </div>
-                        <div class="subzona-item">
-                            <span>Villa Ballester / José León Suárez</span>
-                            <div class="subzona-precios">
                                 <span class="precio-standard">$65.000</span>
-                                <span class="precio-extra">$79.000</span>
+                                <span class="precio-extra">$75.000</span>
                             </div>
                         </div>
                         <div class="subzona-item">
-                            <span>Tigre Centro / Pacheco</span>
+                            <span>Tigre</span>
                             <div class="subzona-precios">
-                                <span class="precio-standard">$69.000</span>
-                                <span class="precio-extra">$80.000</span>
-                            </div>
-                        </div>
-                        <div class="subzona-item">
-                            <span>Don Torcuato / Grand Bourg</span>
-                            <div class="subzona-precios">
-                                <span class="precio-standard">$69.000</span>
+                                <span class="precio-standard">$75.000</span>
                                 <span class="precio-extra">$85.000</span>
                             </div>
                         </div>
                         <div class="subzona-item">
-                            <span>Benavídez / Milberg / Tortuguitas</span>
-                            <div class="subzona-precios">
-                                <span class="precio-standard">$75.000</span>
-                                <span class="precio-extra">$89.000</span>
-                            </div>
-                        </div>
-                        <div class="subzona-item">
-                            <span>Ing. Maschwitz / Del Viso</span>
-                            <div class="subzona-precios">
-                                <span class="precio-standard">$75.000</span>
-                                <span class="precio-extra">$90.000</span>
-                            </div>
-                        </div>
-                        <div class="subzona-item">
-                            <span>Pilar / Escobar</span>
+                            <span>Pilar</span>
                             <div class="subzona-precios">
                                 <span class="precio-standard">$95.000</span>
                                 <span class="precio-extra">$110.000</span>
-                            </div>
-                        </div>
-                        <div class="subzona-item">
-                            <span>Campana / Cardales</span>
-                            <div class="subzona-precios">
-                                <span class="precio-standard">$120.000</span>
-                                <span class="precio-extra">$150.000</span>
                             </div>
                         </div>
                     </div>
@@ -528,57 +473,22 @@
                         <div class="subzona-item">
                             <span>San Isidro / Boulogne</span>
                             <div class="subzona-precios">
-                                <span class="precio-standard">$45.000</span>
-                                <span class="precio-extra">$55.000</span>
-                            </div>
-                        </div>
-                        <div class="subzona-item">
-                            <span>Villa Ballester / José León Suárez</span>
-                            <div class="subzona-precios">
                                 <span class="precio-standard">$49.000</span>
                                 <span class="precio-extra">$59.000</span>
                             </div>
                         </div>
                         <div class="subzona-item">
-                            <span>Tigre Centro / Pacheco</span>
-                            <div class="subzona-precios">
-                                <span class="precio-standard">$49.000</span>
-                                <span class="precio-extra">$59.000</span>
-                            </div>
-                        </div>
-                        <div class="subzona-item">
-                            <span>Don Torcuato / Grand Bourg</span>
-                            <div class="subzona-precios">
-                                <span class="precio-standard">$55.000</span>
-                                <span class="precio-extra">$65.000</span>
-                            </div>
-                        </div>
-                        <div class="subzona-item">
-                            <span>Benavídez / Milberg / Tortuguitas</span>
+                            <span>Tigre</span>
                             <div class="subzona-precios">
                                 <span class="precio-standard">$59.000</span>
                                 <span class="precio-extra">$69.000</span>
                             </div>
                         </div>
                         <div class="subzona-item">
-                            <span>Ing. Maschwitz / Del Viso</span>
+                            <span>Pilar</span>
                             <div class="subzona-precios">
-                                <span class="precio-standard">$59.000</span>
-                                <span class="precio-extra">$70.000</span>
-                            </div>
-                        </div>
-                        <div class="subzona-item">
-                            <span>Pilar / Escobar</span>
-                            <div class="subzona-precios">
-                                <span class="precio-standard">$69.000</span>
-                                <span class="precio-extra">$79.000</span>
-                            </div>
-                        </div>
-                        <div class="subzona-item">
-                            <span>Campana / Cardales</span>
-                            <div class="subzona-precios">
-                                <span class="precio-standard">$110.000</span>
-                                <span class="precio-extra">$129.000</span>
+                                <span class="precio-standard">$75.000</span>
+                                <span class="precio-extra">$85.000</span>
                             </div>
                         </div>
                     </div>
@@ -630,6 +540,6 @@
     </footer>
 
     <script src="js/hamburger-menu.js"></script>
-    <script src="js/nav-active.js?v=1.0.1"></script>
+    <script src="js/nav-active.js?v=1.0.2"></script>
 </body>
 </html>

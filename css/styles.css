@@ -209,6 +209,7 @@ nav {
     line-height: 1.1;
     background: linear-gradient(135deg, #2C4A7C, #3B5998, #5B8DB8);
     -webkit-background-clip: text;
+
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
@@ -273,6 +274,7 @@ nav {
     font-size: 2em;
     background: linear-gradient(135deg, #2C4A7C, #3B5998);
     -webkit-background-clip: text;
+
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 10px;
@@ -425,6 +427,7 @@ select:focus {
     font-size: 3em;
     background: linear-gradient(135deg, #2C4A7C, #3B5998, #5B8DB8);
     -webkit-background-clip: text;
+
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 15px;
@@ -1012,8 +1015,9 @@ footer {
 .precios-tabs {
     display: flex;
     justify-content: center;
+    gap: 10px;
     margin-bottom: 40px;
-    gap: 20px;
+    flex-wrap: wrap;
 }
 
 .tab-btn {
@@ -1029,6 +1033,9 @@ footer {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     min-height: 50px; /* Asegurar altura mínima para móviles */
     min-width: 120px; /* Asegurar ancho mínimo para móviles */
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
 }
 
 .tab-btn:hover {
@@ -1041,6 +1048,15 @@ footer {
     color: white;
     border-color: #3B5998;
     box-shadow: 0 6px 20px rgba(59, 89, 152, 0.3);
+}
+
+/* Estilos para el contenido de las pestañas */
+.tab-content {
+    display: none;
+}
+
+.tab-content:target {
+    display: block;
 }
 
 .precios-header {
@@ -1099,6 +1115,7 @@ footer {
     font-weight: 800;
     background: linear-gradient(135deg, #3B5998, #5B8DB8);
     -webkit-background-clip: text;
+
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 15px;
@@ -1231,6 +1248,7 @@ footer {
 .precio-standard {
     background: linear-gradient(135deg, #5B8DB8, #3B5998);
     -webkit-background-clip: text;
+
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-weight: 700;
@@ -1240,6 +1258,7 @@ footer {
 .precio-extra {
     background: linear-gradient(135deg, #3B5998, #2C4A7C);
     -webkit-background-clip: text;
+
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-weight: 700;
@@ -1257,14 +1276,6 @@ footer {
     font-size: 0.85em;
     color: #6c757d;
     font-weight: 500;
-}
-
-.tab-content {
-    display: none;
-}
-
-.tab-content.active {
-    display: block;
 }
 
 /* Responsive para tablets */
