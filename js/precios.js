@@ -288,7 +288,27 @@ function setupAutocomplete(inputId, suggestionsId) {
                         const city = item.properties?.city || '';
                         const isInBA = state.toLowerCase().includes('buenos aires') || city.toLowerCase().includes('buenos aires') || city.toLowerCase().includes('caba') || city.toLowerCase().includes('capital federal');
                         
-                        return displayName && isInBA;
+                        // Si no hay nombre para mostrar o no está en BA/CABA, descartar
+                        if (!displayName || !isInBA) return false;
+                        
+                        // Si hay una zona seleccionada, verificar que el resultado esté en esa zona
+                        const zonaSeleccionada = document.getElementById('zona-busqueda')?.value;
+                        if (zonaSeleccionada) {
+                            // Para zonas compuestas, verificar que el resultado esté en alguna de las partes
+                            if (zonaSeleccionada.includes(' / ')) {
+                                const partes = zonaSeleccionada.split(' / ');
+                                const addressText = `${item.properties?.formatted || ''} ${item.properties?.city || ''} ${item.properties?.state || ''}`.toLowerCase();
+                                
+                                // Verificar si la dirección contiene alguna de las partes de la zona
+                                return partes.some(parte => addressText.includes(parte.toLowerCase()));
+                            } else {
+                                // Para zonas simples, verificar que la dirección contenga la zona seleccionada
+                                const addressText = `${item.properties?.formatted || ''} ${item.properties?.city || ''} ${item.properties?.state || ''}`.toLowerCase();
+                                return addressText.includes(zonaSeleccionada.toLowerCase());
+                            }
+                        }
+                        
+                        return true;
                     });
                     
                     // Ordenar resultados para mostrar una mejor diversidad
@@ -394,6 +414,23 @@ function setupAutocomplete(inputId, suggestionsId) {
                         
                         // Si no está en Argentina, descartar
                         if (!isArgentina) return false;
+                        
+                        // Si hay una zona seleccionada, verificar que el resultado esté en esa zona
+                        const zonaSeleccionada = document.getElementById('zona-busqueda')?.value;
+                        if (zonaSeleccionada) {
+                            // Para zonas compuestas, verificar que el resultado esté en alguna de las partes
+                            if (zonaSeleccionada.includes(' / ')) {
+                                const partes = zonaSeleccionada.split(' / ');
+                                const addressText = `${item.properties?.formatted || ''} ${item.properties?.city || ''} ${item.properties?.state || ''}`.toLowerCase();
+                                
+                                // Verificar si la dirección contiene alguna de las partes de la zona
+                                return partes.some(parte => addressText.includes(parte.toLowerCase()));
+                            } else {
+                                // Para zonas simples, verificar que la dirección contenga la zona seleccionada
+                                const addressText = `${item.properties?.formatted || ''} ${item.properties?.city || ''} ${item.properties?.state || ''}`.toLowerCase();
+                                return addressText.includes(zonaSeleccionada.toLowerCase());
+                            }
+                        }
                         
                         return true;
                     });
