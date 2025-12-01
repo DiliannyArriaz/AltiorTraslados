@@ -47,13 +47,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 function changeTab(btn) {
                     console.log('Cambiando a pestaña:', btn.getAttribute('data-tab'));
                     
+                    // Obtener los botones y contenidos actuales (después de cualquier clonado)
+                    const currentTabBtns = document.querySelectorAll('.tab-btn');
+                    const currentTabContents = document.querySelectorAll('.tab-content');
+                    
                     // Remover clase active de todos los botones y contenidos
-                    tabBtns.forEach(b => {
+                    currentTabBtns.forEach(b => {
                         b.classList.remove('active');
                         console.log('Removiendo active de botón:', b.getAttribute('data-tab'));
                     });
                     
-                    tabContents.forEach(c => {
+                    currentTabContents.forEach(c => {
                         c.classList.remove('active');
                         console.log('Removiendo active de contenido:', c.id);
                     });
