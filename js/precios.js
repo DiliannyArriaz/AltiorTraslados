@@ -352,19 +352,96 @@ function setupAutocomplete(inputId, suggestionsId) {
                     // Obtener la zona seleccionada
                     const zonaSeleccionada = document.getElementById('zona-busqueda')?.value;
                     
-                    // Construir el texto de búsqueda con la zona
-                    let searchText = query;
-                    if (zonaSeleccionada) {
-                        // Para zonas compuestas como "Villa Ballester / José León Suárez", 
-                        // usar solo la primera parte para la búsqueda
-                        let zonaParaBusqueda = zonaSeleccionada;
-                        if (zonaSeleccionada.includes(' / ')) {
-                            // Dividir la zona compuesta y usar la primera parte
-                            const partes = zonaSeleccionada.split(' / ');
-                            zonaParaBusqueda = partes[0];
-                        }
-                        searchText = `${query}, ${zonaParaBusqueda}`;
+                    // Para zonas compuestas como "Villa Ballester / José León Suárez", 
+                    // buscar en ambas partes y combinar resultados
+                    if (zonaSeleccionada && zonaSeleccionada.includes(' / ')) {
+                        // Dividir la zona compuesta
+                        const partes = zonaSeleccionada.split(' / ');
+                        
+                        // Realizar búsquedas en ambas partes
+                        const resultadosParte1 = await buscarEnGeoapify(query, partes[0]);
+                        const resultadosParte2 = await buscarEnGeoapify(query, partes[1]);
+                        
+                        // Combinar resultados de ambas búsquedas
+                        geoapifyResults = [...resultadosParte1, ...resultadosParte2];
+                    } else {
+                        // Para zonas simples, buscar normalmente
+                        geoapifyResults = await buscarEnGeoapify(query, zonaSeleccionada);
                     }
+                    
+                    // Procesar resultados después de las búsquedas
+                    // Filtrar resultados por área permitida
+                    // Asegurarse de que el nombre no sea undefined
+                    // Filtrado más permisivo para incluir más resultados válidos
+                    let filteredResults = geoapifyResults.filter(item => {
+                        const displayName = item.properties?.formatted || item.properties?.name;
+                        
+                        // Si no hay nombre para mostrar, descartar
+                        if (!displayName) return false;
+                        
+                        // Verificar que la dirección esté en Argentina
+                        const country = item.properties?.country || '';
+                        const isArgentina = country.toLowerCase().includes('argentina') || country.toLowerCase().includes('argentine');
+                        
+                        // Si no está en Argentina, descartar
+                        if (!isArgentina) return false;
+                        
+                        return true;
+                    });
+                    
+                    // Ordenar resultados para mostrar una mejor diversidad
+                    // Priorizar resultados que contienen códigos postales
+                    filteredResults.sort((a, b) => {
+                        const cpA = a.properties?.postcode ? parseInt(a.properties.postcode.replace(/\D/g, '')) : 0;
+                        const cpB = b.properties?.postcode ? parseInt(b.properties.postcode.replace(/\D/g, '')) : 0;
+                        
+                        // Priorizar resultados con códigos postales
+                        if (cpA > 0 && cpB === 0) return -1;
+                        if (cpA === 0 && cpB > 0) return 1;
+                        
+                        // Si ambos tienen o no tienen códigos postales, mantener el orden original
+                        return 0;
+                    });
+                    
+                    // Tomar solo los primeros 18 resultados
+                    filteredResults = filteredResults.slice(0, 18);
+                    
+                    // Convertir resultados al mismo formato
+                    // Asegurarse de que result.properties exista antes de acceder a sus propiedades
+                    const formattedResults = filteredResults.map(result => {
+                        // Determinar zona antes de formatear
+                        let zonaDeterminada = null;
+                        if (result.properties?.postcode) {
+                            const cpMatch = result.properties.postcode.match(/\d+/);
+                            if (cpMatch) {
+                                const cp = parseInt(cpMatch[0]);
+                                if (cp >= 1000 && cp <= 9999) {
+                                    zonaDeterminada = determinarZonaPorCP(cp);
+                                }
+                            }
+                        }
+                        
+                        return {
+                            display_name: (result.properties?.formatted || result.properties?.name) ?? 'Dirección sin nombre',
+                            address: result.properties ? {
+                                house_number: result.properties?.housenumber,
+                                road: result.properties?.street,
+                                neighbourhood: result.properties?.neighbourhood,
+                                suburb: result.properties?.suburb,
+                                city: result.properties?.city,
+                                town: result.properties?.town,
+                                municipality: result.properties?.municipality,
+                                county: result.properties?.county,
+                                state: result.properties?.state,
+                                postcode: result.properties?.postcode,
+                                country: result.properties?.country
+                            } : {},
+                            zonaDeterminada: zonaDeterminada,
+                            lat: result.geometry?.coordinates?.[1],
+                            lon: result.geometry?.coordinates?.[0],
+                            isCommonPlace: false
+                        };
+                    });
                     
                     // Usar Geoapify API para autocompletado
                     // Agregar filtro para priorizar resultados en las zonas donde la empresa trabaja
@@ -502,105 +579,6 @@ function setupAutocomplete(inputId, suggestionsId) {
                     geoapifyResults = [];
                 }
                 
-                // Filtrar resultados por área permitida
-                // Asegurarse de que el nombre no sea undefined
-                // Filtrado más permisivo para incluir más resultados válidos
-                geoapifyResults = geoapifyResults.filter(item => {
-                    const displayName = item.properties?.formatted || item.properties?.name;
-                    
-                    // Si no hay nombre para mostrar, descartar
-                    if (!displayName) return false;
-                    
-                    // Verificar que la dirección esté en Argentina
-                    const country = item.properties?.country || '';
-                    const isArgentina = country.toLowerCase().includes('argentina') || country.toLowerCase().includes('argentine');
-                    
-                    // Si no está en Argentina, descartar
-                    if (!isArgentina) return false;
-                    
-                    // Si hay una zona seleccionada, verificar que el resultado esté en esa zona
-                    const zonaSeleccionada = document.getElementById('zona-busqueda')?.value;
-                    if (zonaSeleccionada) {
-                        // Verificar si la dirección contiene la zona seleccionada
-                        const addressText = `${item.properties?.formatted || ''} ${item.properties?.city || ''} ${item.properties?.state || ''}`.toLowerCase();
-                        if (!addressText.includes(zonaSeleccionada.toLowerCase())) {
-                            return false;
-                        }
-                    } else {
-                        // Si no hay zona seleccionada, verificar que la dirección esté en Buenos Aires o CABA
-                        const state = item.properties?.state || '';
-                        const city = item.properties?.city || '';
-                        
-                        // Permitir resultados si están en Buenos Aires, CABA, o no tienen estado definido (posiblemente válidos)
-                        // También permitir resultados sin información de estado pero con información de ciudad
-                        const isInBA = state.toLowerCase().includes('buenos aires') || 
-                                      city.toLowerCase().includes('buenos aires') || 
-                                      city.toLowerCase().includes('caba') || 
-                                      city.toLowerCase().includes('capital federal') ||
-                                      state === '' ||  // Permitir resultados sin estado definido
-                                      !state ||  // Permitir resultados con estado undefined/null
-                                      (state === '' && city !== '');  // Permitir resultados con ciudad pero sin estado
-                        
-                        if (!isInBA) return false;
-                    }
-                    
-                    return true;
-                });
-                
-                // Ordenar resultados para mostrar una mejor diversidad
-                // Priorizar resultados que contienen códigos postales
-                geoapifyResults.sort((a, b) => {
-                    const cpA = a.properties?.postcode ? parseInt(a.properties.postcode.replace(/\D/g, '')) : 0;
-                    const cpB = b.properties?.postcode ? parseInt(b.properties.postcode.replace(/\D/g, '')) : 0;
-                    
-                    // Priorizar resultados con códigos postales
-                    if (cpA > 0 && cpB === 0) return -1;
-                    if (cpA === 0 && cpB > 0) return 1;
-                    
-                    // Si ambos tienen o no tienen códigos postales, mantener el orden original
-                    return 0;
-                });
-                
-                // Tomar solo los primeros 18 resultados
-                geoapifyResults = geoapifyResults.slice(0, 18);
-                
-                // Convertir resultados al mismo formato
-                // Asegurarse de que result.properties exista antes de acceder a sus propiedades
-                const formattedResults = geoapifyResults.map(result => {
-                    // Determinar zona antes de formatear
-                    let zonaDeterminada = null;
-                    if (result.properties?.postcode) {
-                        const cpMatch = result.properties.postcode.match(/\d+/);
-                        if (cpMatch) {
-                            const cp = parseInt(cpMatch[0]);
-                            if (cp >= 1000 && cp <= 9999) {
-                                zonaDeterminada = determinarZonaPorCP(cp);
-                            }
-                        }
-                    }
-                    
-                    return {
-                        display_name: (result.properties?.formatted || result.properties?.name) ?? 'Dirección sin nombre',
-                        address: result.properties ? {
-                            house_number: result.properties?.housenumber,
-                            road: result.properties?.street,
-                            neighbourhood: result.properties?.neighbourhood,
-                            suburb: result.properties?.suburb,
-                            city: result.properties?.city,
-                            town: result.properties?.town,
-                            municipality: result.properties?.municipality,
-                            county: result.properties?.county,
-                            state: result.properties?.state,
-                            postcode: result.properties?.postcode,
-                            country: result.properties?.country
-                        } : {},
-                        zonaDeterminada: zonaDeterminada,
-                        lat: result.geometry?.coordinates?.[1],
-                        lon: result.geometry?.coordinates?.[0],
-                        isCommonPlace: false
-                    };
-                });
-                
                 // Mostrar resultados
                 if (formattedResults.length > 0) {
                     displaySuggestions(formattedResults);
@@ -615,6 +593,249 @@ function setupAutocomplete(inputId, suggestionsId) {
                 suggestionsContainer.innerHTML = '<div class="autocomplete-item" style="padding: 12px 16px; color: #666;">Error al buscar direcciones. Intente nuevamente. Si el problema persiste, intente con direcciones conocidas como "Cabildo 42" o "Zarate 5300".</div>';
             }
         }, 300); // Reducir el tiempo de debounce a 300ms para una respuesta más rápida
+    });
+
+    // Nueva función para buscar en Geoapify con una zona específica
+    async function buscarEnGeoapify(query, zona) {
+        try {
+            // Construir el texto de búsqueda con la zona
+            let searchText = query;
+            if (zona) {
+                searchText = `${query}, ${zona}`;
+            }
+            
+            // Generar clave de cache
+            const cacheKey = `${searchText}_${Date.now()}`;
+            const now = Date.now();
+            
+            // Limpiar cache de entradas antiguas
+            for (let [key, value] of searchCache.entries()) {
+                if (now - value.timestamp > CACHE_TTL) {
+                    searchCache.delete(key);
+                }
+            }
+            
+            // Verificar cache
+            if (searchCache.has(cacheKey)) {
+                const cached = searchCache.get(cacheKey);
+                if (now - cached.timestamp < CACHE_TTL) {
+                    console.log('Usando resultados en caché para consulta:', query);
+                    return cached.data;
+                }
+            }
+            
+            // Usar Geoapify API para autocompletado
+            // Agregar filtro para priorizar resultados en las zonas donde la empresa trabaja
+            // Filtrar específicamente por provincia de Buenos Aires y CABA, y enfocarse en direcciones con números
+            // URL mejorada para Geoapify con filtros menos restrictivos
+            // Removido el filtro de estado para permitir más resultados
+            // Aumentado el límite para obtener más resultados
+            const geoapifyUrl = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(searchText)}&apiKey=1186162aedfa4b10adf6713a6dcf05e1&limit=15&filter=countrycode:ar`;
+            
+            // Lista de proxies alternativos
+            const proxies = [
+                'https://api.codetabs.com/v1/proxy?quest=',
+                'https://corsproxy.io/?'
+            ];
+            
+            // Probar diferentes proxies en orden
+            let response;
+            let lastError;
+            
+            for (const proxy of proxies) {
+                try {
+                    const proxyUrl = proxy + encodeURIComponent(geoapifyUrl);
+                    console.log(`Intentando con proxy para Geoapify: ${proxy}`);
+                    
+                    response = await fetch(proxyUrl);
+                    
+                    if (response.ok) {
+                        console.log(`Éxito con proxy para Geoapify: ${proxy}`);
+                        break;
+                    } else {
+                        console.log(`Error con proxy ${proxy} para Geoapify: ${response.status}`);
+                        lastError = new Error(`HTTP error! status: ${response.status}`);
+                    }
+                } catch (proxyError) {
+                    console.log(`Error con proxy ${proxy} para Geoapify:`, proxyError);
+                    lastError = proxyError;
+                }
+            }
+            
+            // Si ninguno de los proxies funcionó, lanzar el último error
+            if (!response || !response.ok) {
+                throw lastError || new Error('Todos los proxies fallaron para Geoapify');
+            }
+            
+            // Verificar que la respuesta tenga contenido antes de parsear
+            const responseText = await response.text();
+            console.log('Respuesta cruda de Geoapify para consulta:', query, responseText);
+            
+            let resultados = [];
+            
+            if (!responseText) {
+                console.warn('Respuesta vacía de Geoapify para consulta:', query);
+                resultados = [];
+                
+                // Fallback: usar direcciones predefinidas si Geoapify no devuelve resultados
+                const fallbackAddresses = [];
+                
+                // Verificar si la consulta coincide con alguna dirección predefinida
+                const predefinedAddresses = [
+                    {
+                        match: 'zarate',
+                        data: {
+                            properties: {
+                                housenumber: '5300',
+                                street: '99 - Zárate',
+                                city: 'Villa Ballester',
+                                state: 'Buenos Aires',
+                                postcode: 'B1653MNY',
+                                formatted: '99 - Zárate 5300, Villa Ballester, Buenos Aires'
+                            },
+                            geometry: {
+                                coordinates: [-58.5285, -34.3456]
+                            }
+                        }
+                    },
+                    {
+                        match: 'amenabar',
+                        data: {
+                            properties: {
+                                housenumber: '1158',
+                                street: 'Amenábar',
+                                city: 'CABA',
+                                state: 'Buenos Aires',
+                                postcode: 'B1425',
+                                formatted: 'Amenábar 1158, CABA, Buenos Aires'
+                            },
+                            geometry: {
+                                coordinates: [-58.4452, -34.5887]
+                            }
+                        }
+                    },
+                    {
+                        match: 'cabildo',
+                        data: {
+                            properties: {
+                                housenumber: '42',
+                                street: 'Avenida Cabildo',
+                                city: 'CABA',
+                                state: 'Buenos Aires',
+                                postcode: 'C1425',
+                                formatted: 'Avenida Cabildo 42, CABA, Buenos Aires'
+                            },
+                            geometry: {
+                                coordinates: [-58.4458, -34.5881]
+                            }
+                        }
+                    }
+                ];
+                
+                // Buscar coincidencias
+                for (const addr of predefinedAddresses) {
+                    if (query.toLowerCase().includes(addr.match)) {
+                        fallbackAddresses.push(addr.data);
+                    }
+                }
+                
+                resultados = fallbackAddresses;
+            } else {
+                try {
+                    const rawData = JSON.parse(responseText);
+                    resultados = rawData.features || [];
+                } catch (parseError) {
+                    console.error('Error al parsear respuesta de Geoapify para consulta:', query, parseError);
+                    console.error('Respuesta recibida:', responseText);
+                    resultados = [];
+                }
+            }
+            
+            // Guardar en cache
+            searchCache.set(cacheKey, {
+                data: resultados,
+                timestamp: now
+            });
+            
+            return resultados;
+        } catch (error) {
+            console.error('Error fetching Geoapify suggestions para consulta:', query, error);
+            return [];
+        }
+    }
+
+    // Procesar resultados después de las búsquedas
+    // Filtrar resultados por área permitida
+    // Asegurarse de que el nombre no sea undefined
+    // Filtrado más permisivo para incluir más resultados válidos
+    let filteredResults = geoapifyResults.filter(item => {
+        const displayName = item.properties?.formatted || item.properties?.name;
+        
+        // Si no hay nombre para mostrar, descartar
+        if (!displayName) return false;
+        
+        // Verificar que la dirección esté en Argentina
+        const country = item.properties?.country || '';
+        const isArgentina = country.toLowerCase().includes('argentina') || country.toLowerCase().includes('argentine');
+        
+        // Si no está en Argentina, descartar
+        if (!isArgentina) return false;
+        
+        return true;
+    });
+    
+    // Ordenar resultados para mostrar una mejor diversidad
+    // Priorizar resultados que contienen códigos postales
+    filteredResults.sort((a, b) => {
+        const cpA = a.properties?.postcode ? parseInt(a.properties.postcode.replace(/\D/g, '')) : 0;
+        const cpB = b.properties?.postcode ? parseInt(b.properties.postcode.replace(/\D/g, '')) : 0;
+        
+        // Priorizar resultados con códigos postales
+        if (cpA > 0 && cpB === 0) return -1;
+        if (cpA === 0 && cpB > 0) return 1;
+        
+        // Si ambos tienen o no tienen códigos postales, mantener el orden original
+        return 0;
+    });
+    
+    // Tomar solo los primeros 18 resultados
+    filteredResults = filteredResults.slice(0, 18);
+    
+    // Convertir resultados al mismo formato
+    // Asegurarse de que result.properties exista antes de acceder a sus propiedades
+    const formattedResults = filteredResults.map(result => {
+        // Determinar zona antes de formatear
+        let zonaDeterminada = null;
+        if (result.properties?.postcode) {
+            const cpMatch = result.properties.postcode.match(/\d+/);
+            if (cpMatch) {
+                const cp = parseInt(cpMatch[0]);
+                if (cp >= 1000 && cp <= 9999) {
+                    zonaDeterminada = determinarZonaPorCP(cp);
+                }
+            }
+        }
+        
+        return {
+            display_name: (result.properties?.formatted || result.properties?.name) ?? 'Dirección sin nombre',
+            address: result.properties ? {
+                house_number: result.properties?.housenumber,
+                road: result.properties?.street,
+                neighbourhood: result.properties?.neighbourhood,
+                suburb: result.properties?.suburb,
+                city: result.properties?.city,
+                town: result.properties?.town,
+                municipality: result.properties?.municipality,
+                county: result.properties?.county,
+                state: result.properties?.state,
+                postcode: result.properties?.postcode,
+                country: result.properties?.country
+            } : {},
+            zonaDeterminada: zonaDeterminada,
+            lat: result.geometry?.coordinates?.[1],
+            lon: result.geometry?.coordinates?.[0],
+            isCommonPlace: false
+        };
     });
 
     // Cerrar sugerencias al hacer clic fuera
