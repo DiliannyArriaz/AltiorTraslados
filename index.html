@@ -591,11 +591,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             const ctaButton = document.querySelector('.cta-button');
             if (ctaButton) {
-                // Función para hacer scroll suave
-                function smoothScrollToReserve(e) {
-                    e.preventDefault();
-                    const targetId = ctaButton.getAttribute('href');
-                    if (targetId === '#reservar') {
+                // Verificar si el href apunta a una sección interna (#reservar)
+                const href = ctaButton.getAttribute('href');
+                if (href === '#reservar') {
+                    // Función para hacer scroll suave
+                    function smoothScrollToReserve(e) {
+                        e.preventDefault();
                         const targetElement = document.getElementById('reservar');
                         if (targetElement) {
                             targetElement.scrollIntoView({
@@ -604,18 +605,19 @@
                             });
                         }
                     }
+                    
+                    // Evento click para escritorio
+                    ctaButton.addEventListener('click', smoothScrollToReserve);
+                    
+                    // Evento touch para móviles
+                    ctaButton.addEventListener('touchstart', function(e) {
+                        // Prevenir el comportamiento por defecto inmediatamente
+                        e.preventDefault();
+                        // Ejecutar el scroll suave después de un pequeño retraso
+                        setTimeout(smoothScrollToReserve, 100);
+                    });
                 }
-                
-                // Evento click para escritorio
-                ctaButton.addEventListener('click', smoothScrollToReserve);
-                
-                // Evento touch para móviles
-                ctaButton.addEventListener('touchstart', function(e) {
-                    // Prevenir el comportamiento por defecto inmediatamente
-                    e.preventDefault();
-                    // Ejecutar el scroll suave después de un pequeño retraso
-                    setTimeout(smoothScrollToReserve, 100);
-                });
+                // Si el href apunta a WhatsApp u otra URL externa, dejar el comportamiento normal
             }
         });
     </script>
