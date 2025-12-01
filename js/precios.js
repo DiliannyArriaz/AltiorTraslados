@@ -257,6 +257,13 @@ function setupAutocomplete(inputId, suggestionsId) {
             suggestionsContainer.style.display = 'none';
             return;
         }
+        
+        // Aumentar el límite mínimo de caracteres para evitar búsquedas prematuras
+        if (query.length < 4) {
+            console.log(`Query still too short for ${inputId}:`, query.length);
+            suggestionsContainer.style.display = 'none';
+            return;
+        }
 
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
@@ -270,6 +277,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                 if (cachedResult && (now - cachedResult.timestamp) < CACHE_TTL) {
                     console.log('Usando resultados de cache para:', query);
                     let geoapifyResults = cachedResult.data;
+                    let formattedResults = []; // Declarar formattedResults aquí también
                     
                     // Filtrar resultados por área permitida
                     // Asegurarse de que item.display_name no sea undefined
@@ -302,7 +310,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                     
                     // Convertir resultados al mismo formato
                     // Asegurarse de que result.properties exista antes de acceder a sus propiedades
-                    const formattedResults = geoapifyResults.map(result => {
+                    formattedResults = geoapifyResults.map(result => {
                         // Determinar zona antes de formatear
                         let zonaDeterminada = null;
                         if (result.properties?.postcode) {
@@ -348,6 +356,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                 
                 // Buscar en Geoapify solo si no hay lugares comunes
                 let geoapifyResults = [];
+                let formattedResults = []; // Declarar formattedResults aquí para que esté en el alcance correcto
                 try {
                     // Obtener la zona seleccionada
                     const zonaSeleccionada = document.getElementById('zona-busqueda')?.value;
@@ -408,7 +417,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                     
                     // Convertir resultados al mismo formato
                     // Asegurarse de que result.properties exista antes de acceder a sus propiedades
-                    const formattedResults = filteredResults.map(result => {
+                    formattedResults = filteredResults.map(result => {
                         return {
                             display_name: (result.properties?.formatted || result.properties?.name) ?? 'Dirección sin nombre',
                             address: result.properties ? {
