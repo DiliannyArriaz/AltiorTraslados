@@ -1003,7 +1003,7 @@ footer {
 
 /* Precios Section */
 .precios-section {
-    padding: 100px 20px 60px;
+    padding: 60px 20px 60px;
     background: linear-gradient(135deg, #f5f8fc 0%, #e8f0f8 100%);
     min-height: 100vh;
 }
@@ -2084,4 +2084,21 @@ footer {
     border-radius: 5px;
     border: 1px solid #e8f0f8;
     white-space: nowrap;
+}
+
+/* Hero Section - Precios */
+.precios-hero {
+    padding: 60px 20px;
+    min-height: auto;
+}
+
+.precios-hero .hero-content h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.precios-hero .hero-content p {
+    font-size: 1.1em;
+    max-width: 600px;
+    margin: 0 auto;
 }

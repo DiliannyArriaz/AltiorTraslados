@@ -1,29 +1,30 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Obtener los enlaces de las pestañas
-    const tabLinks = document.querySelectorAll('.tab-btn');
+    // Obtener los botones de las pestañas
+    const tabButtons = document.querySelectorAll('.tab-btn');
     
     // Función para cambiar de pestaña
     function changeTab(event) {
+        // Prevenir el comportamiento por defecto si es necesario
         event.preventDefault();
         
-        // Obtener el ID del contenido a mostrar
-        const targetId = this.getAttribute('href').substring(1);
+        // Obtener el tab que se quiere mostrar
+        const targetTab = this.getAttribute('data-tab');
         
         // Ocultar todos los contenidos
         const tabContents = document.querySelectorAll('.tab-content');
         tabContents.forEach(content => {
-            content.style.display = 'none';
+            content.classList.remove('active');
         });
         
         // Remover clase active de todas las pestañas
-        tabLinks.forEach(link => {
-            link.classList.remove('active');
+        tabButtons.forEach(button => {
+            button.classList.remove('active');
         });
         
         // Mostrar el contenido correspondiente
-        const targetContent = document.getElementById(targetId);
+        const targetContent = document.getElementById(targetTab + '-content');
         if (targetContent) {
-            targetContent.style.display = 'block';
+            targetContent.classList.add('active');
         }
         
         // Agregar clase active a la pestaña clickeada
@@ -31,13 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Asignar eventos a las pestañas
-    tabLinks.forEach(link => {
-        link.addEventListener('click', changeTab);
+    tabButtons.forEach(button => {
+        button.addEventListener('click', changeTab);
     });
-    
-    // Mostrar la primera pestaña por defecto
-    const firstTabContent = document.getElementById('ezeiza-content');
-    if (firstTabContent) {
-        firstTabContent.style.display = 'block';
-    }
 });
