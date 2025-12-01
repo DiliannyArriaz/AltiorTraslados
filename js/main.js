@@ -68,6 +68,40 @@ const partidosPermitidos = [
     "olivos", "martínez", "san isidro", "vicente lópez"
 ];
 
+// Zonas disponibles para selección
+const ZONAS_DISPONIBLES = [
+    'CABA',
+    'EZEIZA',
+    'AEROPARQUE',
+    'Avellaneda / Lanús',
+    'Wilde / Monte Chingolo',
+    'Quilmes / Alte Brown',
+    'Berazategui / Hudson',
+    'Lomas de Zamora',
+    'Canning / Spegazzini',
+    'La Plata',
+    'Ramos Mejía / Ciudadela',
+    'Morón / Haedo',
+    'Caseros / El Palomar',
+    'Hurlingham / Loma Hermosa',
+    'Ituzaingó / Padua',
+    'San Miguel / José C. Paz',
+    'Merlo / Paso del Rey',
+    'Moreno / Francisco Álvarez',
+    'Gral. Rodríguez',
+    'Luján',
+    'Vicente López / Olivos',
+    'San Martín / San Andrés',
+    'San Isidro / Boulogne',
+    'Villa Ballester / José León Suárez',
+    'Tigre Centro / Pacheco',
+    'Don Torcuato / Grand Bourg',
+    'Benavídez / Milberg / Tortuguitas',
+    'Ing. Maschwitz / Del Viso',
+    'Pilar / Escobar',
+    'Campana / Cardales'
+];
+
 // Sistema de autocompletado desactivado temporalmente
 // Se utiliza el sistema implementado en precios.js
 function initOSMAutocomplete() {
