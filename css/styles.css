@@ -450,18 +450,19 @@ select:focus {
 
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
 }
 
 .feature-card {
     background: linear-gradient(135deg, #f5f8fc 0%, #e8f0f8 100%);
-    padding: 40px;
-    border-radius: 20px;
+    padding: 25px;
+    border-radius: 15px;
     transition: all 0.3s;
     border: 2px solid transparent;
     position: relative;
     overflow: hidden;
+    text-align: center;
 }
 
 .feature-card::before {
@@ -476,38 +477,36 @@ select:focus {
 }
 
 .feature-card:hover {
-    transform: translateY(-8px);
+    transform: translateY(-5px);
     box-shadow: 0 15px 40px rgba(59, 89, 152, 0.15);
     border-color: #5B8DB8;
 }
 
 .feature-icon {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     background: linear-gradient(135deg, #5B8DB8, #3B5998);
-    border-radius: 15px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2em;
-    margin-bottom: 25px;
-    position: relative;
-    z-index: 1;
+    font-size: 1.8em;
+    margin: 0 auto 15px;
+    color: white;
 }
 
 .feature-card h3 {
-    font-size: 1.5em;
     color: #2C4A7C;
-    margin-bottom: 15px;
-    position: relative;
-    z-index: 1;
+    font-size: 1.3em;
+    margin-bottom: 12px;
+    font-weight: 700;
 }
 
 .feature-card p {
     color: #5B8DB8;
-    line-height: 1.7;
-    position: relative;
-    z-index: 1;
+    font-size: 0.95em;
+    line-height: 1.5;
+    margin: 0;
 }
 
 /* Fleet Section */
