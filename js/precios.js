@@ -1,5 +1,6 @@
-
-
+// Variable global para caché de búsquedas
+const searchCache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
 
 // Función para determinar la zona según el origen o destino
 // Simplificada para usar solo texto en lugar de llamadas a Geoapify
@@ -354,7 +355,15 @@ function setupAutocomplete(inputId, suggestionsId) {
                     // Construir el texto de búsqueda con la zona
                     let searchText = query;
                     if (zonaSeleccionada) {
-                        searchText = `${query}, ${zonaSeleccionada}`;
+                        // Para zonas compuestas como "Villa Ballester / José León Suárez", 
+                        // usar solo la primera parte para la búsqueda
+                        let zonaParaBusqueda = zonaSeleccionada;
+                        if (zonaSeleccionada.includes(' / ')) {
+                            // Dividir la zona compuesta y usar la primera parte
+                            const partes = zonaSeleccionada.split(' / ');
+                            zonaParaBusqueda = partes[0];
+                        }
+                        searchText = `${query}, ${zonaParaBusqueda}`;
                     }
                     
                     // Usar Geoapify API para autocompletado
