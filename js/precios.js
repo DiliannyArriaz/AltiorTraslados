@@ -260,20 +260,6 @@ function setupAutocomplete(inputId, suggestionsId) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(async () => {
             try {
-                // Buscar lugares comunes primero
-                const lugares = searchLugaresComunes(query, lugaresComunes);
-                
-                // Si encontramos lugares comunes, mostrar solo esos (prioridad alta)
-                if (lugares.length > 0) {
-                    const results = lugares.map(lugar => ({
-                        display_name: lugar.nombre,
-                        address: lugar.direccion,
-                        isCommonPlace: true
-                    }));
-                    
-                    displaySuggestions(results);
-                    return;
-                }
                 
                 // Verificar si tenemos resultados en cache
                 const cacheKey = query.toLowerCase();
