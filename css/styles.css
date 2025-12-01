@@ -597,6 +597,7 @@ select:focus {
     height: 600px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 50%;
+    z-index: 1; /* Asegurar que esté detrás del contenido */
 }
 
 .cta::after {
@@ -608,18 +609,23 @@ select:focus {
     height: 500px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 50%;
+    z-index: 1; /* Asegurar que esté detrás del contenido */
 }
 
 .cta h2 {
     font-size: 3em;
     margin-bottom: 20px;
     font-weight: 700;
+    position: relative;
+    z-index: 2; /* Asegurar que esté por encima de los pseudo-elementos */
 }
 
 .cta p {
     font-size: 1.3em;
     margin-bottom: 40px;
     opacity: 0.95;
+    position: relative;
+    z-index: 2; /* Asegurar que esté por encima de los pseudo-elementos */
 }
 
 /* Mejorar la accesibilidad de los botones CTA en móviles */
@@ -641,6 +647,8 @@ select:focus {
     justify-content: center;
     border: none;
     cursor: pointer;
+    position: relative;
+    z-index: 3; /* Asegurar que esté por encima de los pseudo-elementos */
 }
 
 .cta-button:hover {
