@@ -301,6 +301,9 @@ function setupAutocomplete(inputId, suggestionsId) {
                         // Si no hay nombre para mostrar o no está en BA/CABA, descartar
                         if (!displayName || !isInBA) return false;
                         
+                        // Verificar que la dirección esté en Buenos Aires o CABA
+                        if (!isInBA) return false;
+                        
                         // Si hay una zona seleccionada, verificar que el resultado esté en esa zona
                         const zonaSeleccionada = document.getElementById('zona-busqueda')?.value;
                         if (zonaSeleccionada) {
@@ -425,6 +428,14 @@ function setupAutocomplete(inputId, suggestionsId) {
                         // Si no está en Argentina, descartar
                         if (!isArgentina) return false;
                         
+                        // Verificar que la dirección esté en Buenos Aires o CABA
+                        const state = item.properties?.state || '';
+                        const city = item.properties?.city || '';
+                        const isInBA = state.toLowerCase().includes('buenos aires') || city.toLowerCase().includes('buenos aires') || city.toLowerCase().includes('caba') || city.toLowerCase().includes('capital federal');
+                        
+                        // Si no está en Buenos Aires o CABA, descartar
+                        if (!isInBA) return false;
+                        
                         // Si hay una zona seleccionada, verificar que el resultado esté en esa zona
                         const zonaSeleccionada = document.getElementById('zona-busqueda')?.value;
                         if (zonaSeleccionada) {
@@ -510,7 +521,7 @@ function setupAutocomplete(inputId, suggestionsId) {
                 suggestionsContainer.style.display = 'block';
                 suggestionsContainer.innerHTML = '<div class="autocomplete-item" style="padding: 12px 16px; color: #666;">Error al buscar direcciones. Intente nuevamente. Si el problema persiste, intente con direcciones conocidas como "Cabildo 42" o "Zarate 5300".</div>';
             }
-        }, 300); // Reducir el tiempo de debounce a 300ms para una respuesta más rápida
+        }, 1000); // Aumentar el tiempo de debounce a 1000ms para reducir búsquedas frecuentes
     });
 
     // Nueva función para buscar en Geoapify con una zona específica
