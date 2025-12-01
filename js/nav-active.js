@@ -39,13 +39,15 @@ document.addEventListener('DOMContentLoaded', function() {
             
             tabBtns.forEach(btn => {
                 // Evento click para escritorio
-                btn.addEventListener('click', () => {
-                    changeTab(btn);
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    changeTab(this);
                 });
                 
                 // Evento touch para móviles
-                btn.addEventListener('touchstart', () => {
-                    changeTab(btn);
+                btn.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    changeTab(this);
                 });
             });
         }

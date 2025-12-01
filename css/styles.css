@@ -622,6 +622,7 @@ select:focus {
     opacity: 0.95;
 }
 
+/* Mejorar la accesibilidad de los botones CTA en móviles */
 .cta-button {
     display: inline-flex;
     align-items: center;
@@ -637,11 +638,19 @@ select:focus {
     box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
     min-height: 60px; /* Asegurar altura mínima para móviles */
     min-width: 200px; /* Asegurar ancho mínimo para móviles */
+    justify-content: center;
+    border: none;
+    cursor: pointer;
 }
 
 .cta-button:hover {
     transform: translateY(-3px);
     box-shadow: 0 12px 35px rgba(37, 211, 102, 0.5);
+}
+
+.cta-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.5), 0 8px 25px rgba(37, 211, 102, 0.4);
 }
 
 /* Footer */
@@ -1486,8 +1495,14 @@ footer {
     .cta-button {
         padding: 16px 35px;
         font-size: 1.1em;
+        min-height: 50px;
+        min-width: 160px;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        display: block;
     }
-
+    
     /* Footer for mobile */
     footer {
         padding: 40px 20px 20px;

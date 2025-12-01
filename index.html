@@ -585,7 +585,40 @@
 
     <script src="js/hamburger-menu.js"></script>
     <script src="js/aeropuertos.js"></script>
-
+    
+    <script>
+        // Función para manejar el scroll suave al hacer clic en el botón CTA
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctaButton = document.querySelector('.cta-button');
+            if (ctaButton) {
+                // Función para hacer scroll suave
+                function smoothScrollToReserve(e) {
+                    e.preventDefault();
+                    const targetId = ctaButton.getAttribute('href');
+                    if (targetId === '#reservar') {
+                        const targetElement = document.getElementById('reservar');
+                        if (targetElement) {
+                            targetElement.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                }
+                
+                // Evento click para escritorio
+                ctaButton.addEventListener('click', smoothScrollToReserve);
+                
+                // Evento touch para móviles
+                ctaButton.addEventListener('touchstart', function(e) {
+                    // Prevenir el comportamiento por defecto inmediatamente
+                    e.preventDefault();
+                    // Ejecutar el scroll suave después de un pequeño retraso
+                    setTimeout(smoothScrollToReserve, 100);
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
