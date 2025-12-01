@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 // Función para cambiar de pestaña
-                function changeTab(btn) {
-                    console.log('Cambiando a pestaña:', btn.getAttribute('data-tab'));
+                function changeTab(clickedBtn) {
+                    console.log('Cambiando a pestaña:', clickedBtn.getAttribute('data-tab'));
                     
                     // Obtener los botones y contenidos actuales (después de cualquier clonado)
                     const currentTabBtns = document.querySelectorAll('.tab-btn');
@@ -63,11 +63,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                     
                     // Agregar clase active al botón clickeado
-                    btn.classList.add('active');
-                    console.log('Agregando active a botón:', btn.getAttribute('data-tab'));
+                    clickedBtn.classList.add('active');
+                    console.log('Agregando active a botón:', clickedBtn.getAttribute('data-tab'));
                     
                     // Mostrar el contenido correspondiente
-                    const tabId = btn.getAttribute('data-tab');
+                    const tabId = clickedBtn.getAttribute('data-tab');
                     const contentId = tabId + '-content';
                     console.log('Buscando contenido con ID:', contentId);
                     
@@ -80,29 +80,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
                 
-                // Limpiar eventos anteriores para evitar duplicados
+                // Asignar eventos a los botones
                 tabBtns.forEach(btn => {
-                    // Remover eventos anteriores
-                    const clone = btn.cloneNode(true);
-                    btn.parentNode.replaceChild(clone, btn);
-                });
-                
-                // Volver a obtener los botones después del clonado
-                const newTabBtns = document.querySelectorAll('.tab-btn');
-                
-                newTabBtns.forEach(btn => {
                     // Evento click para escritorio
                     btn.addEventListener('click', function(e) {
                         e.preventDefault();
                         console.log('Click en botón:', btn.getAttribute('data-tab'));
-                        changeTab(this);
+                        changeTab(btn);
                     });
                     
                     // Evento touch para móviles
                     btn.addEventListener('touchstart', function(e) {
                         e.preventDefault();
                         console.log('Touch en botón:', btn.getAttribute('data-tab'));
-                        changeTab(this);
+                        changeTab(btn);
                     });
                 });
                 
