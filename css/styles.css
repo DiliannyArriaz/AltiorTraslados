@@ -162,6 +162,11 @@ nav {
     overflow: hidden;
 }
 
+.precios-hero {
+    min-height: 20vh;
+    padding: 60px 20px;
+}
+
 .hero::before {
     content: '';
     position: absolute;
