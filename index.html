@@ -7,7 +7,7 @@
     <title>Altior Traslados - Traslados Premium al Aeropuerto</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/precio-flotante.css">
+
     <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
     <style>
         .suggestions-container {
@@ -159,6 +159,21 @@
                         <div class="form-group">
                             <label>Hora</label>
                             <input type="time" id="hora" name="hora" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Zona de Origen</label>
+                            <select id="zona-origen" name="zona-origen" required>
+                                <option value="">Seleccione una zona</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Zona de Destino</label>
+                            <select id="zona-destino" name="zona-destino" required>
+                                <option value="">Seleccione una zona</option>
+                            </select>
                         </div>
                     </div>
 
@@ -411,9 +426,9 @@
 
     <script src="js/main.js"></script>
     <script src="js/precios.js"></script>
-    <script src="js/precio-flotante.js"></script>
+
     <script src="js/hamburger-menu.js"></script>
-    <script src="js/nav-active.js"></script>
+
 </body>
 
 </html>

@@ -602,6 +602,58 @@ function exportReservations() {
 
 // Handle booking form submission
 document.addEventListener('DOMContentLoaded', function() {
+    // Poblar los dropdowns de zonas
+    const zonaOrigenSelect = document.getElementById('zona-origen');
+    const zonaDestinoSelect = document.getElementById('zona-destino');
+    
+    if (zonaOrigenSelect && zonaDestinoSelect) {
+        // Importar las zonas disponibles desde precios.js
+        const zonas = ZONAS_DISPONIBLES || [
+            'CABA',
+            'EZEIZA',
+            'AEROPARQUE',
+            'Avellaneda / Lanús',
+            'Wilde / Monte Chingolo',
+            'Quilmes / Alte Brown',
+            'Berazategui / Hudson',
+            'Lomas de Zamora',
+            'Canning / Spegazzini',
+            'La Plata',
+            'Ramos Mejía / Ciudadela',
+            'Morón / Haedo',
+            'Caseros / El Palomar',
+            'Hurlingham / Loma Hermosa',
+            'Ituzaingó / Padua',
+            'San Miguel / José C. Paz',
+            'Merlo / Paso del Rey',
+            'Moreno / Francisco Álvarez',
+            'Gral. Rodríguez',
+            'Luján',
+            'Vicente López / Olivos',
+            'San Martín / San Andrés',
+            'San Isidro / Boulogne',
+            'Villa Ballester / José León Suárez',
+            'Tigre Centro / Pacheco',
+            'Don Torcuato / Grand Bourg',
+            'Benavídez / Milberg / Tortuguitas',
+            'Ing. Maschwitz / Del Viso',
+            'Pilar / Escobar',
+            'Campana / Cardales'
+        ];
+        
+        // Agregar las opciones a ambos select
+        zonas.forEach(zona => {
+            const optionOrigen = document.createElement('option');
+            optionOrigen.value = zona;
+            optionOrigen.textContent = zona;
+            zonaOrigenSelect.appendChild(optionOrigen);
+            
+            const optionDestino = document.createElement('option');
+            optionDestino.value = zona;
+            optionDestino.textContent = zona;
+            zonaDestinoSelect.appendChild(optionDestino);
+        });
+    }
     const bookingForm = document.getElementById('bookingForm');
     if (bookingForm) {
         bookingForm.addEventListener('submit', async function(e) {
