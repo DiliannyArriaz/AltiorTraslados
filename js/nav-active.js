@@ -16,41 +16,101 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Manejar las pestañas de precios si estamos en la página de precios
     if (currentPath === 'precios.html') {
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
-        if (tabBtns.length > 0 && tabContents.length > 0) {
-            // Función para cambiar de pestaña
-            function changeTab(btn) {
-                // Remover clase active de todos los botones y contenidos
-                tabBtns.forEach(b => b.classList.remove('active'));
-                tabContents.forEach(c => c.classList.remove('active'));
-                
-                // Agregar clase active al botón clickeado
-                btn.classList.add('active');
-                
-                // Mostrar el contenido correspondiente
-                const tabId = btn.getAttribute('data-tab');
-                const content = document.getElementById(tabId + '-content');
-                if (content) {
-                    content.classList.add('active');
-                }
-            }
+        // Función para inicializar las pestañas
+        function initializeTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
             
-            tabBtns.forEach(btn => {
-                // Evento click para escritorio
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    changeTab(this);
+            console.log('Inicializando pestañas - Pestañas encontradas:', tabBtns.length);
+            console.log('Inicializando pestañas - Contenidos encontrados:', tabContents.length);
+            
+            if (tabBtns.length > 0 && tabContents.length > 0) {
+                // Verificar que todos los contenidos necesarios existan
+                let allContentsExist = true;
+                tabBtns.forEach(btn => {
+                    const tabId = btn.getAttribute('data-tab');
+                    const contentId = tabId + '-content';
+                    const content = document.getElementById(contentId);
+                    if (!content) {
+                        console.error('Falta el contenido para la pestaña:', tabId);
+                        allContentsExist = false;
+                    }
                 });
                 
-                // Evento touch para móviles
-                btn.addEventListener('touchstart', function(e) {
-                    e.preventDefault();
-                    changeTab(this);
+                if (!allContentsExist) {
+                    console.warn('Algunos contenidos de pestañas no se encontraron, reintentando en 200ms...');
+                    setTimeout(initializeTabs, 200);
+                    return;
+                }
+                
+                // Función para cambiar de pestaña
+                function changeTab(btn) {
+                    console.log('Cambiando a pestaña:', btn.getAttribute('data-tab'));
+                    
+                    // Remover clase active de todos los botones y contenidos
+                    tabBtns.forEach(b => {
+                        b.classList.remove('active');
+                        console.log('Removiendo active de botón:', b.getAttribute('data-tab'));
+                    });
+                    
+                    tabContents.forEach(c => {
+                        c.classList.remove('active');
+                        console.log('Removiendo active de contenido:', c.id);
+                    });
+                    
+                    // Agregar clase active al botón clickeado
+                    btn.classList.add('active');
+                    console.log('Agregando active a botón:', btn.getAttribute('data-tab'));
+                    
+                    // Mostrar el contenido correspondiente
+                    const tabId = btn.getAttribute('data-tab');
+                    const contentId = tabId + '-content';
+                    console.log('Buscando contenido con ID:', contentId);
+                    
+                    const content = document.getElementById(contentId);
+                    if (content) {
+                        content.classList.add('active');
+                        console.log('Agregando active a contenido:', contentId);
+                    } else {
+                        console.error('No se encontró el contenido con ID:', contentId);
+                    }
+                }
+                
+                // Limpiar eventos anteriores para evitar duplicados
+                tabBtns.forEach(btn => {
+                    // Remover eventos anteriores
+                    const clone = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(clone, btn);
                 });
-            });
+                
+                // Volver a obtener los botones después del clonado
+                const newTabBtns = document.querySelectorAll('.tab-btn');
+                
+                newTabBtns.forEach(btn => {
+                    // Evento click para escritorio
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        console.log('Click en botón:', btn.getAttribute('data-tab'));
+                        changeTab(this);
+                    });
+                    
+                    // Evento touch para móviles
+                    btn.addEventListener('touchstart', function(e) {
+                        e.preventDefault();
+                        console.log('Touch en botón:', btn.getAttribute('data-tab'));
+                        changeTab(this);
+                    });
+                });
+                
+                console.log('Pestañas inicializadas correctamente');
+            } else {
+                console.log('No se encontraron pestañas o contenidos, reintentando en 200ms...');
+                setTimeout(initializeTabs, 200);
+            }
         }
+        
+        // Inicializar las pestañas
+        initializeTabs();
     }
 });
 
