@@ -4,6 +4,21 @@ const AEROPUERTOS = [
     { nombre: "Aeropuerto Aeroparque", direccion: "Aeropuerto Jorge Newbery, Ciudad Autónoma de Buenos Aires" }
 ];
 
+// Función para seleccionar un aeropuerto
+function selectAirport(airport, inputElement) {
+    // Usar el nombre del aeropuerto para el input
+    inputElement.value = airport.nombre;
+    // Encontrar el contenedor de sugerencias asociado a este input
+    const suggestionsContainer = inputElement.parentNode.querySelector('.autocomplete-suggestions');
+    if (suggestionsContainer) {
+        suggestionsContainer.style.display = 'none';
+        suggestionsContainer.innerHTML = '';
+    }
+    
+    // Disparar evento input para actualizar validaciones
+    inputElement.dispatchEvent(new Event('input'));
+}
+
 // Función para configurar el autocompletado de aeropuertos
 function setupAirportAutocomplete(inputId, suggestionsId) {
     console.log(`Setting up airport autocomplete for ${inputId}`);
@@ -48,16 +63,6 @@ function setupAirportAutocomplete(inputId, suggestionsId) {
     }
 
     // Función para seleccionar un aeropuerto
-    function selectAirport(airport, inputElement) {
-        // Usar el nombre del aeropuerto para el input
-        inputElement.value = airport.nombre;
-        suggestionsContainer.style.display = 'none';
-        suggestionsContainer.innerHTML = '';
-        
-        // Disparar evento input para actualizar validaciones
-        inputElement.dispatchEvent(new Event('input'));
-    }
-
     input.addEventListener('input', function () {
         console.log(`Input event triggered for ${inputId}:`, this.value);
         const query = this.value.toLowerCase();
