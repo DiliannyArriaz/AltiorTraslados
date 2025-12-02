@@ -202,15 +202,33 @@ function validateDestination() {
         if (!isDestinoAirport) {
             // Mostrar error
             destinoError.style.display = 'block';
-            // Mostrar sugerencias de aeropuertos
+            // Mostrar sugerencias de aeropuertos después de 2 segundos para que el usuario pueda leer el mensaje de error
             if (destinoValue.length >= 2) {
-                displayAirportSuggestions(AEROPUERTOS, destinoSuggestions, destinoInput);
+                // Limpiar cualquier timeout previo
+                if (destinoInput.delayTimeout) {
+                    clearTimeout(destinoInput.delayTimeout);
+                }
+                
+                // Configurar un nuevo timeout de 2 segundos
+                destinoInput.delayTimeout = setTimeout(() => {
+                    displayAirportSuggestions(AEROPUERTOS, destinoSuggestions, destinoInput);
+                }, 2000);
             }
         } else {
+            // Si es un aeropuerto válido, cancelar cualquier timeout pendiente y ocultar sugerencias
+            if (destinoInput.delayTimeout) {
+                clearTimeout(destinoInput.delayTimeout);
+                destinoInput.delayTimeout = null;
+            }
             destinoError.style.display = 'none';
             destinoSuggestions.style.display = 'none';
         }
     } else {
+        // Si el origen es aeropuerto o el destino está vacío, cancelar cualquier timeout pendiente
+        if (destinoInput.delayTimeout) {
+            clearTimeout(destinoInput.delayTimeout);
+            destinoInput.delayTimeout = null;
+        }
         destinoError.style.display = 'none';
         // Solo ocultar sugerencias si no hay consulta
         if (destinoValue.trim() === '') {
