@@ -8,12 +8,31 @@ const AEROPUERTOS = [
 function selectAirport(airport, inputElement) {
     // Usar el nombre del aeropuerto para el input
     inputElement.value = airport.nombre;
+    
+    // Marcar que ya se ha seleccionado un aeropuerto
+    inputElement.dataset.airportSelected = 'true';
+    inputElement.dataset.selectedAirportName = airport.nombre;
+    
     // Encontrar el contenedor de sugerencias asociado a este input
     const suggestionsContainer = inputElement.parentNode.querySelector('.autocomplete-suggestions');
     if (suggestionsContainer) {
         suggestionsContainer.style.display = 'none';
         suggestionsContainer.innerHTML = '';
     }
+    
+    // Quitar el foco del input para que no siga mostrando sugerencias
+    inputElement.blur();
+    
+    // Deshabilitar temporalmente las sugerencias
+    setTimeout(() => {
+        const parentContainer = inputElement.closest('.form-group');
+        if (parentContainer) {
+            const suggestions = parentContainer.querySelector('.autocomplete-suggestions');
+            if (suggestions) {
+                suggestions.style.display = 'none';
+            }
+        }
+    }, 100);
     
     // Disparar evento input para actualizar validaciones
     inputElement.dispatchEvent(new Event('input'));
@@ -62,6 +81,24 @@ function setupAirportAutocomplete(inputId, suggestionsId) {
         console.log(`Found existing suggestions container for ${inputId}:`, suggestionsContainer);
     }
 
+    // Variable para controlar si se debe mostrar sugerencias
+    let shouldShowSuggestions = false;
+    
+    // Evento click para mostrar sugerencias
+    input.addEventListener('click', function () {
+        // Solo mostrar sugerencias si no se ha seleccionado un aeropuerto
+        if (this.dataset.airportSelected !== 'true' && this.value.length >= 2) {
+            const query = this.value.toLowerCase();
+            const matchingAirports = AEROPUERTOS.filter(airport => 
+                airport.nombre.toLowerCase().includes(query)
+            );
+            
+            if (matchingAirports.length > 0) {
+                displayAirportSuggestions(matchingAirports, suggestionsContainer, input);
+            }
+        }
+    });
+    
     // Función para seleccionar un aeropuerto
     input.addEventListener('input', function () {
         console.log(`Input event triggered for ${inputId}:`, this.value);
@@ -70,6 +107,20 @@ function setupAirportAutocomplete(inputId, suggestionsId) {
 
         suggestionsContainer.innerHTML = '';
         suggestionsContainer.style.display = 'none';
+
+        // Verificar si ya se ha seleccionado un aeropuerto
+        if (this.dataset.airportSelected === 'true') {
+            // Si el usuario modifica el campo, limpiar la marca
+            if (query !== this.dataset.selectedAirportName) {
+                this.dataset.airportSelected = 'false';
+                delete this.dataset.selectedAirportName;
+                // Permitir mostrar sugerencias nuevamente
+                shouldShowSuggestions = true;
+            } else {
+                // Si el valor no ha cambiado, no mostrar sugerencias
+                return;
+            }
+        }
 
         // Para consultas muy cortas, no buscar
         if (query.length < 2) {
@@ -80,38 +131,41 @@ function setupAirportAutocomplete(inputId, suggestionsId) {
 
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
-            // Siempre mostrar sugerencias de aeropuertos para el campo de destino
-            // cuando el origen no es un aeropuerto
-            if (inputId === 'destino') {
-                const origenInput = document.getElementById('origen');
-                if (origenInput) {
-                    const origenValue = origenInput.value.toLowerCase();
-                    const isOrigenAirport = origenValue.includes('ezeiza') || origenValue.includes('aeroparque');
-                    
-                    // Si el origen no es aeropuerto, mostrar siempre sugerencias de aeropuertos
-                    if (!isOrigenAirport && query.length >= 2) {
-                        displayAirportSuggestions(AEROPUERTOS, suggestionsContainer, input);
-                        return;
+            // Solo mostrar sugerencias si se permite
+            if (shouldShowSuggestions || this.dataset.airportSelected !== 'true') {
+                // Siempre mostrar sugerencias de aeropuertos para el campo de destino
+                // cuando el origen no es un aeropuerto
+                if (inputId === 'destino') {
+                    const origenInput = document.getElementById('origen');
+                    if (origenInput) {
+                        const origenValue = origenInput.value.toLowerCase();
+                        const isOrigenAirport = origenValue.includes('ezeiza') || origenValue.includes('aeroparque');
+                        
+                        // Si el origen no es aeropuerto, mostrar siempre sugerencias de aeropuertos
+                        if (!isOrigenAirport && query.length >= 2) {
+                            displayAirportSuggestions(AEROPUERTOS, suggestionsContainer, input);
+                            return;
+                        }
                     }
                 }
-            }
-            
-            // Para el campo de origen o cuando el origen es aeropuerto, 
-            // mostrar sugerencias basadas en la consulta
-            const matchingAirports = AEROPUERTOS.filter(airport => 
-                airport.nombre.toLowerCase().includes(query)
-            );
+                
+                // Para el campo de origen o cuando el origen es aeropuerto, 
+                // mostrar sugerencias basadas en la consulta
+                const matchingAirports = AEROPUERTOS.filter(airport => 
+                    airport.nombre.toLowerCase().includes(query)
+                );
 
-            console.log('Matching airports:', matchingAirports);
+                console.log('Matching airports:', matchingAirports);
 
-            // Mostrar resultados
-            if (matchingAirports.length > 0) {
-                displayAirportSuggestions(matchingAirports, suggestionsContainer, input);
-            } else {
-                // Si no hay resultados, verificar si es una dirección
-                if (query.length >= 4) {
-                    // Es una dirección, no mostrar sugerencias de aeropuertos
-                    suggestionsContainer.style.display = 'none';
+                // Mostrar resultados
+                if (matchingAirports.length > 0) {
+                    displayAirportSuggestions(matchingAirports, suggestionsContainer, input);
+                } else {
+                    // Si no hay resultados, verificar si es una dirección
+                    if (query.length >= 4) {
+                        // Es una dirección, no mostrar sugerencias de aeropuertos
+                        suggestionsContainer.style.display = 'none';
+                    }
                 }
             }
         }, 300);

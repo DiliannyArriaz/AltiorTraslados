@@ -158,6 +158,10 @@ nav {
     padding: 60px 40px 60px;
     position: relative;
     overflow: hidden;
+    /* Asegurar que el contenido no se mueva cuando el formulario crece */
+    align-items: flex-start;
+    padding-top: 120px;
+    padding-bottom: 120px;
 }
 
 .precios-hero {
@@ -268,6 +272,23 @@ nav {
     border-radius: 25px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     border: 1px solid #334155;
+    /* Estabilizar el crecimiento del formulario */
+    transition: all 0.3s ease;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    /* Asegurar que el formulario crezca solo hacia abajo */
+    flex-grow: 1;
+    position: relative;
+}
+
+#bookingForm {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    /* Asegurar comportamiento estable */
+    position: relative;
+    min-height: 400px;
 }
 
 .form-header {
@@ -290,6 +311,22 @@ nav {
 .form-group {
     margin-bottom: 22px;
     position: relative;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 0.85em;
+    margin-top: 5px;
+    display: none;
+}
+
+.error-message.active {
+    display: block;
+}
+
+.input-error {
+    border-color: #ef4444 !important;
+    background-color: rgba(239, 68, 68, 0.1) !important;
 }
 
 label {
@@ -1399,15 +1436,18 @@ footer {
 
     .nav-container {
         position: relative;
+        align-items: center;
     }
 
     .logo-section {
         width: auto;
         justify-content: flex-start;
+        align-items: center;
     }
 
     .hamburger-menu {
         display: flex;
+        align-items: center;
     }
 
     .nav-right {
@@ -1423,10 +1463,12 @@ footer {
         border-radius: 0 0 15px 15px;
         display: none;
         z-index: 1001;
+        align-items: center;
     }
 
     .nav-right.active {
         display: flex;
+        align-items: center;
     }
 
     .phone-number {
@@ -1436,10 +1478,12 @@ footer {
     .nav-cta {
         padding: 8px 16px;
         font-size: 0.9em;
+        align-items: center;
     }
 
     .hero {
         padding: 100px 20px 40px;
+        align-items: center;
     }
 
     .hero-text h1 {
@@ -1451,16 +1495,19 @@ footer {
         gap: 40px;
         display: flex;
         flex-direction: column;
+        align-items: center;
     }
 
     .hero-text {
         order: 1;
+        align-items: center;
     }
 
     .booking-form {
         order: 2;
         width: 100%;
         max-width: 100%;
+        align-items: center;
     }
 
     /* Social sidebar for mobile */
@@ -1471,33 +1518,39 @@ footer {
         flex-direction: row;
         transform: none;
         gap: 10px;
+        align-items: center;
     }
 
     .social-icon {
         width: 45px;
         height: 45px;
         font-size: 1.3em;
+        align-items: center;
     }
 
     /* Hero features for mobile */
     .hero-features {
         grid-template-columns: 1fr;
         gap: 15px;
+        align-items: center;
     }
 
     .hero-feature {
         padding: 12px;
+        align-items: center;
     }
 
     .feature-icon-small {
         width: 40px;
         height: 40px;
         font-size: 1.1em;
+        align-items: center;
     }
 
     /* Booking form for mobile */
     .booking-form {
         padding: 30px 20px;
+        align-items: center;
     }
 
     .form-header h2 {
@@ -1508,8 +1561,37 @@ footer {
     .features-grid {
         grid-template-columns: 1fr;
         gap: 25px;
+        align-items: center;
     }
 
+    /* Fleet grid for mobile */
+    .fleet-grid {
+        align-items: center;
+    }
+
+    .fleet-card {
+        align-items: center;
+    }
+
+    .fleet-info {
+        align-items: center;
+    }
+
+    .fleet-specs {
+        align-items: center;
+    }
+
+    /* CTA section for mobile */
+    .cta {
+        align-items: center;
+    }
+
+    .cta-button {
+        align-items: center;
+    }
+}
+
+@media (max-width: 480px) {
     .feature-card {
         padding: 25px;
     }
@@ -1689,12 +1771,14 @@ footer {
         font-size: 1em;
         min-height: 45px;
         min-width: 140px;
+        align-items: center;
     }
     
     .btn-submit {
         padding: 14px;
         font-size: 0.95em;
         min-height: 45px;
+        align-items: center;
     }
     
     .btn-whatsapp {
@@ -1702,6 +1786,7 @@ footer {
         font-size: 0.9em;
         min-height: 42px;
         min-width: 140px;
+        align-items: center;
     }
     
     input[type="text"],
@@ -1731,6 +1816,7 @@ footer {
     .hamburger-menu {
         min-height: 32px;
         min-width: 32px;
+        align-items: center;
     }
     
     .hamburger-line {
@@ -1742,17 +1828,77 @@ footer {
     /* Ajustes específicos para formulario en móviles pequeños */
     .hero-content {
         padding-top: 40px;
+        align-items: center;
     }
     
     .booking-form {
         margin-top: 20px;
         width: 100%;
         max-width: 100%;
+        align-items: center;
     }
     
     .form-row {
         grid-template-columns: 1fr;
         gap: 15px;
+        align-items: center;
+    }
+    
+    /* Nav container for small mobile */
+    .nav-container {
+        align-items: center;
+    }
+    
+    .logo-section {
+        align-items: center;
+    }
+    
+    .nav-right {
+        align-items: center;
+    }
+    
+    .nav-right.active {
+        align-items: center;
+    }
+    
+    /* Hero section for small mobile */
+    .hero {
+        align-items: center;
+    }
+    
+    .hero-text {
+        align-items: center;
+    }
+    
+    /* Features grid for small mobile */
+    .features-grid {
+        align-items: center;
+    }
+    
+    /* Fleet grid for small mobile */
+    .fleet-grid {
+        align-items: center;
+    }
+    
+    .fleet-card {
+        align-items: center;
+    }
+    
+    .fleet-info {
+        align-items: center;
+    }
+    
+    .fleet-specs {
+        align-items: center;
+    }
+    
+    /* CTA section for small mobile */
+    .cta {
+        align-items: center;
+    }
+    
+    .cta-button {
+        align-items: center;
     }
 }
 
@@ -2169,10 +2315,12 @@ footer {
 
 .form-step {
     display: none;
+    flex: 1;
+    flex-direction: column;
 }
 
 .form-step.active {
-    display: block;
+    display: flex;
     animation: fadeIn 0.5s ease;
 }
 
