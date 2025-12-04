@@ -270,8 +270,8 @@
     <section class="hero" id="reservar">
         <div class="hero-content">
             <div class="hero-text">
-                <h1>Traslados Premium con Altior</h1>
-                <p class="subtitle">Servicio ejecutivo de alta calidad. Llevamos tu viaje a otro nivel.</p>
+                <h1>Traslados con Altior</h1>
+                <p class="subtitle">Servicio confiable y confortable.</p>
 
                 <div class="hero-features">
                     <div class="hero-feature">
@@ -284,8 +284,8 @@
                     <div class="hero-feature">
                         <div class="feature-icon-small">⭐</div>
                         <div>
-                            <strong>Flota Premium</strong>
-                            <small style="color: #5B8DB8;">Vehículos de lujo</small>
+                            <strong>Flota Confiable</strong>
+                            <small style="color: #5B8DB8;">Vehículos bien mantenidos</small>
                         </div>
                     </div>
                     <div class="hero-feature">
@@ -303,106 +303,146 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- WhatsApp Contact Section -->
-                <div class="whatsapp-contact-inline">
-                    <div class="whatsapp-header">
-                        <i class="fab fa-whatsapp"></i>
-                        <h3>Contacto Directo</h3>
-                    </div>
-                    <p>¿Necesitas una respuesta inmediata? Chatea con nosotros por WhatsApp para hacer tu reserva</p>
-                    <a href="https://wa.me/5491122516700?text=Hola,%20quisiera%20hacer%20una%20reserva" target="_blank" class="btn-whatsapp">
-                        <i class="fab fa-whatsapp"></i>
-                        Chatear por WhatsApp
-                    </a>
-                </div>
             </div>
 
             <!-- Booking Form -->
             <div class="booking-form">
+                <!-- Botón de Reservar por WhatsApp -->
+                <div class="whatsapp-reserve-button">
+                    <a href="https://wa.me/5491122516700?text=Hola,%20quisiera%20hacer%20una%20reserva" target="_blank" class="btn-whatsapp-simple">
+                        <i class="fab fa-whatsapp"></i>
+                        Reservar por WhatsApp
+                    </a>
+                </div>
+
+                <!-- Separador "o" -->
+                <div class="or-divider">
+                    <span>o</span>
+                </div>
+
+                <!-- Encabezado del formulario -->
                 <div class="form-header">
                     <h2>Reserve su Traslado</h2>
                     <p>Complete el formulario y nos contactaremos de inmediato</p>
                 </div>
 
                 <form id="bookingForm" action="https://script.google.com/macros/s/AKfycbysoBEGQiTf3Gpv886Nw_UBPVGvK0-j_bug3CGuf5J8PZHdMKmtziU6wGJjBi9lIAz1Mw/exec" method="POST" target="hiddenFrame">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Fecha</label>
-                            <input type="date" id="fecha" name="fecha" required>
+                    <!-- Indicador de pasos -->
+                    <div class="steps-indicator">
+                        <div class="step active" data-step="1">
+                            <span class="step-number">1</span>
+                            <span class="step-label">Fecha y Hora</span>
                         </div>
-                        <div class="form-group">
-                            <label>Hora</label>
-                            <input type="time" id="hora" name="hora" required>
+                        <div class="step" data-step="2">
+                            <span class="step-number">2</span>
+                            <span class="step-label">Ubicación</span>
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Zona</label>
-                        <select id="zona" name="zona" required>
-                            <option value="">Seleccione una zona</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Origen</label>
-                        <input type="text" id="origen" name="origen" placeholder="Dirección o aeropuerto" required autocomplete="off">
-                        <div id="origen-suggestions" class="suggestions-container"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Destino</label>
-                        <input type="text" id="destino" name="destino" placeholder="Dirección o aeropuerto" required autocomplete="off">
-                        <div id="destino-suggestions" class="suggestions-container"></div>
-                        <!-- Mensaje de error para aeropuertos -->
-                        <div id="destino-error" class="error-message" style="display: none; color: red; font-size: 0.9em; margin-top: 5px;">
-                            La dirección de destino debe ser un Aeropuerto
+                        <div class="step" data-step="3">
+                            <span class="step-number">3</span>
+                            <span class="step-label">Últimos detalles</span>
                         </div>
                     </div>
 
-                    <div class="form-row">
+                    <!-- Paso 1: Fecha y Hora -->
+                    <div class="form-step active" data-step="1">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Fecha</label>
+                                <input type="date" id="fecha" name="fecha" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Hora</label>
+                                <input type="time" id="hora" name="hora" required>
+                            </div>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button type="button" class="btn-next" data-next="2">Siguiente</button>
+                        </div>
+                    </div>
+
+                    <!-- Paso 2: Zona, Origen y Destino -->
+                    <div class="form-step" data-step="2">
                         <div class="form-group">
-                            <label>Pasajeros</label>
-                            <select id="pasajeros" name="pasajeros" required>
-                                <option value="">Seleccione</option>
-                                <option value="1">1 pasajero</option>
-                                <option value="2">2 pasajeros</option>
-                                <option value="3">3 pasajeros</option>
-                                <option value="4">4 pasajeros</option>
-                                <option value="5">5 pasajeros</option>
-                                <option value="6">6 pasajeros</option>
-                                <option value="7+">7+ pasajeros</option>
+                            <label>Zona</label>
+                            <select id="zona" name="zona" required>
+                                <option value="">Seleccione una zona</option>
                             </select>
                         </div>
+
                         <div class="form-group">
-                            <label>Teléfono</label>
-                            <input type="tel" id="telefono" name="telefono" placeholder="+54 9 11 XXXX-XXXX" required>
+                            <label>Origen</label>
+                            <input type="text" id="origen" name="origen" placeholder="Dirección o aeropuerto" required autocomplete="off">
+                            <div id="origen-suggestions" class="suggestions-container"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Destino</label>
+                            <input type="text" id="destino" name="destino" placeholder="Dirección o aeropuerto" required autocomplete="off">
+                            <div id="destino-suggestions" class="suggestions-container"></div>
+                            <!-- Mensaje de error para aeropuertos -->
+                            <div id="destino-error" class="error-message" style="display: none; color: red; font-size: 0.9em; margin-top: 5px;">
+                                La dirección de destino debe ser un Aeropuerto
+                            </div>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button type="button" class="btn-prev" data-prev="1">Anterior</button>
+                            <button type="button" class="btn-next" data-next="3">Siguiente</button>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="email" name="email" placeholder="su@email.com" required>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="checkbox-container">
-                            <input type="checkbox" id="equipaje" name="equipaje">
-                            <label for="equipaje">Viajo con equipaje</label>
-                        </div>
-
-                        <div class="luggage-details" id="luggageDetails">
+                    <!-- Paso 3: Pasajeros, Equipaje, Email y Teléfono -->
+                    <div class="form-step" data-step="3">
+                        <div class="form-row">
                             <div class="form-group">
-                                <label>Cantidad de maletas</label>
-                                <select id="maletas" name="maletas">
-                                    <option value="1">1 maleta</option>
-                                    <option value="2">2 maletas</option>
-                                    <option value="3">3 maletas</option>
-                                    <option value="4">4 maletas</option>
-                                    <option value="5">5 maletas</option>
-                                    <option value="6+">6 o más maletas</option>
+                                <label>Pasajeros</label>
+                                <select id="pasajeros" name="pasajeros" required>
+                                    <option value="">Seleccione</option>
+                                    <option value="1">1 pasajero</option>
+                                    <option value="2">2 pasajeros</option>
+                                    <option value="3">3 pasajeros</option>
+                                    <option value="4">4 pasajeros</option>
+                                    <option value="5">5 pasajeros</option>
+                                    <option value="6">6 pasajeros</option>
+                                    <option value="7+">7+ pasajeros</option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label>Teléfono</label>
+                                <input type="tel" id="telefono" name="telefono" placeholder="+54 9 11 XXXX-XXXX" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="email" name="email" placeholder="su@email.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="equipaje" name="equipaje">
+                                <label for="equipaje">Viajo con equipaje</label>
+                            </div>
+
+                            <div class="luggage-details" id="luggageDetails">
+                                <div class="form-group">
+                                    <label>Cantidad de maletas</label>
+                                    <select id="maletas" name="maletas">
+                                        <option value="1">1 maleta</option>
+                                        <option value="2">2 maletas</option>
+                                        <option value="3">3 maletas</option>
+                                        <option value="4">4 maletas</option>
+                                        <option value="5">5 maletas</option>
+                                        <option value="6+">6 o más maletas</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button type="button" class="btn-prev" data-prev="2"><span>Anterior</span></button>
+                            <button type="submit" class="btn-next">Reservar</button>
                         </div>
                     </div>
 
@@ -422,10 +462,6 @@
                     <input type="hidden" id="destino_hidden" name="destino">
                     <!-- Campo oculto para la zona -->
                     <input type="hidden" id="zona_hidden" name="zona">
-
-                    <button type="submit" class="btn-submit">
-                        Reservar
-                    </button>
 
                     <!-- Iframe oculto para recibir la respuesta -->
                     <iframe name="hiddenFrame" style="display:none;"></iframe>
@@ -504,7 +540,9 @@
 
             <div class="fleet-grid">
                 <div class="fleet-card">
-                    <div class="fleet-image">🚗</div>
+                    <div class="fleet-image">
+                        <img src="assets/estandar.png" alt="Sedan Ejecutivo" style="transform: scaleX(-1); max-width: 80%; height: auto;">
+                    </div>
                     <div class="fleet-info">
                         <h3>Sedan Ejecutivo</h3>
                         <p>Ideal para viajes de negocios y ejecutivos</p>
@@ -519,7 +557,9 @@
                 </div>
 
                 <div class="fleet-card">
-                    <div class="fleet-image">🚙</div>
+                    <div class="fleet-image">
+                        <img src="assets/extra equipaje.png" alt="Extra Equipaje" style="max-width: 80%; height: auto;">
+                    </div>
                     <div class="fleet-info">
                         <h3>Extra Equipaje</h3>
                         <p>Perfecto para equipaje voluminoso</p>
