@@ -731,7 +731,7 @@ select:focus {
 
 /* Footer */
 footer {
-    background: #020617;
+    background: #0f172a;
     color: white;
     padding: 60px 40px 30px;
 }
@@ -867,6 +867,7 @@ footer {
 
 .cancel-section .section-header h1 {
     color: #f87171;
+    margin-top: 50px;
 }
 
 .cancel-section .cancel-info {
