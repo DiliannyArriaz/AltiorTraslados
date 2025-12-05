@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Popup - Altior Traslados</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .test-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #2C4A7C;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .btn-test {
+            background: linear-gradient(135deg, #5B8DB8, #3B5998);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .btn-test:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(91, 141, 184, 0.4);
+        }
+        
+        .instructions {
+            background: #e3f2fd;
+            border-left: 4px solid #5B8DB8;
+            padding: 20px;
+            border-radius: 0 10px 10px 0;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .instructions h3 {
+            color: #2C4A7C;
+            margin-top: 0;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        @media (max-width: 768px) {
+            .test-container {
+                padding: 25px;
+                margin: 10px;
+            }
+            
+            .btn-test {
+                width: 100%;
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .test-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Prueba de Popup de Reserva</h1>
+        <p>Esta página te permite probar el popup de confirmación de reserva para verificar que funcione correctamente.</p>
+        <button id="testPopup" class="btn-test">
+            <i class="fas fa-check-circle"></i> Mostrar Popup de Reserva
+        </button>
+        
+        <div class="instructions">
+            <h3>Instrucciones:</h3>
+            <ul>
+                <li>Haz clic en el botón para mostrar el popup de reserva</li>
+                <li>Verifica que el popup se muestre correctamente</li>
+                <li>Asegúrate de que el diseño sea consistente con el sitio</li>
+                <li>Prueba cerrar el popup con el botón, la X, ESC o haciendo clic fuera</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const testPopupBtn = document.getElementById('testPopup');
+            if (testPopupBtn) {
+                testPopupBtn.addEventListener('click', function() {
+                    // Generar un código de reserva de prueba
+                    const testCode = 'ALT-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+                    const testEmail = 'cliente@example.com';
+                    
+                    // Mostrar el popup de reserva
+                    showReservationPopup(testCode, testEmail);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

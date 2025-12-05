@@ -244,8 +244,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Rellenar campos ocultos
             rellenarCamposOcultos();
             
+            // Obtener el código de reserva y email para pasarlos al popup
+            const codigoReserva = document.getElementById('codigo_reserva').value;
+            const emailCliente = document.getElementById('email').value;
+            
             // Mostrar mensaje de confirmación
-            mostrarMensajeExito('¡Reserva enviada correctamente!');
+            mostrarMensajeExito('¡Reserva enviada correctamente!', codigoReserva, emailCliente);
             
             // Enviar el formulario
             bookingForm.submit();
@@ -294,8 +298,13 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('equipaje_hidden').value = equipaje ? 'Sí' : 'No';
         document.getElementById('maletas_hidden').value = equipaje ? maletas : '';
         
-        // Generar código de reserva aleatorio
-        const codigoReserva = 'ALT' + Math.floor(1000 + Math.random() * 9000);
+        // Generar código de reserva aleatorio (formato consistente con main.js)
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let code = '';
+        for (let i = 0; i < 8; i++) {
+            code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        const codigoReserva = 'ALT-' + code;
         document.getElementById('codigo_reserva').value = codigoReserva;
     }
     
@@ -400,7 +409,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Función para mostrar mensaje de éxito
-    function mostrarMensajeExito(mensaje) {
+    function mostrarMensajeExito(mensaje, codigoReserva, emailCliente) {
+        // Si se proporcionan código de reserva y email, mostrar el popup
+        if (codigoReserva && emailCliente) {
+            // Llamar a la función showReservationPopup que está en main.js
+            if (typeof showReservationPopup === 'function') {
+                showReservationPopup(codigoReserva, emailCliente);
+            } else {
+                // Fallback: mostrar mensaje estático si la función no está disponible
+                mostrarMensajeExitoEstatico(mensaje);
+            }
+        } else {
+            // Mostrar mensaje estático si no se proporcionan los datos
+            mostrarMensajeExitoEstatico(mensaje);
+        }
+    }
+    
+    // Función para mostrar mensaje de éxito estático (versión original)
+    function mostrarMensajeExitoEstatico(mensaje) {
         // Crear contenedor de mensajes si no existe
         let contenedorMensajes = document.getElementById('mensajes-formulario');
         if (!contenedorMensajes) {

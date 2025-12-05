@@ -281,7 +281,7 @@ function showReservationPopup(codigoReserva, emailCliente) {
         }
         
         .popup-content {
-            background: white;
+            background: #1e293b;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-width: 500px;
@@ -289,6 +289,8 @@ function showReservationPopup(codigoReserva, emailCliente) {
             max-height: 90vh;
             overflow-y: auto;
             animation: popupFadeIn 0.3s ease-out;
+            position: relative;
+            border: 1px solid #334155;
         }
         
         @keyframes popupFadeIn {
@@ -298,7 +300,7 @@ function showReservationPopup(codigoReserva, emailCliente) {
         
         .popup-header {
             padding: 25px 30px 15px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #334155;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -306,7 +308,7 @@ function showReservationPopup(codigoReserva, emailCliente) {
         
         .popup-header h2 {
             margin: 0;
-            color: #2C4A7C;
+            color: #ffffff;
             font-size: 1.8em;
         }
         
@@ -315,7 +317,7 @@ function showReservationPopup(codigoReserva, emailCliente) {
             border: none;
             font-size: 2em;
             cursor: pointer;
-            color: #999;
+            color: #94a3b8;
             padding: 0;
             width: 40px;
             height: 40px;
@@ -324,11 +326,14 @@ function showReservationPopup(codigoReserva, emailCliente) {
             justify-content: center;
             border-radius: 50%;
             transition: all 0.3s;
+            position: absolute;
+            top: 15px;
+            right: 15px;
         }
         
         .popup-close:hover {
-            background: #f5f5f5;
-            color: #333;
+            background: #334155;
+            color: #ffffff;
         }
         
         .popup-body {
@@ -338,30 +343,107 @@ function showReservationPopup(codigoReserva, emailCliente) {
         .popup-body p {
             margin-bottom: 15px;
             line-height: 1.6;
+            color: #cbd5e1;
         }
         
         .reservation-details {
-            background: #f8f9fa;
+            background: #334155;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 12px;
             margin: 20px 0;
+            border: 1px solid #475569;
         }
         
         .reservation-details p {
             margin: 10px 0;
             font-size: 0.95em;
+            color: #cbd5e1;
         }
         
         .popup-footer {
             padding: 20px 30px;
-            border-top: 1px solid #eee;
-            text-align: right;
+            border-top: 1px solid #334155;
+            text-align: center;
         }
         
+        /* Estilos del botón consistentes con los de la página */
         .popup-footer .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.15em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
             margin: 0;
-            padding: 12px 30px;
-            width: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+            min-height: 55px;
+        }
+        
+        .popup-footer .btn-submit:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .popup-content {
+                width: 95%;
+                margin: 20px;
+            }
+            
+            .popup-header {
+                padding: 20px 20px 15px;
+            }
+            
+            .popup-header h2 {
+                font-size: 1.5em;
+            }
+            
+            .popup-body {
+                padding: 20px;
+            }
+            
+            .popup-footer {
+                padding: 15px 20px;
+            }
+            
+            .popup-footer .btn-submit {
+                padding: 15px;
+                font-size: 1em;
+                width: 100%;
+                min-height: 50px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .popup-content {
+                width: 95%;
+                margin: 10px;
+            }
+            
+            .popup-header h2 {
+                font-size: 1.3em;
+            }
+            
+            .popup-body {
+                padding: 15px;
+            }
+            
+            .popup-body p {
+                font-size: 0.9em;
+            }
+            
+            .reservation-details p {
+                font-size: 0.9em;
+            }
         }
     `;
     
@@ -383,6 +465,14 @@ function showReservationPopup(codigoReserva, emailCliente) {
             document.head.removeChild(styles);
             document.body.removeChild(popup);
             document.removeEventListener('keydown', closeOnEscape);
+        }
+    });
+    
+    // Cerrar haciendo clic fuera del popup
+    popup.addEventListener('click', function(e) {
+        if (e.target === popup) {
+            document.head.removeChild(styles);
+            document.body.removeChild(popup);
         }
     });
 }
@@ -410,7 +500,7 @@ function showCancellationPopup() {
         </div>
     `;
     
-    // Agregar estilos para el popup (reutilizamos los mismos estilos)
+    // Agregar estilos para el popup
     const styles = document.createElement('style');
     styles.textContent = `
         .popup-overlay {
@@ -428,7 +518,7 @@ function showCancellationPopup() {
         }
         
         .popup-content {
-            background: white;
+            background: #1e293b;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-width: 500px;
@@ -436,6 +526,8 @@ function showCancellationPopup() {
             max-height: 90vh;
             overflow-y: auto;
             animation: popupFadeIn 0.3s ease-out;
+            position: relative;
+            border: 1px solid #334155;
         }
         
         @keyframes popupFadeIn {
@@ -445,7 +537,7 @@ function showCancellationPopup() {
         
         .popup-header {
             padding: 25px 30px 15px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #334155;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -453,7 +545,7 @@ function showCancellationPopup() {
         
         .popup-header h2 {
             margin: 0;
-            color: #2C4A7C;
+            color: #ffffff;
             font-size: 1.8em;
         }
         
@@ -462,7 +554,7 @@ function showCancellationPopup() {
             border: none;
             font-size: 2em;
             cursor: pointer;
-            color: #999;
+            color: #94a3b8;
             padding: 0;
             width: 40px;
             height: 40px;
@@ -471,11 +563,14 @@ function showCancellationPopup() {
             justify-content: center;
             border-radius: 50%;
             transition: all 0.3s;
+            position: absolute;
+            top: 15px;
+            right: 15px;
         }
         
         .popup-close:hover {
-            background: #f5f5f5;
-            color: #333;
+            background: #334155;
+            color: #ffffff;
         }
         
         .popup-body {
@@ -485,31 +580,34 @@ function showCancellationPopup() {
         .popup-body p {
             margin-bottom: 15px;
             line-height: 1.6;
+            color: #cbd5e1;
         }
         
         .reservation-details {
-            background: #f8f9fa;
+            background: #334155;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 12px;
             margin: 20px 0;
+            border: 1px solid #475569;
         }
         
         .reservation-details p {
             margin: 10px 0;
             font-size: 0.95em;
+            color: #cbd5e1;
         }
         
         .popup-footer {
             padding: 20px 30px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #334155;
             text-align: center;
         }
         
+        /* Estilos del botón consistentes con los de la página */
         .popup-footer .btn-submit {
-            margin: 0;
-            padding: 12px 30px;
-            width: auto;
-            background: linear-gradient(135deg, #5B8DB8, #3B5998);
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
             border: none;
             border-radius: 12px;
@@ -517,16 +615,72 @@ function showCancellationPopup() {
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            display: inline-flex;
+            margin: 0;
+            display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            box-shadow: 0 6px 20px rgba(59, 89, 152, 0.3);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+            min-height: 55px;
         }
         
         .popup-footer .btn-submit:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(59, 89, 152, 0.4);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .popup-content {
+                width: 95%;
+                margin: 20px;
+            }
+            
+            .popup-header {
+                padding: 20px 20px 15px;
+            }
+            
+            .popup-header h2 {
+                font-size: 1.5em;
+            }
+            
+            .popup-body {
+                padding: 20px;
+            }
+            
+            .popup-footer {
+                padding: 15px 20px;
+            }
+            
+            .popup-footer .btn-submit {
+                padding: 15px;
+                font-size: 1em;
+                width: 100%;
+                min-height: 50px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .popup-content {
+                width: 95%;
+                margin: 10px;
+            }
+            
+            .popup-header h2 {
+                font-size: 1.3em;
+            }
+            
+            .popup-body {
+                padding: 15px;
+            }
+            
+            .popup-body p {
+                font-size: 0.9em;
+            }
+            
+            .reservation-details p {
+                font-size: 0.9em;
+            }
         }
     `;
     
@@ -548,6 +702,14 @@ function showCancellationPopup() {
             document.head.removeChild(styles);
             document.body.removeChild(popup);
             document.removeEventListener('keydown', closeOnEscape);
+        }
+    });
+    
+    // Cerrar haciendo clic fuera del popup
+    popup.addEventListener('click', function(e) {
+        if (e.target === popup) {
+            document.head.removeChild(styles);
+            document.body.removeChild(popup);
         }
     });
 }
