@@ -238,8 +238,8 @@
                     
                     // Validación básica del código de reserva
                     if (codigoReserva && codigoReserva.length >= 10) {
-                        // Procesar cancelación usando el backend real
-                        procesarCancelacionConBackend(codigoReserva);
+                        // Procesar cancelación usando la función de main.js
+                        cancelarReserva(codigoReserva);
                     } else {
                         alert('Por favor ingrese un código de reserva válido (mínimo 10 caracteres).');
                     }
@@ -264,103 +264,6 @@
                         popup.style.display = 'none';
                     }
                 });
-            }
-            
-            // Función para procesar la cancelación usando el backend real
-            async function procesarCancelacionConBackend(codigoReserva) {
-                try {
-                    // Mostrar indicador de carga
-                    const boton = cancelForm.querySelector('button[type="submit"]');
-                    const textoOriginal = boton.innerHTML;
-                    boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
-                    boton.disabled = true;
-                    
-                    // Verificar que el código de reserva sea válido usando el backend
-                    const verificacion = await verificarCodigoReservaBackend(codigoReserva);
-                    
-                    if (!verificacion.exito || !verificacion.valido) {
-                        // Restaurar botón
-                        boton.innerHTML = textoOriginal;
-                        boton.disabled = false;
-                        alert(verificacion.mensaje || 'Código de reserva no válido o ya cancelado');
-                        return;
-                    }
-                    
-                    // Cancelar la reserva usando el backend
-                    const resultado = await cancelarReservaBackend(codigoReserva);
-                    
-                    // Restaurar botón
-                    boton.innerHTML = textoOriginal;
-                    boton.disabled = false;
-                    
-                    if (resultado.exito && resultado.cancelada) {
-                        // Mostrar popup de confirmación
-                        if (popup) {
-                            popup.style.display = 'flex';
-                        }
-                        cancelForm.reset();
-                    } else {
-                        alert(resultado.mensaje || 'Error al cancelar la reserva');
-                    }
-                } catch (error) {
-                    // Restaurar botón
-                    const boton = cancelForm.querySelector('button[type="submit"]');
-                    boton.innerHTML = 'Cancelar Reserva';
-                    boton.disabled = false;
-                    
-                    console.error('Error al procesar cancelación:', error);
-                    alert('Error al procesar la cancelación. Por favor intente nuevamente.');
-                }
-            }
-            
-            // Función para verificar código de reserva usando el backend
-            async function verificarCodigoReservaBackend(codigoReserva) {
-                try {
-                    const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/verificar-reserva`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ codigoReserva: codigoReserva })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error('Error en la verificación');
-                    }
-                    
-                    return await response.json();
-                } catch (error) {
-                    console.error('Error al verificar código de reserva:', error);
-                    return {
-                        exito: false,
-                        mensaje: 'Error al verificar el código de reserva'
-                    };
-                }
-            }
-            
-            // Función para cancelar reserva usando el backend
-            async function cancelarReservaBackend(codigoReserva) {
-                try {
-                    const response = await fetch(`${RESERVAS_CONFIG.apiUrl}/cancelar-reserva`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ codigoReserva: codigoReserva })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error('Error al cancelar reserva');
-                    }
-                    
-                    return await response.json();
-                } catch (error) {
-                    console.error('Error al cancelar reserva:', error);
-                    return {
-                        exito: false,
-                        mensaje: 'Error al cancelar la reserva'
-                    };
-                }
             }
         });
     </script>

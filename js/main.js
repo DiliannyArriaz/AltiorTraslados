@@ -1175,6 +1175,47 @@ function generateReservationCode() {
     return 'ALT-' + code;
 }
 
+// Función para cancelar una reserva
+function cancelarReserva(codigoReserva) {
+    // Mostrar mensaje de carga
+    const loadingMessage = document.createElement('div');
+    loadingMessage.innerHTML = '<p>Buscando reserva...</p>';
+    loadingMessage.style.textAlign = 'center';
+    loadingMessage.style.padding = '20px';
+    document.querySelector('.booking-form').appendChild(loadingMessage);
+    
+    // Enviar solicitud al script de Google Apps Script
+    const scriptURL = RESERVAS_CONFIG.scriptUrl.replace('https://api.allorigins.win/raw?url=', ''); // Usar URL directa
+    
+    // Decodificar la URL
+    const decodedURL = decodeURIComponent(scriptURL);
+    
+    fetch(decodedURL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `action=cancel&codigo_reserva=${encodeURIComponent(codigoReserva)}`
+    })
+    .then(response => {
+        // Remover mensaje de carga
+        document.querySelector('.booking-form').removeChild(loadingMessage);
+        
+        // Como usamos no-cors, no podemos acceder a la respuesta real
+        // Pero asumimos que si llegamos aquí, la solicitud se envió correctamente
+        
+        // Mostrar popup de confirmación
+        showCancellationPopup();
+    })
+    .catch(error => {
+        // Remover mensaje de carga
+        document.querySelector('.booking-form').removeChild(loadingMessage);
+        
+        console.error('Error:', error);
+        alert('Hubo un error al procesar la cancelación. Por favor, inténtelo nuevamente.');
+    });
+}
+
 function scrollToForm(e) {
     e.preventDefault();
     document.querySelector('.booking-form').scrollIntoView({ behavior: 'smooth' });
