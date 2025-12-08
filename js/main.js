@@ -329,6 +329,7 @@ function showReservationPopup(codigoReserva, emailCliente) {
             position: absolute;
             top: 15px;
             right: 15px;
+            z-index: 10;
         }
         
         .popup-close:hover {
@@ -364,6 +365,7 @@ function showReservationPopup(codigoReserva, emailCliente) {
             padding: 20px 30px;
             border-top: 1px solid #334155;
             text-align: center;
+            clear: both;
         }
         
         /* Estilos del botón consistentes con los de la página */
@@ -385,6 +387,7 @@ function showReservationPopup(codigoReserva, emailCliente) {
             gap: 12px;
             box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
             min-height: 55px;
+            box-sizing: border-box;
         }
         
         .popup-footer .btn-submit:hover {
@@ -566,6 +569,7 @@ function showCancellationPopup() {
             position: absolute;
             top: 15px;
             right: 15px;
+            z-index: 10;
         }
         
         .popup-close:hover {
@@ -601,6 +605,7 @@ function showCancellationPopup() {
             padding: 20px 30px;
             border-top: 1px solid #334155;
             text-align: center;
+            clear: both;
         }
         
         /* Estilos del botón consistentes con los de la página */
@@ -622,6 +627,7 @@ function showCancellationPopup() {
             gap: 12px;
             box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
             min-height: 55px;
+            box-sizing: border-box;
         }
         
         .popup-footer .btn-submit:hover {
@@ -1175,16 +1181,77 @@ function generateReservationCode() {
     return 'ALT-' + code;
 }
 
-// Función para cancelar una reserva
-function cancelarReserva(codigoReserva) {
+// Función para verificar el estado de una reserva
+function verificarEstadoReserva(codigoReserva) {
     // Mostrar mensaje de carga
     const loadingMessage = document.createElement('div');
-    loadingMessage.innerHTML = '<p>Buscando reserva...</p>';
+    loadingMessage.innerHTML = '<p>Verificando estado de la reserva...</p>';
     loadingMessage.style.textAlign = 'center';
     loadingMessage.style.padding = '20px';
     document.querySelector('.booking-form').appendChild(loadingMessage);
     
-    // Enviar solicitud al script de Google Apps Script
+    // Enviar solicitud al script de Google Apps Script para verificar el estado
+    const scriptURL = RESERVAS_CONFIG.scriptUrl.replace('https://api.allorigins.win/raw?url=', ''); // Usar URL directa
+    
+    // Decodificar la URL
+    const decodedURL = decodeURIComponent(scriptURL);
+    
+    fetch(decodedURL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `action=check_status&codigo_reserva=${encodeURIComponent(codigoReserva)}`
+    })
+    .then(response => {
+        // Remover mensaje de carga
+        document.querySelector('.booking-form').removeChild(loadingMessage);
+        
+        // Verificar si la respuesta es exitosa
+        if (response.ok) {
+            // Intentar parsear la respuesta JSON
+            return response.json().then(data => {
+                if (data.status === "active") {
+                    // La reserva está activa, proceder con la cancelación
+                    cancelarReservaConfirmada(codigoReserva);
+                } else if (data.status === "cancelled") {
+                    // La reserva ya está cancelada
+                    alert('Esta reserva ya ha sido cancelada anteriormente.');
+                } else if (data.status === "not_found") {
+                    // La reserva no existe
+                    alert('No se encontró ninguna reserva con ese código. Por favor, verifica el código e inténtalo nuevamente.');
+                } else {
+                    // Error desconocido
+                    alert('Error al verificar el estado de la reserva. Por favor, inténtelo nuevamente.');
+                }
+            }).catch(() => {
+                // Error al parsear JSON
+                alert('Error al verificar el estado de la reserva. Por favor, inténtelo nuevamente.');
+            });
+        } else {
+            // Error en la respuesta
+            alert('Error al verificar el estado de la reserva. Por favor, inténtelo nuevamente.');
+        }
+    })
+    .catch(error => {
+        // Remover mensaje de carga
+        document.querySelector('.booking-form').removeChild(loadingMessage);
+        
+        console.error('Error:', error);
+        alert('Error al verificar el estado de la reserva. Por favor, inténtelo nuevamente.');
+    });
+}
+
+// Función para cancelar una reserva confirmada
+function cancelarReservaConfirmada(codigoReserva) {
+    // Mostrar mensaje de carga
+    const loadingMessage = document.createElement('div');
+    loadingMessage.innerHTML = '<p>Cancelando reserva...</p>';
+    loadingMessage.style.textAlign = 'center';
+    loadingMessage.style.padding = '20px';
+    document.querySelector('.booking-form').appendChild(loadingMessage);
+    
+    // Enviar solicitud al script de Google Apps Script para cancelar la reserva
     const scriptURL = RESERVAS_CONFIG.scriptUrl.replace('https://api.allorigins.win/raw?url=', ''); // Usar URL directa
     
     // Decodificar la URL
@@ -1201,19 +1268,45 @@ function cancelarReserva(codigoReserva) {
         // Remover mensaje de carga
         document.querySelector('.booking-form').removeChild(loadingMessage);
         
-        // Como usamos no-cors, no podemos acceder a la respuesta real
-        // Pero asumimos que si llegamos aquí, la solicitud se envió correctamente
-        
-        // Mostrar popup de confirmación
-        showCancellationPopup();
+        // Verificar si la respuesta es exitosa
+        if (response.ok) {
+            // Intentar parsear la respuesta JSON
+            return response.json().then(data => {
+                if (data.status === "success") {
+                    // Mostrar popup de confirmación de cancelación
+                    showCancellationPopup();
+                } else {
+                    // Error al cancelar
+                    alert('Error al cancelar la reserva. Por favor, inténtelo nuevamente.');
+                }
+            }).catch(() => {
+                // Si no se puede parsear JSON, asumir éxito
+                showCancellationPopup();
+            });
+        } else {
+            // Error en la respuesta
+            alert('Error al cancelar la reserva. Por favor, inténtelo nuevamente.');
+        }
     })
     .catch(error => {
         // Remover mensaje de carga
         document.querySelector('.booking-form').removeChild(loadingMessage);
         
         console.error('Error:', error);
-        alert('Hubo un error al procesar la cancelación. Por favor, inténtelo nuevamente.');
+        alert('Error al cancelar la reserva. Por favor, inténtelo nuevamente.');
     });
+}
+
+// Función para cancelar una reserva (versión pública)
+function cancelarReserva(codigoReserva) {
+    // Validar que el código de reserva comience con "ALT-"
+    if (!codigoReserva.startsWith("ALT-")) {
+        alert('Error: El código de reserva debe comenzar con "ALT-"');
+        return;
+    }
+    
+    // Verificar el estado de la reserva primero
+    verificarEstadoReserva(codigoReserva);
 }
 
 function scrollToForm(e) {

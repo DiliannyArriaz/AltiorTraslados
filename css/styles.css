@@ -871,27 +871,11 @@ footer {
 }
 
 .cancel-section .cancel-info {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 30px;
     margin: 40px 0;
-}
-
-.cancel-section .cancel-info-text {
-    text-align: center;
-    padding: 30px;
-    background: #1e293b;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    margin-top: 30px;
-    border: 1px solid #334155;
-}
-
-.cancel-section .cancel-info-text p {
-    color: #cbd5e1;
-    font-size: 1.1em;
-    line-height: 1.6;
-    margin-bottom: 20px;
 }
 
 .info-card {
@@ -900,6 +884,9 @@ footer {
     border-radius: 15px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     border: 1px solid #334155;
+    flex: 1;
+    min-width: 300px;
+    max-width: 400px;
 }
 
 .info-card h3 {
@@ -970,6 +957,7 @@ footer {
 .cancel-form-container {
     max-width: 500px;
     margin: 40px auto 0;
+    min-height: 280px;
 }
 
 .cancel-form-container .booking-form {
@@ -986,20 +974,14 @@ footer {
     }
     
     .cancel-section .cancel-info {
-        grid-template-columns: 1fr;
+        flex-direction: column;
         gap: 20px;
-    }
-    
-    .cancel-section .cancel-info-text {
-        padding: 20px;
-    }
-    
-    .cancel-section .cancel-info-text p {
-        font-size: 1em;
     }
     
     .info-card {
         padding: 20px;
+        min-width: 100%;
+        max-width: 100%;
     }
     
     .cancel-form-container .booking-form {

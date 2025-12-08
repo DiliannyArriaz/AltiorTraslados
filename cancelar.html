@@ -34,6 +34,24 @@
             display: none !important;
         }
         
+        .cancel-form-container {
+            min-height: 280px;
+        }
+        
+        .cancel-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .info-card {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+        }
+        
         @media (max-width: 768px) {
             .cancel-section .section-header h1 {
                 font-size: 2em;
@@ -41,6 +59,11 @@
             
             .cancel-section .section-header p {
                 font-size: 1em;
+            }
+            
+            .info-card {
+                min-width: 100%;
+                max-width: 100%;
             }
         }
     </style>
@@ -116,16 +139,6 @@
                 </div>
 
                 <div class="info-card">
-                    <h3><i class="fas fa-exclamation-circle"></i> Políticas de cancelación</h3>
-                    <ul>
-                        <li>Cancelaciones con más de 24 horas de anticipación: Reembolso completo</li>
-                        <li>Cancelaciones con menos de 24 horas: Reembolso del 50%</li>
-                        <li>Cancelaciones el mismo día del servicio: Sin reembolso</li>
-                        <li>En caso de vuelo cancelado: Reembolso completo con comprobante</li>
-                    </ul>
-                </div>
-
-                <div class="info-card">
                     <h3><i class="fas fa-question-circle"></i> ¿Necesita ayuda?</h3>
                     <p>Si tiene alguna duda sobre su reserva o necesita asistencia, puede contactarnos:</p>
                     <div class="contact-options">
@@ -166,10 +179,17 @@
     <!-- Popup de confirmación -->
     <div id="confirmationPopup" class="popup-overlay" style="display: none;">
         <div class="popup-content">
-            <span class="popup-close">&times;</span>
-            <h3>¡Reserva Cancelada!</h3>
-            <p>Su reserva ha sido cancelada exitosamente.</p>
-            <p>Recibirá un correo de confirmación con los detalles de la cancelación y cualquier reembolso aplicable.</p>
+            <div class="popup-header">
+                <h3>¡Reserva Cancelada!</h3>
+                <span class="popup-close">&times;</span>
+            </div>
+            <div class="popup-body">
+                <p>Su reserva ha sido cancelada exitosamente.</p>
+                <p>Recibirá un correo de confirmación con los detalles de la cancelación y cualquier reembolso aplicable.</p>
+            </div>
+            <div class="popup-footer">
+                <button class="btn-submit popup-close">Aceptar</button>
+            </div>
         </div>
     </div>
 
