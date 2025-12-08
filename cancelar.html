@@ -35,21 +35,46 @@
         }
         
         .cancel-form-container {
-            min-height: 280px;
+            min-height: 300px;
+            display: flex;
+            justify-content: center;
         }
         
-        .cancel-info {
+        .booking-form {
+            min-height: 300px;
+        }
+        
+        .cancel-layout {
             display: flex;
             flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+            justify-content: center;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cancel-section .cancel-info {
+            display: flex;
             justify-content: center;
             gap: 30px;
-            margin-bottom: 40px;
+            margin: 40px 0;
+            align-items: center;
+            flex-direction: row;
+        }
+        
+        .cancel-form-wrapper {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            align-items: center;
         }
         
         .info-card {
             flex: 1;
             min-width: 300px;
-            max-width: 400px;
+            min-height: 400px;
         }
         
         @media (max-width: 768px) {
@@ -61,9 +86,22 @@
                 font-size: 1em;
             }
             
+            .cancel-layout {
+                flex-direction: column;
+            }
+            
             .info-card {
                 min-width: 100%;
                 max-width: 100%;
+                min-height: auto;
+            }
+            
+            .cancel-form-container {
+                min-height: auto;
+            }
+            
+            .booking-form {
+                min-height: auto;
             }
         }
     </style>
@@ -119,60 +157,70 @@
         </div>
     </nav>
 
+    <!-- Hero Section -->
+    <section class="hero precios-hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 style="background: linear-gradient(135deg, #22d3ee, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2em;">Cancelar Reserva</h1>
+            </div>
+            <p class="subtitle" style="color: #94a3b8; font-size: 1.4em; font-weight: 500;">¡Aquí puedes cancelar tu reserva de traslado!</p>
+        </div>
+    </section>
+
     <!-- Cancelar Reserva Section -->
     <section class="cancel-section">
-        <div class="features-container">
-            <div class="section-header">
-                <h1>Cancelar Reserva</h1>
-                <p>Ingrese su código de reserva para cancelar su traslado</p>
-            </div>
+        <div class="container">
+            <div class="cancel-layout">
+                <div class="cancel-info">
+                    <div class="info-card">
+                        <h3><i class="fas fa-info-circle"></i> Cómo cancelar su reserva</h3>
+                        <ul>
+                            <li>Localice su código de reserva en el correo de confirmación</li>
+                            <li>Ingrese el código en el formulario a continuación</li>
+                            <li>Confirme la cancelación siguiendo las instrucciones</li>
+                            <li>Recibirá un correo de confirmación de cancelación</li>
+                        </ul>
+                    </div>
 
-            <div class="cancel-info">
-                <div class="info-card">
-                    <h3><i class="fas fa-info-circle"></i> Cómo cancelar su reserva</h3>
-                    <ul>
-                        <li>Localice su código de reserva en el correo de confirmación</li>
-                        <li>Ingrese el código en el formulario a continuación</li>
-                        <li>Confirme la cancelación siguiendo las instrucciones</li>
-                        <li>Recibirá un correo de confirmación de cancelación</li>
-                    </ul>
+                    <div class="info-card">
+                        <h3><i class="fas fa-question-circle"></i> ¿Necesita ayuda?</h3>
+                        <p>Si tiene alguna duda sobre su reserva o necesita asistencia, puede contactarnos:</p>
+                        <div class="contact-options">
+                            <div class="contact-option">
+                                <i class="fab fa-whatsapp"></i>
+                                <span>WhatsApp: +54 9 11 2251-6700</span>
+                            </div>
+                            <div class="contact-option">
+                                <i class="fas fa-envelope"></i>
+                                <span>Email: info@altiortraslados.com</span>
+                            </div>
+                            <div class="contact-option">
+                                <i class="fas fa-phone"></i>
+                                <span>Teléfono: +54 9 11 2251-6700</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="info-card">
-                    <h3><i class="fas fa-question-circle"></i> ¿Necesita ayuda?</h3>
-                    <p>Si tiene alguna duda sobre su reserva o necesita asistencia, puede contactarnos:</p>
-                    <div class="contact-options">
-                        <div class="contact-option">
-                            <i class="fab fa-whatsapp"></i>
-                            <span>WhatsApp: +54 9 11 2251-6700</span>
-                        </div>
-                        <div class="contact-option">
-                            <i class="fas fa-envelope"></i>
-                            <span>Email: info@altiortraslados.com</span>
-                        </div>
-                        <div class="contact-option">
-                            <i class="fas fa-phone"></i>
-                            <span>Teléfono: +54 9 11 2251-6700</span>
-                        </div>
+                <div class="cancel-form-wrapper">
+                    <div class="cancel-form-container">
+                        <form id="cancelForm" class="booking-form">
+                            <div class="form-group">
+                                <label>Código de Reserva</label>
+                                <input type="text" id="codigoReserva" name="codigoReserva" placeholder="Ej: ALT-XXXXXX-XXXXX"
+                                    required>
+                            </div>
+
+                            <button type="submit" class="btn-submit"
+                                style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
+                                <i class="fas fa-times-circle"></i>
+                                Cancelar Reserva
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
 
-            <div class="cancel-form-container">
-                <form id="cancelForm" class="booking-form">
-                    <div class="form-group">
-                        <label>Código de Reserva</label>
-                        <input type="text" id="codigoReserva" name="codigoReserva" placeholder="Ej: ALT-XXXXXX-XXXXX"
-                            required>
-                    </div>
-
-                    <button type="submit" class="btn-submit"
-                        style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
-                        <i class="fas fa-times-circle"></i>
-                        Cancelar Reserva
-                    </button>
-                </form>
-            </div>
         </div>
     </section>
 
