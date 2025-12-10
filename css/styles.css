@@ -497,7 +497,86 @@ select:focus {
 /* Responsive para móviles */
 @media (max-width: 768px) {
     .features-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        align-items: center;
+    }
+    
+    .feature-card {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        min-height: 180px;
+    }
+    
+    .feature-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+    
+    .feature-card h3 {
+        font-size: 1.1em;
+        margin-bottom: 8px;
+        flex-grow: 1;
+    }
+    
+    .feature-card p {
+        font-size: 0.85em;
+        margin-top: auto;
+    }
+    
+    .hero-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        padding: 0 10px;
+        align-items: center;
+    }
+    
+    .feature-card {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        min-height: 160px;
+    }
+    
+    .feature-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
+        margin-bottom: 6px;
+    }
+    
+    .feature-card h3 {
+        font-size: 0.9em;
+        margin-bottom: 5px;
+        flex-grow: 1;
+    }
+    
+    .feature-card p {
+        font-size: 0.75em;
+        margin-top: auto;
+    }
+    
+    .hero-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
     }
 }
 
@@ -862,9 +941,440 @@ footer {
     min-height: 100vh;
 }
 
+/* Estilos para la página de cancelación */
+.cancel-section .section-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
 .cancel-section .section-header h1 {
-    color: #f87171;
-    margin-top: 50px;
+    color: #e74c3c;
+    font-size: 2.5em;
+    margin-bottom: 15px;
+}
+
+.cancel-section .section-header p {
+    color: #666;
+    font-size: 1.2em;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Asegurar que el popup esté oculto por defecto */
+#confirmationPopup {
+    display: none !important;
+}
+
+.cancel-form-container {
+    min-height: 300px;
+    display: flex;
+    justify-content: center;
+}
+
+.booking-form {
+    min-height: 300px;
+}
+
+.cancel-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 40px;
+    justify-content: center;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cancel-section .cancel-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 40px 0;
+    align-items: center;
+    flex-direction: row;
+}
+
+.cancel-form-wrapper {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    align-items: center;
+}
+
+.info-card {
+    flex: 1;
+    min-width: 300px;
+    min-height: 400px;
+}
+
+@media (max-width: 768px) {
+    .cancel-section .section-header h1 {
+        font-size: 2em;
+    }
+    
+    .cancel-section .section-header p {
+        font-size: 1em;
+    }
+    
+    .cancel-layout {
+        flex-direction: column;
+    }
+    
+    .info-card {
+        min-width: 100%;
+        max-width: 100%;
+        min-height: 400px;
+    }
+    
+    .cancel-form-container {
+        min-height: 300px;
+    }
+    
+    .booking-form {
+        min-height: 300px;
+    }
+}
+
+/* Estilos para el hero de cancelación */
+.precios-hero .hero-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+}
+
+.precios-hero .hero-text h1 {
+    background: linear-gradient(135deg, #22d3ee, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+    font-size: 2em;
+}
+
+.precios-hero .hero-text .subtitle {
+    color: #94a3b8;
+    font-size: 1.4em;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Footer Contact Info */
+.footer-contact {
+    margin: 20px 0;
+    padding: 15px 0;
+}
+
+.contact-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 10px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #94a3b8;
+    font-size: 0.9em;
+}
+
+.contact-item i {
+    color: #06b6d4;
+    font-size: 1.1em;
+}
+
+/* Payment Methods */
+.payment-methods {
+    margin: 20px 0;
+    padding: 15px 0;
+}
+
+.payment-methods h4 {
+    color: white;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.payment-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.payment-icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #94a3b8;
+    font-size: 0.9em;
+}
+
+.payment-icon i {
+    font-size: 1.5em;
+    color: #06b6d4;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .contact-info {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .payment-icons {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .contact-item {
+        gap: 5px;
+        font-size: 0.8em;
+    }
+    
+    .payment-icon {
+        gap: 5px;
+        font-size: 0.8em;
+    }
+    
+    .contact-item i, .payment-icon i {
+        font-size: 1.3em;
+    }
+}
+
+/* Estilos específicos para la página de cancelar reserva */
+body.cancelar-page .hero-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+/* CTA Section */
+.cta {
+    background: #020617;
+    color: white;
+    padding: 100px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -25%;
+    width: 600px;
+    height: 600px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    z-index: 1; /* Asegurar que esté detrás del contenido */
+}
+
+.cta::after {
+    content: '';
+    position: absolute;
+    bottom: -40%;
+    right: -15%;
+    width: 500px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    z-index: 1; /* Asegurar que esté detrás del contenido */
+}
+
+.cta h2 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    font-weight: 700;
+    position: relative;
+    z-index: 2; /* Asegurar que esté por encima de los pseudo-elementos */
+    color: #ffffff;
+}
+
+.cta p {
+    font-size: 1.3em;
+    margin-bottom: 40px;
+    opacity: 0.95;
+    position: relative;
+    z-index: 2; /* Asegurar que esté por encima de los pseudo-elementos */
+    color: #94a3b8;
+}
+
+/* Mejorar la accesibilidad de los botones CTA en móviles */
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 50px;
+    background: #22c55e;
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 1.3em;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+    min-height: 60px; /* Asegurar altura mínima para móviles */
+    min-width: 200px; /* Asegurar ancho mínimo para móviles */
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 3; /* Asegurar que esté por encima de los pseudo-elementos */
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(34, 197, 94, 0.5);
+    background: #16a34a;
+}
+
+.cta-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.5), 0 8px 25px rgba(34, 197, 94, 0.4);
+}
+
+/* Footer */
+footer {
+    background: #0f172a;
+    color: white;
+    padding: 60px 40px 30px;
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.footer-logo img {
+    width: 50px;
+    height: 50px;
+}
+
+.footer-brand {
+    font-size: 2em;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 2px;
+}
+
+.footer-text {
+    opacity: 0.8;
+    margin-top: 20px;
+    padding-top: 30px;
+    border-top: 1px solid #1e293b;
+    color: #94a3b8;
+}
+
+/* Social Media Sidebar */
+.social-sidebar {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.social-icon {
+    width: 50px;
+    height: 50px;
+    background: #06b6d4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5em;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.social-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(59, 89, 152, 0.4);
+}
+
+.social-icon.whatsapp {
+    background: #22c55e;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+}
+
+.social-icon.whatsapp:hover {
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+    background: #16a34a;
+}
+
+.social-icon.instagram {
+    background: #a855f7;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+}
+
+.social-icon.instagram:hover {
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+    background: #9333ea;
+}
+
+.social-icon.facebook {
+    background: #3b82f6;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.social-icon.facebook:hover {
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    background: #2563eb;
+}
+
+.social-icon.email {
+    background: #64748b;
+    box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
+}
+
+.social-icon.email:hover {
+    box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
+    background: #475569;
+}
+
+/* Footer Social Media */
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.footer-social .social-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.8em;
+}
+
+/* Cancel Section */
+.cancel-section {
+    padding: 100px 40px 60px;
+    background: #0f172a;
+    min-height: 100vh;
 }
 
 .cancel-section .cancel-info {
@@ -1432,23 +1942,32 @@ footer {
 
     .nav-right {
         position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: rgba(255, 255, 255, 0.98);
+        top: 120%;
+        right: -20px;
+        left: auto;
+        background: rgba(30, 41, 59, 0.98);
         flex-direction: column;
         gap: 15px;
         padding: 20px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         border-radius: 0 0 15px 15px;
-        display: none;
+        display: flex;
         z-index: 1001;
         align-items: center;
+        width: 250px;
+        border: 1px solid #334155;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        pointer-events: none;
     }
-
+    
     .nav-right.active {
         display: flex;
         align-items: center;
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
     }
 
     .phone-number {
@@ -1510,7 +2029,7 @@ footer {
 
     /* Hero features for mobile */
     .hero-features {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 15px;
         align-items: center;
     }
@@ -1539,7 +2058,7 @@ footer {
 
     /* Features grid for mobile */
     .features-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 25px;
         align-items: center;
     }
@@ -2489,7 +3008,123 @@ footer {
     box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
 }
 
-.btn-whatsapp-simple i {
-    margin-right: 10px;
-    font-size: 1.3em;
+/* Estilos para la página de cancelación */
+.cancel-section .section-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.cancel-section .section-header h1 {
+    color: #e74c3c;
+    font-size: 2.5em;
+    margin-bottom: 15px;
+}
+
+.cancel-section .section-header p {
+    color: #666;
+    font-size: 1.2em;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Asegurar que el popup esté oculto por defecto */
+#confirmationPopup {
+    display: none !important;
+}
+
+.cancel-form-container {
+    min-height: 300px;
+    display: flex;
+    justify-content: center;
+}
+
+.booking-form {
+    min-height: 300px;
+}
+
+.cancel-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 40px;
+    justify-content: center;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cancel-section .cancel-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 40px 0;
+    align-items: center;
+    flex-direction: row;
+}
+
+.cancel-form-wrapper {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    align-items: center;
+}
+
+.info-card {
+    flex: 1;
+    min-width: 300px;
+    min-height: 400px;
+}
+
+@media (max-width: 768px) {
+    .cancel-section .section-header h1 {
+        font-size: 2em;
+    }
+    
+    .cancel-section .section-header p {
+        font-size: 1em;
+    }
+    
+    .cancel-layout {
+        flex-direction: column;
+    }
+    
+    .info-card {
+        min-width: 100%;
+        max-width: 100%;
+        min-height: 400px;
+    }
+    
+    .cancel-form-container {
+        min-height: 300px;
+    }
+    
+    .booking-form {
+        min-height: 300px;
+    }
+}
+
+/* Estilos para el hero de cancelación */
+.precios-hero .hero-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+}
+
+.precios-hero .hero-text h1 {
+    background: linear-gradient(135deg, #22d3ee, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+    font-size: 2em;
+}
+
+.precios-hero .hero-text .subtitle {
+    color: #94a3b8;
+    font-size: 1.4em;
+    font-weight: 500;
+    margin: 0;
 }
