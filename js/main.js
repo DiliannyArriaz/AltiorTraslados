@@ -102,12 +102,11 @@ const ZONAS_DISPONIBLES = [
 ];
 
 // Sistema de autocompletado desactivado temporalmente
-// Se utiliza el sistema implementado en precios.js
+// Se utiliza el sistema implementado con Geoapify
 function initOSMAutocomplete() {
     // No hacer nada - el sistema de autocompletado se ha eliminado completamente
-    console.log('Sistema de autocompletado eliminado completamente');
+    console.log('Sistema de autocompletado OSM eliminado completamente');
 }
-
 // Enviar notificación de reserva a ambos destinatarios
 async function sendReservationEmails(datos) {
     try {
@@ -257,7 +256,7 @@ function showReservationPopup(codigoReserva, emailCliente) {
                     <p>Para cancelar su reserva, puede responder al correo con "CANCELAR" o usar el formulario de cancelación en nuestra web.</p>
                 </div>
                 <div class="popup-footer">
-                    <button class="btn-submit popup-close">Aceptar</button>
+                    <button class="btn-submit popup-accept">Aceptar</button>
                 </div>
             </div>
         </div>
@@ -462,6 +461,15 @@ function showReservationPopup(codigoReserva, emailCliente) {
         });
     });
     
+    // Agregar eventos para el botón de aceptar
+    const acceptButtons = popup.querySelectorAll('.popup-accept');
+    acceptButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            document.head.removeChild(styles);
+            document.body.removeChild(popup);
+        });
+    });
+    
     // Cerrar con Escape
     document.addEventListener('keydown', function closeOnEscape(e) {
         if (e.key === 'Escape') {
@@ -497,7 +505,7 @@ function showCancellationPopup() {
                     <p>Si tiene alguna pregunta adicional, no dude en contactarnos.</p>
                 </div>
                 <div class="popup-footer">
-                    <button class="btn-submit popup-close">Aceptar</button>
+                    <button class="btn-submit popup-accept">Aceptar</button>
                 </div>
             </div>
         </div>
@@ -696,6 +704,15 @@ function showCancellationPopup() {
     // Agregar eventos para cerrar el popup
     const closeButtons = popup.querySelectorAll('.popup-close');
     closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            document.head.removeChild(styles);
+            document.body.removeChild(popup);
+        });
+    });
+    
+    // Agregar eventos para el botón de aceptar
+    const acceptButtons = popup.querySelectorAll('.popup-accept');
+    acceptButtons.forEach(button => {
         button.addEventListener('click', () => {
             document.head.removeChild(styles);
             document.body.removeChild(popup);
@@ -754,9 +771,7 @@ function showReturnMessage() {
 
 // Mostrar mensaje al cargar la página si es necesario
 document.addEventListener('DOMContentLoaded', function() {
-    showReturnMessage();
-    initOSMAutocomplete();
-    
+    showReturnMessage();    
     // Configurar el checkbox de equipaje
     const equipajeCheckbox = document.getElementById('equipaje');
     const luggageDetails = document.getElementById('luggageDetails');
@@ -1168,10 +1183,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Inicializar autocompletado cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    initOSMAutocomplete();
-});
-
-// Función para generar código de reserva único
+    // Sistema de autocompletado con Geoapify manejado en form-navigation.js
+    console.log('Sistema de autocompletado con Geoapify activo');
+});// Función para generar código de reserva único
 function generateReservationCode() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let code = '';

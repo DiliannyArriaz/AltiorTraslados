@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Autocompletado - Altior Traslados</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #2C4A7C;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            background-color: white;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #5B8DB8;
+            box-shadow: 0 0 0 3px rgba(91, 141, 184, 0.2);
+        }
+        
+        .test-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #5B8DB8;
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            background: #3B5998;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #5B8DB8;
+        }
+        
+        .results h3 {
+            margin-top: 0;
+            color: #2C4A7C;
+        }
+        
+        .log {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+        }
+        
+        .log-timestamp {
+            color: #3498db;
+        }
+        
+        .log-info {
+            color: #2ecc71;
+        }
+        
+        .log-error {
+            color: #e74c3c;
+        }
+        
+        .instructions {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #0d47a1;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test de Autocompletado</h1>
+        
+        <div class="instructions">
+            <h3>Instrucciones:</h3>
+            <ul>
+                <li>Selecciona una zona del dropdown</li>
+                <li>Escribe una dirección en el campo de texto</li>
+                <li>Observa las sugerencias que aparecen</li>
+                <li>Verifica el log para ver el proceso detallado</li>
+                <li>Usa el botón "Limpiar Log" para reiniciar el registro</li>
+            </ul>
+        </div>
+        
+        <div class="form-group">
+            <label for="zona">Zona:</label>
+            <select id="zona" name="zona">
+                <option value="">Seleccione una zona</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" name="direccion" placeholder="Ingrese una dirección" autocomplete="off">
+            <div id="direccion-suggestions" class="suggestions-container"></div>
+        </div>
+        
+        <div class="test-buttons">
+            <button class="btn-primary" onclick="testAutocomplete()">Ejecutar Test</button>
+            <button class="btn-secondary" onclick="clearLog()">Limpiar Log</button>
+        </div>
+        
+        <div class="results">
+            <h3>Resultados del Test</h3>
+            <div id="test-results">
+                <p>Los resultados del test aparecerán aquí...</p>
+            </div>
+            
+            <h3>Log del Sistema</h3>
+            <div id="log" class="log">
+                <div class="log-entry"><span class="log-timestamp">[--:--:--]</span> <span class="log-info">Sistema de test iniciado</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/test-autocomplete.js"></script>
+    <script>
+        // Función para registrar mensajes en el log
+        function logMessage(message, type = 'info') {
+            const log = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-timestamp">[${timestamp}]</span> <span class="log-${type}">${message}</span>`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        // Función para limpiar el log
+        function clearLog() {
+            const log = document.getElementById('log');
+            log.innerHTML = '';
+            logMessage('Log limpiado');
+        }
+        
+        // Cargar zonas disponibles
+        function cargarZonas() {
+            const zonasDisponibles = [
+                'CABA',
+                'Avellaneda / Lanús',
+                'Wilde / Monte Chingolo',
+                'Quilmes / Alte Brown',
+                'Berazategui / Hudson',
+                'Lomas de Zamora',
+                'Canning / Spegazzini',
+                'La Plata',
+                'Ramos Mejía / Ciudadela',
+                'Morón / Haedo',
+                'Caseros / El Palomar',
+                'Hurlingham / Loma Hermosa',
+                'Ituzaingó / Padua',
+                'San Miguel / José C. Paz',
+                'Merlo / Paso del Rey',
+                'Moreno / Francisco Álvarez',
+                'Gral. Rodríguez',
+                'Luján',
+                'Vicente López / Olivos',
+                'San Martín / San Andrés',
+                'San Isidro / Boulogne',
+                'Villa Ballester / José León Suárez',
+                'Tigre Centro / Pacheco',
+                'Don Torcuato / Grand Bourg',
+                'Benavídez / Milberg / Tortuguitas',
+                'Ing. Maschwitz / Del Viso',
+                'Pilar / Escobar',
+                'Campana / Cardales'
+            ];
+            
+            const zonaSelect = document.getElementById('zona');
+            zonasDisponibles.forEach(zona => {
+                const option = document.createElement('option');
+                option.value = zona;
+                option.textContent = zona;
+                zonaSelect.appendChild(option);
+            });
+            
+            logMessage('Zonas cargadas: ' + zonasDisponibles.length);
+        }
+        
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarZonas();
+            logMessage('Página de test cargada correctamente');
+        });
+        
+        // Función de test
+        function testAutocomplete() {
+            logMessage('Iniciando test de autocompletado...', 'info');
+            
+            const zona = document.getElementById('zona').value;
+            const direccion = document.getElementById('direccion').value;
+            
+            if (!zona) {
+                logMessage('Por favor seleccione una zona', 'error');
+                return;
+            }
+            
+            if (!direccion) {
+                logMessage('Por favor ingrese una dirección', 'error');
+                return;
+            }
+            
+            logMessage(`Test: Zona="${zona}", Dirección="${direccion}"`);
+            
+            // Aquí iría la lógica real del autocompletado
+            logMessage('Simulando llamada a Geoapify...');
+            logMessage('✅ Test completado. Verifique la consola del navegador para más detalles.');
+            
+            document.getElementById('test-results').innerHTML = `
+                <p><strong>Test ejecutado:</strong></p>
+                <p>Zona: ${zona}</p>
+                <p>Dirección: ${direccion}</p>
+                <p>Estado: ✅ Completado</p>
+                <p>Verifique la consola del navegador (F12) para ver los resultados detallados del autocompletado.</p>
+            `;
+        }
+    </script>
+</body>
+</html>

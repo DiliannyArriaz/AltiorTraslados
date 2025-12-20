@@ -39,7 +39,14 @@ function selectAirport(airport, inputElement) {
 }
 
 // Función para configurar el autocompletado de aeropuertos
+// MODIFICADO: Solo se aplica a campos específicos, no a origen/destino
 function setupAirportAutocomplete(inputId, suggestionsId) {
+    // Excluir los campos de origen y destino que usan Geoapify
+    if (inputId === 'origen' || inputId === 'destino') {
+        console.log(`Autocompletado de aeropuertos desactivado para ${inputId} - usando Geoapify`);
+        return;
+    }
+    
     console.log(`Setting up airport autocomplete for ${inputId}`);
     
     const input = document.getElementById(inputId);

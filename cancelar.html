@@ -3,108 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Altior Traslados - Cancelar Reserva</title>
+    <title>Altior Traslados - Cancelación de Reserva</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
-    <!-- EmailJS SDK (para envío de correos) -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <style>
-        .cancel-section .section-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .cancel-section .section-header h1 {
-            color: #e74c3c;
-            font-size: 2.5em;
-            margin-bottom: 15px;
-        }
-        
-        .cancel-section .section-header p {
-            color: #666;
-            font-size: 1.2em;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        /* Asegurar que el popup esté oculto por defecto */
-        #confirmationPopup {
-            display: none !important;
-        }
-        
-        .cancel-form-container {
-            min-height: 300px;
-            display: flex;
-            justify-content: center;
-        }
-        
-        .booking-form {
-            min-height: 300px;
-        }
-        
-        .cancel-layout {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 40px;
-            justify-content: center;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .cancel-section .cancel-info {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 40px 0;
-            align-items: center;
-            flex-direction: row;
-        }
-        
-        .cancel-form-wrapper {
-            flex: 1;
-            min-width: 300px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .info-card {
-            flex: 1;
-            min-width: 300px;
-            min-height: 400px;
-        }
-        
-        @media (max-width: 768px) {
-            .cancel-section .section-header h1 {
-                font-size: 2em;
-            }
-            
-            .cancel-section .section-header p {
-                font-size: 1em;
-            }
-            
-            .cancel-layout {
-                flex-direction: column;
-            }
-            
-            .info-card {
-                min-width: 100%;
-                max-width: 100%;
-                min-height: auto;
-            }
-            
-            .cancel-form-container {
-                min-height: auto;
-            }
-            
-            .booking-form {
-                min-height: auto;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/new-palette.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body class="cancelar-page">
@@ -235,7 +139,7 @@
                 <p>Recibirá un correo de confirmación con los detalles de la cancelación y cualquier reembolso aplicable.</p>
             </div>
             <div class="popup-footer">
-                <button class="btn-submit popup-close">Aceptar</button>
+                <button class="btn-submit popup-accept">Aceptar</button>
             </div>
         </div>
     </div>
