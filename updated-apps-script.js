@@ -431,7 +431,7 @@ El equipo de Altior Traslados
   `;
   
   // Email para la empresa (tu email)
-  const empresaEmail = "diliannyalbornoz@gmail.com"; // Cambia esto por tu email real
+  const empresaEmail = "altior.traslados@gmail.com"; // Cambia esto por tu email real
   const empresaSubject = `Nueva Reserva - ${codigoReserva}`;
   const empresaBody = `
 Nueva reserva recibida:

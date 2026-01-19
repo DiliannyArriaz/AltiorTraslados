@@ -10,12 +10,55 @@ document.addEventListener('DOMContentLoaded', function() {
     const origenInput = document.getElementById('origen');
     const destinoInput = document.getElementById('destino');
     
+    // Variables para rastrear el estado previo
+    let origenPrevValue = '';
+    let destinoPrevValue = '';
+    
+    // Bandera para evitar bucles de conversión
+    let isProcessingConversion = false;
+    
     if (origenInput) {
-        origenInput.addEventListener('input', handleFieldConversion);
+        origenInput.addEventListener('input', function() {
+            limpiarError(this); // Limpiar error cuando se escribe en origen
+            
+            // Evitar procesamiento si estamos en medio de una conversión
+            if (isProcessingConversion) return;
+            
+            // Solo procesar si el valor ha cambiado significativamente
+            if (this.value.trim() !== origenPrevValue) {
+                origenPrevValue = this.value.trim();
+                
+                // Marcar que estamos procesando una conversión
+                isProcessingConversion = true;
+                handleFieldConversion();
+                // Desmarcar después de un breve tiempo para evitar bucles
+                setTimeout(() => {
+                    isProcessingConversion = false;
+                }, 100);
+            }
+        });
     }
     
     if (destinoInput) {
-        destinoInput.addEventListener('input', handleFieldConversion);
+        destinoInput.addEventListener('input', function() {
+            limpiarError(this); // Limpiar error cuando se escribe en destino
+            
+            // Evitar procesamiento si estamos en medio de una conversión
+            if (isProcessingConversion) return;
+            
+            // Solo procesar si el valor ha cambiado significativamente
+            if (this.value.trim() !== destinoPrevValue) {
+                destinoPrevValue = this.value.trim();
+                
+                // Marcar que estamos procesando una conversión
+                isProcessingConversion = true;
+                handleFieldConversion();
+                // Desmarcar después de un breve tiempo para evitar bucles
+                setTimeout(() => {
+                    isProcessingConversion = false;
+                }, 100);
+            }
+        });
     }
     
     // Zonas disponibles del sistema existente
@@ -111,6 +154,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para restaurar un input normal
     function restoreNormalInput(selectElement, originalType) {
+        // Guardar el valor actual
+        const currentValue = selectElement.value;
+        
         // Crear un input
         const input = document.createElement('input');
         input.type = originalType || 'text';
@@ -118,6 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
         input.id = selectElement.id;
         input.name = selectElement.name;
         input.required = selectElement.required;
+        input.value = currentValue; // Mantener el valor
         
         // Copiar todos los atributos del select original
         for (let attr of selectElement.attributes) {
@@ -129,6 +176,41 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reemplazar el select con el input
         selectElement.parentNode.replaceChild(input, selectElement);
         
+        // Volver a asociar el evento input para este campo específico
+        input.addEventListener('input', function() {
+            limpiarError(this); // Limpiar error cuando se escribe
+            
+            // Evitar procesamiento si estamos en medio de una conversión
+            if (isProcessingConversion) return;
+            
+            // Solo procesar si el valor ha cambiado significativamente
+            if (this.value.trim() !== (this.id === 'origen' ? origenPrevValue : destinoPrevValue)) {
+                if (this.id === 'origen') {
+                    origenPrevValue = this.value.trim();
+                } else {
+                    destinoPrevValue = this.value.trim();
+                }
+                
+                // Marcar que estamos procesando una conversión
+                isProcessingConversion = true;
+                handleFieldConversion();
+                // Desmarcar después de un breve tiempo para evitar bucles
+                setTimeout(() => {
+                    isProcessingConversion = false;
+                }, 100);
+            }
+        });
+        
+        // Si el input restaurado es 'origen' o 'destino', asegurarse de que el autocompletado funcione
+        if (input.id === 'origen' || input.id === 'destino') {
+            // Reiniciar el autocompletado para este campo
+            setTimeout(() => {
+                if (typeof initAutocomplete === 'function') {
+                    initAutocomplete(input.id, input.id + '-suggestions');
+                }
+            }, 50);
+        }
+        
         return input;
     }
     
@@ -139,40 +221,52 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!origenInput || !destinoInput) return;
         
-        // Verificar si alguno de los campos tiene valor
+        // Verificar si cada campo tiene valor
         const origenHasValue = origenInput.value.trim() !== '';
         const destinoHasValue = destinoInput.value.trim() !== '';
         
-        // Si origen tiene valor y destino no es un select, convertir destino a dropdown
-        if (origenHasValue && destinoInput.tagName !== 'SELECT') {
-            const select = createAirportDropdown(destinoInput);
-            // Agregar evento para restaurar input cuando se borre el valor de origen
-            origenInput.addEventListener('input', function() {
-                if (this.value.trim() === '') {
-                    restoreNormalInput(select, 'text');
-                }
-            }, { once: true });
-        }
+        // Verificar si el origen es un aeropuerto (si coincide exactamente con un nombre de aeropuerto)
+        const origenIsAirport = AEROPUERTOS.some(airport => 
+            origenInput.value.toLowerCase().trim() === airport.nombre.toLowerCase()
+        );
         
-        // Si destino tiene valor y origen no es un select, convertir origen a dropdown
-        if (destinoHasValue && origenInput.tagName !== 'SELECT') {
-            const select = createAirportDropdown(origenInput);
-            // Agregar evento para restaurar input cuando se borre el valor de destino
-            destinoInput.addEventListener('input', function() {
-                if (this.value.trim() === '') {
-                    restoreNormalInput(select, 'text');
-                }
-            }, { once: true });
-        }
+        // Verificar si el destino es un aeropuerto (si coincide exactamente con un nombre de aeropuerto)
+        const destinoIsAirport = AEROPUERTOS.some(airport => 
+            destinoInput.value.toLowerCase().trim() === airport.nombre.toLowerCase()
+        );
         
-        // Si ambos campos están vacíos, restaurar inputs normales
-        if (!origenHasValue && !destinoHasValue) {
+        // Si origen es un aeropuerto y destino no es un input, restaurar destino a input
+        if (origenIsAirport && destinoInput.tagName === 'SELECT') {
+            restoreNormalInput(destinoInput, 'text');
+        }
+        // Si destino es un aeropuerto y origen no es un input, restaurar origen a input
+        else if (destinoIsAirport && origenInput.tagName === 'SELECT') {
+            restoreNormalInput(origenInput, 'text');
+        }
+        // Si ambos campos están vacíos, restaurar ambos a inputs normales
+        else if (!origenHasValue && !destinoHasValue) {
             if (origenInput.tagName === 'SELECT') {
                 restoreNormalInput(origenInput, 'text');
             }
             if (destinoInput.tagName === 'SELECT') {
                 restoreNormalInput(destinoInput, 'text');
             }
+        }
+        // Si origen no es aeropuerto pero tiene valor y destino no es select, convertir destino a dropdown
+        else if (!origenIsAirport && origenHasValue && destinoInput.tagName !== 'SELECT') {
+            createAirportDropdown(destinoInput);
+        }
+        // Si destino no es aeropuerto pero tiene valor y origen no es select, convertir origen a dropdown
+        else if (!destinoIsAirport && destinoHasValue && origenInput.tagName !== 'SELECT') {
+            createAirportDropdown(origenInput);
+        }
+        // Si origen está vacío y destino es select, restaurar destino a input
+        else if (!origenHasValue && destinoInput.tagName === 'SELECT') {
+            restoreNormalInput(destinoInput, 'text');
+        }
+        // Si destino está vacío y origen es select, restaurar origen a input
+        else if (!destinoHasValue && origenInput.tagName === 'SELECT') {
+            restoreNormalInput(origenInput, 'text');
         }
     }
     
@@ -439,7 +533,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para limpiar errores de un campo
     function limpiarError(campo) {
-        if (!campo) return;
+        if (!campo || !campo.parentNode) return;
         
         campo.classList.remove('input-error');
         const errorDiv = campo.parentNode.querySelector('.error-message');
@@ -937,304 +1031,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Función principal para obtener sugerencias (solo LocationIQ por ahora)
-    async function getSuggestions(query) {
-        console.log('Obteniendo sugerencias de LocationIQ para:', query);
-        
-        // Usar solo LocationIQ por ahora
-        const suggestions = await getLocationIQSuggestions(query);
-        
-        return suggestions;
-    }
+
     
-    // Función para resolver la etiqueta de localidad con fallback estricto
-    function getLocationLabel(properties) {
-        // Resolver con fallback estricto según las reglas
-        const locationLabel = properties.city ||
-                             properties.suburb ||
-                             properties.district ||
-                             properties.county ||
-                             "Localidad no especificada";
-        
-        console.log('Etiqueta de localidad resuelta:', locationLabel, properties);
-        return locationLabel;
-    }
 
-    // Función para mostrar sugerencias
-    function showSuggestions(suggestions, container, input) {
-        console.log('Mostrando', suggestions.length, 'sugerencias');
-        container.innerHTML = '';
-        
-        if (suggestions.length === 0) {
-            container.style.display = 'none';
-            console.log('No hay sugerencias para mostrar');
-            return;
-        }
-        
-        // Ordenar sugerencias para priorizar resultados relevantes
-        suggestions.sort((a, b) => {
-            // Priorizar resultados que contienen las palabras buscadas en el mismo orden
-            const inputElement = Array.from(container.parentElement.children).find(el => el.tagName === 'INPUT');
-            const queryLower = inputElement?.value.toLowerCase() || '';
-            
-            const displayNameALower = a.properties.formatted?.toLowerCase() || '';
-            const displayNameBLower = b.properties.formatted?.toLowerCase() || '';
-            
-            // Dividir la consulta en palabras
-            const queryWords = queryLower.split(' ').filter(word => word.length > 0);
-            
-            // Contar cuántas palabras consecutivas coinciden al inicio
-            const getMatchScore = (displayName) => {
-                let score = 0;
-                for (let i = 0; i < queryWords.length; i++) {
-                    if (displayName.includes(queryWords[i])) {
-                        score++;
-                    } else {
-                        break;
-                    }
-                }
-                return score;
-            };
-            
-            const scoreA = getMatchScore(displayNameALower);
-            const scoreB = getMatchScore(displayNameBLower);
-            
-            // Si uno tiene mejor puntaje de coincidencia, priorizarlo
-            if (scoreA > scoreB) return -1;
-            if (scoreB > scoreA) return 1;
-            
-            // Si ambos tienen el mismo puntaje, verificar coincidencia exacta
-            const containsExactQueryA = displayNameALower.includes(queryLower);
-            const containsExactQueryB = displayNameBLower.includes(queryLower);
-            
-            // Si uno contiene la frase exacta y el otro no, priorizar el que la contiene
-            if (containsExactQueryA && !containsExactQueryB) return -1;
-            if (!containsExactQueryA && containsExactQueryB) return 1;
-            
-            // Priorizar Buenos Aires y CABA
-            const isBuenosAiresA = a.properties.state === 'Buenos Aires' || 
-                                  a.properties.state === 'Ciudad Autónoma de Buenos Aires' ||
-                                  a.properties.state_district === 'Buenos Aires' ||
-                                  a.properties.state_district === 'Ciudad Autónoma de Buenos Aires';
-            const isBuenosAiresB = b.properties.state === 'Buenos Aires' || 
-                                  b.properties.state === 'Ciudad Autónoma de Buenos Aires' ||
-                                  b.properties.state_district === 'Buenos Aires' ||
-                                  b.properties.state_district === 'Ciudad Autónoma de Buenos Aires';
-            
-            // Priorizar Buenos Aires y CABA
-            if (isBuenosAiresA && !isBuenosAiresB) return -1;
-            if (!isBuenosAiresA && isBuenosAiresB) return 1;
-            
-            // Si ambos son de Buenos Aires/CABA o ambos no lo son, mantener el orden original
-            return 0;
-        });
-        
-        suggestions.forEach((suggestion, index) => {
-            const div = document.createElement('div');
-            div.className = 'suggestion-item';
-            
-            const address = suggestion.properties;
-            const geometry = suggestion.geometry;
-            
-            // Mostrar información de depuración detallada
-            console.log(`Sugerencia ${index + 1}:`, address);
-            
-            // Construir una dirección bien formateada
-            const place = {
-                address: {
-                    road: address.street,
-                    house_number: address.housenumber,
-                    postcode: address.postcode,
-                    suburb: address.suburb,
-                    city: address.city,
-                    town: address.city,
-                    state: suggestion.properties.state || suggestion.properties.state_district
-                },
-                display_name: address.formatted || address.name
-            };
-            
-            const displayName = buildAddress(place);
-            const displayDetails = '';
-            
-            div.innerHTML = `
-                <div class="suggestion-name">${displayName}</div>
-                ${displayDetails ? `<div class="suggestion-details">${displayDetails}</div>` : ''}
-            `;
-            
-            div.addEventListener('click', () => {
-                input.value = displayName;
-                // Guardar la dirección completa y coordenadas en atributos de datos
-                const houseNumber = address.housenumber || '';
-                const street = address.street || '';
-                const locationLabel = getLocationLabel(address);
-                const fullAddress = [houseNumber, street, locationLabel].filter(Boolean).join(', ');
-                input.setAttribute('data-full-address', fullAddress);
-                input.setAttribute('data-lat', geometry.coordinates[1]);
-                input.setAttribute('data-lon', geometry.coordinates[0]);
-                container.style.display = 'none';
-                
-                // Disparar evento input para validar
-                input.dispatchEvent(new Event('input'));
-                console.log('Seleccionada sugerencia:', displayName);
-                
-                // Validación adicional post-selección según reglas
-                validateSelectedAddress(suggestion, input);
-            });
-            
-            container.appendChild(div);
-            console.log(`Agregada sugerencia ${index + 1}:`, displayName, '| Detalles:', displayDetails);
-        });
-        
-        container.style.display = 'block';
-        console.log('Contenedor de sugerencias mostrado con estilo:', container.style.display);
-        console.log('Contenedor de sugerencias:', container);
-        console.log('Posición del contenedor:', container.getBoundingClientRect());
-    }
     
-    // Función para validar dirección seleccionada post-selección
-    function validateSelectedAddress(suggestion, input) {
-        const geometry = suggestion.geometry;
-        const lon = geometry.coordinates[0];
-        const lat = geometry.coordinates[1];
-        
-        // Validar obligatoriamente coordenadas
-        const isValid = isInsideBBox(lon, lat);
-        
-        console.log('Validación post-selección - Coordenadas:', lat, lon, 'Válido:', isValid);
-        
-        if (!isValid) {
-            // Mostrar error si falla la validación
-            console.error('Dirección fuera del área permitida:', {lat, lon});
-            // Aquí podrías mostrar un mensaje de error al usuario
-            alert('La dirección seleccionada está fuera del área de servicio permitida.');
-            input.value = ''; // Limpiar el campo
-            return false;
-        }
-        
-        return true;
-    }
 
-    // Inicializar el autocompletado de Geoapify
-    function initGeoapifyAutocomplete() {
-        console.log('Inicializando sistema de autocompletado con Geoapify');
-        
-        // Verificar que los elementos existan
-        const origenInput = document.getElementById('origen');
-        const destinoInput = document.getElementById('destino');
-        
-        if (!origenInput || !destinoInput) {
-            console.log('No se encontraron los elementos necesarios para el autocompletado');
-            return;
-        }
-        
-        console.log('Elementos encontrados, configurando autocompletado...');
-        
-        // Crear contenedores para sugerencias si no existen
-        let origenSuggestions = document.getElementById('origen-suggestions');
-        if (!origenSuggestions) {
-            origenSuggestions = document.createElement('div');
-            origenSuggestions.id = 'origen-suggestions';
-            origenSuggestions.className = 'suggestions-container';
-            origenInput.parentNode.appendChild(origenSuggestions);
-            console.log('Contenedor de sugerencias para origen creado');
-        } else {
-            console.log('Contenedor de sugerencias para origen ya existe');
-        }
-        
-        let destinoSuggestions = document.getElementById('destino-suggestions');
-        if (!destinoSuggestions) {
-            destinoSuggestions = document.createElement('div');
-            destinoSuggestions.id = 'destino-suggestions';
-            destinoSuggestions.className = 'suggestions-container';
-            destinoInput.parentNode.appendChild(destinoSuggestions);
-            console.log('Contenedor de sugerencias para destino creado');
-        } else {
-            console.log('Contenedor de sugerencias para destino ya existe');
-        }
-        
-        // Event listeners para los inputs con debounce
-        origenInput.addEventListener('input', debounce(function(event) {
-            const query = event.target.value.trim();
-            
-            console.log('Input event en origen:', query);
-            
-            // Ocultar sugerencias si no hay consulta
-            if (!query) {
-                origenSuggestions.style.display = 'none';
-                return;
-            }
-            
-            if (query.length >= 3) {
-                console.log('Buscando sugerencias para origen...');
-                getSuggestions(query).then(suggestions => {
-                    showSuggestions(suggestions, origenSuggestions, origenInput);
-                });
-            } else {
-                console.log('No se buscarán sugerencias - longitud:', query.length);
-            }
-        }, DEBOUNCE_MS));
-        
-        destinoInput.addEventListener('input', debounce(function(event) {
-            const query = event.target.value.trim();
-            
-            console.log('Input event en destino:', query);
-            
-            // Ocultar sugerencias si no hay consulta
-            if (!query) {
-                destinoSuggestions.style.display = 'none';
-                return;
-            }
-            
-            if (query.length >= 3) {
-                console.log('Buscando sugerencias para destino...');
-                getSuggestions(query).then(suggestions => {
-                    showSuggestions(suggestions, destinoSuggestions, destinoInput);
-                });
-            } else {
-                console.log('No se buscarán sugerencias - longitud:', query.length);
-            }
-        }, DEBOUNCE_MS));
-        
-        // Cerrar sugerencias al hacer clic fuera
-        document.addEventListener('click', function(e) {
-            if (!origenInput.contains(e.target) && !origenSuggestions.contains(e.target)) {
-                origenSuggestions.style.display = 'none';
-            }
-            
-            if (!destinoInput.contains(e.target) && !destinoSuggestions.contains(e.target)) {
-                destinoSuggestions.style.display = 'none';
-            }
-        });
-        
-        // Cerrar sugerencias con Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                origenSuggestions.style.display = 'none';
-                destinoSuggestions.style.display = 'none';
-            }
-        });
-        
-        console.log('Sistema de autocompletado con Geoapify inicializado completamente');
-    }
 
-    // Función para inicializar autocompletado con Geoapify de forma robusta
-    function initializeGeoapifyAutocomplete() {
-        console.log('Intentando inicializar sistema de autocompletado con Geoapify');
-        
-        // Verificar si el DOM está listo
-        if (document.readyState === 'loading') {
-            // DOM aún no está listo, esperar a que esté completo
-            console.log('DOM aún cargando, esperando a que esté listo...');
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(initGeoapifyAutocomplete, 200);
-            });
-        } else {
-            // DOM ya está listo, inicializar inmediatamente
-            console.log('DOM ya está listo, inicializando autocompletado...');
-            setTimeout(initGeoapifyAutocomplete, 200);
-        }
-    }
 
-    // Inicializar el autocompletado de Geoapify
-    initializeGeoapifyAutocomplete();
 });

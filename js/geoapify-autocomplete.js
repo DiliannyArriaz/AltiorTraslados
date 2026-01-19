@@ -436,6 +436,9 @@ function showSuggestions(suggestions, container, input) {
         div.addEventListener('click', () => {
             input.value = displayName;
             // Guardar la dirección completa y coordenadas en atributos de datos
+            const houseNumber = address.housenumber || '';
+            const street = address.street || '';
+            const locationLabel = getLocationLabel(address);
             const fullAddress = [houseNumber, street, locationLabel].filter(Boolean).join(', ');
             input.setAttribute('data-full-address', fullAddress);
             input.setAttribute('data-lat', geometry.coordinates[1]);
@@ -551,4 +554,13 @@ function initAutocomplete(inputId, containerId) {
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar para la página de test
     initAutocomplete('direccion', 'direccion-suggestions');
+    
+    // Inicializar autocompletado para los campos de origen y destino del formulario de reserva
+    if (document.getElementById('origen')) {
+        initAutocomplete('origen', 'origen-suggestions');
+    }
+    
+    if (document.getElementById('destino')) {
+        initAutocomplete('destino', 'destino-suggestions');
+    }
 });

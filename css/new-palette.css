@@ -16,7 +16,7 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #000000;
-    color: #E5E8F0;
+    color: #FFFFFF; /* Cambiado de #E5E8F0 a blanco puro para mejor visibilidad */
     line-height: 1.6;
 }
 
@@ -48,7 +48,7 @@ body {
 .brand-name {
     font-size: 1.8em;
     font-weight: 700;
-    color: #E5E8F0;
+    color: #FFFFFF; /* Cambiado de #E5E8F0 a blanco puro para mejor contraste */
     letter-spacing: 1px;
 }
 
@@ -62,17 +62,17 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #3A4D7A;
+    color: #A0B0D0; /* Cambiado de #3A4D7A a un tono más claro */
     font-weight: 600;
     font-size: 1.1em;
 }
 
 .phone-number i {
-    color: #3A4D7A;
+    color: #A0B0D0; /* Cambiado de #3A4D7A a un tono más claro */
 }
 
 .nav-link {
-    color: #E5E8F0;
+    color: #FFFFFF; /* Cambiado de #E5E8F0 a blanco puro para mejor contraste */
     text-decoration: none;
     font-weight: 600;
     font-size: 1.1em;
@@ -83,38 +83,38 @@ body {
 
 .nav-link:hover {
     background: #1F2E4A;
-    color: #3A4D7A;
+    color: #A0B0D0; /* Cambiado de #3A4D7A a un tono más claro */
 }
 
 /* Hombres para enlace activo */
 .nav-link.active, .nav-cta.active {
-    background: #3A4D7A;
-    color: #E5E8F0;
-    box-shadow: 0 4px 15px rgba(58, 77, 122, 0.3);
+    background: #5B6D9A; /* Cambiado de #3A4D7A a un tono más claro */
+    color: #FFFFFF;
+    box-shadow: 0 4px 15px rgba(91, 109, 154, 0.3); /* Ajustado al nuevo color */
 }
 
 .nav-link.active:hover, .nav-cta.active:hover {
-    background: #3A4D7A;
+    background: #5B6D9A; /* Cambiado de #3A4D7A a un tono más claro */
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(58, 77, 122, 0.4);
+    box-shadow: 0 6px 20px rgba(91, 109, 154, 0.4); /* Ajustado al nuevo color */
 }
 
 .nav-cta {
     padding: 12px 30px;
-    background: #3A4D7A;
-    color: #E5E8F0;
+    background: #25D366; /* Verde WhatsApp */
+    color: #FFFFFF;
     text-decoration: none;
     border-radius: 25px;
     font-weight: 600;
     transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(58, 77, 122, 0.3);
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); /* Sombra verde */
     white-space: nowrap;
 }
 
 .nav-cta:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(58, 77, 122, 0.4);
-    background: #3A4D7A;
+    box-shadow: 0 6px 25px rgba(37, 211, 102, 0.4); /* Sombra verde más intensa */
+    background: #128C7E; /* Verde más oscuro para el hover */
 }
 
 /* Hamburger Menu */
@@ -134,13 +134,14 @@ body {
     height: 3px;
     background-color: #E5E8F0;
     margin: 3px 0;
-    transition: 0.3s;
+    transition: all 0.3s ease;
     border-radius: 2px;
 }
 
 /* Active state for hamburger */
 .hamburger-menu.active .hamburger-line:nth-child(1) {
     transform: rotate(-45deg) translate(-5px, 6px);
+    background-color: #25D366; /* Verde WhatsApp para el estado activo */
 }
 
 .hamburger-menu.active .hamburger-line:nth-child(2) {
@@ -149,6 +150,7 @@ body {
 
 .hamburger-menu.active .hamburger-line:nth-child(3) {
     transform: rotate(45deg) translate(-5px, -6px);
+    background-color: #25D366; /* Verde WhatsApp para el estado activo */
 }
 
 /* Hero Section */
@@ -222,15 +224,15 @@ body {
     font-weight: 700;
     margin-bottom: 25px;
     line-height: 1.1;
-    color: #E5E8F0;
+    color: #FFFFFF; /* Cambiado de #E5E8F0 a blanco puro para mejor contraste */
 }
 
 .hero-text .subtitle {
     font-size: 1.4em;
     margin-bottom: 35px;
-    color: #E5E8F0;
+    color: #CBD0E0; /* Cambiado de #E5E8F0 a un tono más claro */
     font-weight: 500;
-    opacity: 0.8;
+    opacity: 1; /* Cambiado de 0.8 a 1 para mejor visibilidad */
 }
 
 .hero-features {
@@ -248,12 +250,14 @@ body {
     background: #1F2E4A;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    min-height: 80px; /* Establecer altura mínima para consistencia */
+    height: 80px; /* Fijar altura para uniformidad */
 }
 
 .feature-icon-small {
     width: 45px;
     height: 45px;
-    background: #3A4D7A;
+    background: #5B6D9A; /* Cambiado de #3A4D7A a un tono más claro */
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -263,7 +267,7 @@ body {
 }
 
 .hero-feature strong {
-    color: #3A4D7A;
+    color: #A0B0D0; /* Cambiado de #3A4D7A a un tono más claro */
     display: block;
     font-size: 1.05em;
 }
@@ -301,14 +305,14 @@ body {
 
 .form-header h2 {
     font-size: 2em;
-    color: #E5E8F0;
+    color: #FFFFFF; /* Cambiado de #E5E8F0 a blanco puro para mejor contraste */
     margin-bottom: 10px;
 }
 
 .form-header p {
-    color: #E5E8F0;
+    color: #CBD0E0; /* Cambiado de #E5E8F0 a un tono más claro */
     font-size: 1em;
-    opacity: 0.8;
+    opacity: 1; /* Cambiado de 0.8 a 1 para mejor visibilidad */
 }
 
 /* Form Styles - Update to include email field */
@@ -336,12 +340,12 @@ body {
 label {
     display: block;
     margin-bottom: 8px;
-    color: #E5E8F0;
+    color: #CBD0E0; /* Cambiado de #E5E8F0 a un tono más claro */
     font-weight: 600;
     font-size: 0.9em;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    opacity: 0.9;
+    opacity: 1; /* Cambiado de 0.9 a 1 para mejor visibilidad */
 }
 
 input[type="text"],
@@ -415,7 +419,7 @@ select:focus {
     font-weight: 500;
     position: relative;
     z-index: 2;
-    color: #E5E8F0;
+    color: #CBD0E0; /* Cambiado de #E5E8F0 a un tono más claro */
 }
 
 /* Hacer que todo el contenedor sea cliqueable */
@@ -443,8 +447,8 @@ select:focus {
 .btn-submit {
     width: 100%;
     padding: 18px;
-    background: linear-gradient(135deg, #3A4D7A, #1F2E4A);
-    color: #E5E8F0;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #FFFFFF;
     border: none;
     border-radius: 12px;
     font-size: 1.15em;
@@ -456,14 +460,14 @@ select:focus {
     align-items: center;
     justify-content: center;
     gap: 12px;
-    box-shadow: 0 6px 20px rgba(58, 77, 122, 0.3);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
     min-height: 55px;
 }
 
 .btn-submit:hover {
     transform: translateY(-3px);
-    background: linear-gradient(135deg, #1F2E4A, #0D1A2B);
-    box-shadow: 0 10px 30px rgba(58, 77, 122, 0.4);
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
 }
 
 .section-header {
@@ -473,14 +477,14 @@ select:focus {
 
 .section-header h2 {
     font-size: 3em;
-    color: #E5E8F0;
+    color: #FFFFFF; /* Cambiado de #E5E8F0 a blanco puro para mejor contraste */
     margin-bottom: 15px;
 }
 
 .section-header p {
     font-size: 1.2em;
-    color: #E5E8F0;
-    opacity: 0.8;
+    color: #CBD0E0; /* Cambiado de #E5E8F0 a un tono más claro */
+    opacity: 1; /* Cambiado de 0.8 a 1 para mejor visibilidad */
 }
 
 .features {
@@ -491,10 +495,12 @@ select:focus {
 .features-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
-    max-width: 1400px;
+    gap: 20px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+    justify-items: center;
+    align-items: center;
 }
 
 /* Responsive para tablets */
@@ -502,12 +508,378 @@ select:focus {
     .features-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    
+    .feature-card {
+        width: 220px; /* Ajustar ancho en tablets */
+        height: 220px; /* Ajustar altura en tablets */
+    }
+    
+    .fleet-grid {
+        grid-template-columns: repeat(2, 1fr); /* Dos columnas en tablets */
+        gap: 20px;
+        max-width: 900px;
+    }
 }
 
 /* Responsive para móviles */
 @media (max-width: 768px) {
-    .features-grid {
+    body.cancelar-page .hero-content {
         grid-template-columns: 1fr;
+        text-align: center;
+        gap: 15px;
+    }
+}
+
+/* Estilos específicos para la página de cancelar reserva */
+body.cancelar-page .hero-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 30px;
+    padding: 0 20px;
+}
+
+body.cancelar-page .hero-text {
+    padding-top: 0;
+}
+
+@media (max-width: 768px) {
+    body.cancelar-page .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 15px;
+    }
+}
+
+/* Estilos responsivos completos para todos los elementos */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 15px 20px;
+        flex-wrap: wrap;
+    }
+    
+    .nav-left {
+        order: 1;
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    
+    .nav-right {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: #0D1A2B;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+        padding: 15px;
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        width: auto;
+        min-width: 200px;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+    
+    .nav-right.active {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+    
+    .hamburger-menu {
+        display: flex;
+        order: 2;
+    }
+    
+    .nav-link, .phone-number, .nav-cta {
+        margin: 5px 0;
+    }
+    
+    .hero {
+        padding: 80px 20px 40px;
+        padding-top: 100px;
+        align-items: flex-start;
+    }
+    
+    .hero-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .hero-text {
+        padding-top: 0;
+        text-align: center;
+    }
+    
+    .hero-text h1 {
+        font-size: 2.5em;
+    }
+    
+    .booking-form {
+        padding: 25px;
+        min-height: auto;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .form-header h2 {
+        font-size: 1.5em;
+    }
+    
+    .form-header p {
+        font-size: 0.9em;
+    }
+    
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr) !important; /* 2 columnas en móviles */
+        gap: 20px;
+        max-width: 1200px;
+        justify-items: center;
+        align-items: center;
+        padding: 0 10px;
+    }
+    
+    .feature-card {
+        width: 100%;
+        max-width: 200px; /* Tamaño fijo para todas las cards */
+        height: 200px;
+        margin: 0 auto;
+    }
+    
+    .fleet-grid {
+        grid-template-columns: 1fr !important; /* 1 columna en móviles */
+        gap: 20px;
+        padding: 0 10px;
+    }
+    
+    .fleet-card {
+        min-height: auto;
+        width: 100%;
+        max-width: 500px; /* Limitar ancho máximo */
+        margin: 0 auto;
+    }
+    
+    .section-header h2 {
+        font-size: 2.2em;
+        text-align: center;
+    }
+    
+    .section-header p {
+        font-size: 1em;
+        text-align: center;
+    }
+    
+    .footer {
+        padding: 40px 20px;
+        text-align: center;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .footer-section {
+        text-align: center;
+    }
+    
+    .contact-info,
+    .social-links,
+    .payment-icons {
+        justify-content: center;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    /* Estilos específicos para el formulario de reserva */
+    .booking-form {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        min-height: auto;
+        padding: 25px 20px;
+    }
+    
+    #bookingForm {
+        min-height: auto;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .checkbox-container {
+        padding: 14px;
+    }
+    
+    .btn-submit {
+        margin-top: 20px;
+    }
+    
+    /* Ocultar sidebar de redes sociales en móviles */
+    .social-sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 10px 15px;
+    }
+    
+    .nav-right {
+        gap: 10px;
+    }
+    
+    .phone-number {
+        font-size: 0.8em;
+        gap: 5px;
+    }
+    
+    .phone-number i {
+        font-size: 0.9em;
+    }
+    
+    .brand-name {
+        font-size: 1.5em;
+    }
+    
+    .logo {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .hero {
+        padding: 60px 15px 30px;
+        padding-top: 90px;
+    }
+    
+    .hero-text h1 {
+        font-size: 2em;
+    }
+    
+    .hero-text .subtitle {
+        font-size: 1.1em;
+    }
+    
+    .booking-form {
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    .form-header h2 {
+        font-size: 1.3em;
+    }
+    
+    .form-header p {
+        font-size: 0.85em;
+    }
+    
+    .form-group {
+        margin-bottom: 18px;
+    }
+    
+    label {
+        font-size: 0.8em;
+        margin-bottom: 6px;
+    }
+    
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    input[type="tel"],
+    input[type="email"],
+    select {
+        padding: 12px 15px;
+        font-size: 0.9em;
+        min-height: 45px;
+    }
+    
+    .form-row {
+        gap: 12px;
+    }
+    
+    .checkbox-container {
+        padding: 12px;
+        font-size: 0.9em;
+    }
+    
+    .btn-submit {
+        padding: 15px;
+        font-size: 1em;
+        min-height: 50px;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr !important; /* 1 columna en pantallas muy pequeñas */
+        gap: 10px;
+        padding: 0 5px;
+    }
+    
+    .feature-card {
+        width: 100%;
+        max-width: 280px;
+        height: 180px;
+        margin: 0 auto;
+    }
+    
+    .fleet-grid {
+        gap: 15px;
+    }
+    
+    .fleet-card {
+        min-height: auto;
+    }
+    
+    .section-header h2 {
+        font-size: 1.8em;
+    }
+    
+    .section-header p {
+        font-size: 0.9em;
+    }
+    
+    .footer {
+        padding: 30px 15px;
+    }
+    
+    .social-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2em;
+    }
+    
+    .contact-item {
+        flex-direction: column;
+        gap: 5px;
+        font-size: 0.8em;
+    }
+    
+    .payment-icon {
+        flex-direction: column;
+        gap: 5px;
+        font-size: 0.8em;
     }
 }
 
@@ -520,6 +892,12 @@ select:focus {
     position: relative;
     overflow: hidden;
     text-align: center;
+    width: 250px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .feature-card::before {
@@ -542,29 +920,32 @@ select:focus {
 .feature-icon {
     width: 60px;
     height: 60px;
-    background: #3A4D7A;
+    background: #5B6D9A; /* Cambiado de #3A4D7A a un tono más claro */
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.8em;
     margin: 0 auto 15px;
-    color: #E5E8F0;
+    color: #FFFFFF;
 }
 
 .feature-card h3 {
-    color: #E5E8F0;
-    font-size: 1.3em;
+    color: #FFFFFF; /* Cambiado de #E5E8F0 a blanco puro para mejor contraste */
+    font-size: 1.1em;
     margin-bottom: 12px;
     font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .feature-card p {
-    color: #E5E8F0;
+    color: #CBD0E0; /* Cambiado de #E5E8F0 a un tono más claro */
     font-size: 0.95em;
     line-height: 1.5;
     margin: 0;
-    opacity: 0.8;
+    opacity: 1; /* Cambiado de 0.8 a 1 para mejor visibilidad */
 }
 
 /* Fleet Section */
@@ -575,9 +956,9 @@ select:focus {
 
 .fleet-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 40px;
-    max-width: 1000px;
+    grid-template-columns: repeat(3, 1fr); /* Cambiado para mostrar siempre 3 columnas */
+    gap: 25px; /* Reducido el espacio entre cards */
+    max-width: 1200px; /* Aumentado el ancho máximo */
     margin: 0 auto;
 }
 
@@ -589,68 +970,92 @@ select:focus {
     transition: all 0.3s;
     border: 2px solid #1F2E4A;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Asegurar altura consistente */
+    min-height: 350px; /* Establecer altura mínima para consistencia */
 }
 
 .fleet-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 50px rgba(58, 77, 122, 0.3);
+    transform: translateY(-5px); /* Reducido el efecto hover */
+    box-shadow: 0 15px 40px rgba(58, 77, 122, 0.3); /* Ajustada la sombra */
     border-color: #3A4D7A;
 }
 
 .fleet-image {
-    height: 200px;
+    height: 150px; /* Reducida la altura de la imagen */
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
+    padding: 15px; /* Agregado padding para mejor visualización */
+    flex-shrink: 0; /* Evitar que la imagen se comprima */
 }
 
-/* Eliminado el pseudo-elemento ::before para quitar el fondo circular */
-
 .fleet-info {
-    padding: 30px;
+    padding: 20px; /* Reducido el padding */
+    flex-grow: 1; /* Permitir que crezca para llenar el espacio */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribuir el contenido uniformemente */
 }
 
 .fleet-info h3 {
-    font-size: 1.6em;
+    font-size: 1.4em; /* Reducido el tamaño de fuente */
     color: #E5E8F0;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
+    flex-shrink: 0; /* Evitar que el título se comprima */
 }
 
-.fleet-info p {
+.fleet-info > p {
     color: #E5E8F0;
-    margin-bottom: 20px;
-    font-size: 1.1em;
+    margin-bottom: 15px; /* Reducido el margen */
+    font-size: 1em; /* Reducido el tamaño de fuente */
     opacity: 0.8;
+    flex-grow: 0; /* No permitir que crezca */
+    flex-shrink: 0; /* Evitar que se comprima */
+    min-height: 40px; /* Altura mínima para consistencia */
 }
 
 .fleet-specs {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin: 20px 0;
-    padding: 20px 0;
+    gap: 15px; /* Reducido el espacio entre specs */
+    margin: 15px 0; /* Reducido el margen */
+    padding: 15px 0; /* Reducido el padding */
     border-top: 2px solid #1F2E4A;
     border-bottom: 2px solid #1F2E4A;
+    flex-shrink: 0; /* Evitar que se comprima */
 }
 
 .spec {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.95em;
+    gap: 5px; /* Reducido el espacio */
+    font-size: 0.85em; /* Reducido el tamaño de fuente */
     color: #3A4D7A;
     font-weight: 600;
+    flex-shrink: 0; /* Evitar que se comprima */
+}
+
+.fleet-details {
+    flex-grow: 1; /* Permitir que crezca */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centrar el contenido */
 }
 
 .fleet-description {
     color: #E5E8F0;
-    font-size: 0.95em;
-    line-height: 1.6;
+    font-size: 0.9em; /* Reducido el tamaño de fuente */
+    line-height: 1.5; /* Ajustada la altura de línea */
     margin: 0;
     font-style: italic;
     opacity: 0.8;
+    flex-grow: 1; /* Permitir que crezca */
+    display: flex;
+    align-items: center; /* Centrar verticalmente */
 }
 
 /* CTA Section */
@@ -711,14 +1116,14 @@ select:focus {
     align-items: center;
     gap: 12px;
     padding: 20px 50px;
-    background: #3A4D7A;
-    color: #E5E8F0;
+    background: #25D366; /* Verde WhatsApp */
+    color: #FFFFFF; /* Blanco para mejor contraste */
     text-decoration: none;
     border-radius: 50px;
     font-size: 1.3em;
     font-weight: 600;
     transition: all 0.3s;
-    box-shadow: 0 8px 25px rgba(58, 77, 122, 0.4);
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4); /* Sombra verde */
     min-height: 60px;
     min-width: 200px;
     justify-content: center;
@@ -730,13 +1135,13 @@ select:focus {
 
 .cta-button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(58, 77, 122, 0.5);
-    background: #1F2E4A;
+    box-shadow: 0 12px 35px rgba(37, 211, 102, 0.5); /* Sombra verde más intensa */
+    background: #128C7E; /* Verde más oscuro para el hover */
 }
 
 .cta-button:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(58, 77, 122, 0.5), 0 8px 25px rgba(58, 77, 122, 0.4);
+    box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.5), 0 8px 25px rgba(37, 211, 102, 0.4);
 }
 
 /* Footer */
@@ -768,16 +1173,16 @@ footer {
 .footer-brand {
     font-size: 2em;
     font-weight: 700;
-    color: #E5E8F0;
+    color: #FFFFFF; /* Cambiado de #E5E8F0 a blanco puro para mejor contraste */
     letter-spacing: 2px;
 }
 
 .footer-text {
-    opacity: 0.8;
+    opacity: 1; /* Cambiado de 0.8 a 1 para mejor visibilidad */
     margin-top: 20px;
     padding-top: 30px;
     border-top: 1px solid #1F2E4A;
-    color: #E5E8F0;
+    color: #CBD0E0; /* Cambiado de #E5E8F0 a un tono más claro */
 }
 
 /* Social Media Sidebar */
@@ -795,15 +1200,15 @@ footer {
 .social-icon {
     width: 50px;
     height: 50px;
-    background: #3A4D7A;
+    background: #5B6D9A; /* Cambiado de #3A4D7A a un tono más claro */
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #E5E8F0;
+    color: #FFFFFF; /* Cambiado de #E5E8F0 a blanco puro para mejor contraste */
     font-size: 1.5em;
     text-decoration: none;
-    box-shadow: 0 4px 15px rgba(58, 77, 122, 0.3);
+    box-shadow: 0 4px 15px rgba(91, 109, 154, 0.3); /* Ajustado al nuevo color */
     transition: all 0.3s;
     position: relative;
     overflow: hidden;
@@ -811,47 +1216,47 @@ footer {
 
 .social-icon:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(31, 46, 74, 0.4);
+    box-shadow: 0 6px 20px rgba(91, 109, 154, 0.4); /* Ajustado al nuevo color */
 }
 
 .social-icon.whatsapp {
-    background: #3A4D7A;
-    box-shadow: 0 4px 15px rgba(58, 77, 122, 0.3);
+    background: #25D366; /* Color oficial de WhatsApp */
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
 }
 
 .social-icon.whatsapp:hover {
-    box-shadow: 0 6px 20px rgba(58, 77, 122, 0.4);
-    background: #1F2E4A;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    background: #128C7E; /* Verde más oscuro de WhatsApp */
 }
 
 .social-icon.instagram {
-    background: #3A4D7A;
-    box-shadow: 0 4px 15px rgba(58, 77, 122, 0.3);
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); /* Degradado oficial de Instagram */
+    box-shadow: 0 4px 15px rgba(214, 36, 159, 0.3);
 }
 
 .social-icon.instagram:hover {
-    box-shadow: 0 6px 20px rgba(58, 77, 122, 0.4);
-    background: #1F2E4A;
+    box-shadow: 0 6px 20px rgba(214, 36, 159, 0.4);
+    filter: brightness(1.1); /* Efecto de brillo al pasar el mouse */
 }
 
 .social-icon.facebook {
-    background: #3A4D7A;
-    box-shadow: 0 4px 15px rgba(58, 77, 122, 0.3);
+    background: #1877F2; /* Color oficial de Facebook */
+    box-shadow: 0 4px 15px rgba(24, 119, 242, 0.3);
 }
 
 .social-icon.facebook:hover {
-    box-shadow: 0 6px 20px rgba(58, 77, 122, 0.4);
-    background: #1F2E4A;
+    box-shadow: 0 6px 20px rgba(24, 119, 242, 0.4);
+    background: #0d5bb3; /* Azul más oscuro de Facebook */
 }
 
 .social-icon.email {
-    background: #1F2E4A;
-    box-shadow: 0 4px 15px rgba(31, 46, 74, 0.3);
+    background: #EA4335; /* Color rojo de Gmail */
+    box-shadow: 0 4px 15px rgba(234, 67, 53, 0.3);
 }
 
 .social-icon.email:hover {
-    box-shadow: 0 6px 20px rgba(31, 46, 74, 0.4);
-    background: #0D1A2B;
+    box-shadow: 0 6px 20px rgba(234, 67, 53, 0.4);
+    background: #c23327; /* Rojo más oscuro */
 }
 
 /* Footer Social Media */
@@ -871,7 +1276,7 @@ footer {
 /* Cancel Section */
 .cancel-section {
     padding: 100px 40px 60px;
-    background: #000000;
+    background: var(--bg-black);
     min-height: 100vh;
 }
 
@@ -881,10 +1286,11 @@ footer {
 }
 
 .cancel-section .cancel-info {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
     margin: 40px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .cancel-section .cancel-info-text {
@@ -892,29 +1298,29 @@ footer {
     padding: 30px;
     background: #0D1A2B;
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 15px var(--shadow-black);
     margin-top: 30px;
     border: 1px solid #1F2E4A;
 }
 
 .cancel-section .cancel-info-text p {
-    color: #E5E8F0;
+    color: #CBD0E0; /* Cambiado de #E5E8F0 a un tono más claro */
     font-size: 1.1em;
     line-height: 1.6;
     margin-bottom: 20px;
-    opacity: 0.9;
+    opacity: 1; /* Cambiado de 0.9 a 1 para mejor visibilidad */
 }
 
 .info-card {
     background: #0D1A2B;
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 20px var(--shadow-black);
     border: 1px solid #1F2E4A;
 }
 
 .info-card h3 {
-    color: #E5E8F0;
+    color: #FFFFFF; /* Cambiado de #E5E8F0 a blanco puro para mejor contraste */
     margin-bottom: 20px;
     display: flex;
     align-items: center;
@@ -922,7 +1328,7 @@ footer {
 }
 
 .info-card h3 i {
-    color: #3A4D7A;
+    color: #A0B0D0; /* Cambiado de #3A4D7A a un tono más claro */
 }
 
 .info-card ul {
@@ -934,11 +1340,11 @@ footer {
 .info-card ul li {
     padding: 10px 0;
     border-bottom: 1px solid #1F2E4A;
-    color: #E5E8F0;
+    color: #CBD0E0; /* Cambiado de #E5E8F0 a un tono más claro */
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    opacity: 0.9;
+    opacity: 1; /* Cambiado de 0.9 a 1 para mejor visibilidad */
 }
 
 .info-card ul li:last-child {
@@ -987,10 +1393,14 @@ footer {
 
 .cancel-form-container .booking-form {
     background: #0D1A2B;
-    padding: 40px;
+    padding: 30px;
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px var(--shadow-black);
     border: 1px solid #1F2E4A;
+    min-height: 300px; /* Ajustado a 300px de altura */
+    max-height: 300px; /* Limitar la altura máxima */
+    display: flex;
+    flex-direction: column;
 }
 
 @media (max-width: 768px) {
@@ -1069,7 +1479,7 @@ footer {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: var(--shadow-black-heavy);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1080,7 +1490,7 @@ footer {
 .popup-content {
     background: #0D1A2B;
     border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 20px 60px var(--shadow-black-hover);
     max-width: 500px;
     width: 90%;
     max-height: 90vh;
