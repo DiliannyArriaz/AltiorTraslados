@@ -77,6 +77,74 @@
             cursor: pointer;
         }
         
+        /* Estilos para hero-features con diseño lateral */
+        .hero-features {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            min-height: 80px;
+            width: 280px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+        
+        .hero-feature-image {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+            filter: invert(100%) brightness(200%);
+            flex-shrink: 0;
+        }
+        
+        .hero-feature-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .hero-feature strong {
+            display: block;
+            color: #FFFFFF;
+            font-size: 1em;
+            margin-bottom: 3px;
+        }
+        
+        .hero-feature small {
+            display: block;
+            font-size: 0.85em;
+        }
+        
+        /* Responsive para hero-features */
+        @media (max-width: 768px) {
+            .hero-features {
+                flex-direction: column;
+                gap: 20px;
+                align-items: center;
+            }
+            
+            .hero-feature {
+                padding: 12px;
+                min-height: 70px;
+                width: 260px;
+                background: rgba(255, 255, 255, 0.03);
+                border-radius: 8px;
+            }
+            
+            .hero-feature-image {
+                width: 40px;
+                height: 40px;
+            }
+        }
+        
         /* Estilos personalizados para el campo de fecha */
         input[type="date"] {
             width: 100%;
@@ -213,6 +281,103 @@
             background: #128C7E;
             box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
         }
+        
+        /* Estilos para la nueva sección de features con dos columnas */
+        .features {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .features-container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 0 20px;
+        }
+        
+        .features-grid {
+            display: flex;
+            gap: 40px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .feature-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 15px;
+            min-height: 120px;
+        }
+        
+        .feature-image {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            flex-shrink: 0;
+            filter: invert(100%) brightness(200%);
+        }
+        
+        .feature-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .feature-item h2 {
+            color: #FFFFFF;
+            font-size: 1.3em;
+            margin: 0 0 8px 0;
+            font-weight: 700;
+            text-align: left;
+        }
+        
+        .feature-item p {
+            color: #CBD0E0;
+            font-size: 0.95em;
+            margin: 0;
+            line-height: 1.5;
+            text-align: left;
+        }
+        
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .features-grid {
+                flex-direction: column;
+                gap: 25px;
+            }
+            
+            .feature-column {
+                gap: 25px;
+            }
+            
+            .feature-item {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            
+            .feature-image {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .feature-item h2 {
+                font-size: 1.1em;
+            }
+            
+            .feature-item p {
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 
@@ -275,31 +440,17 @@
 
                 <div class="hero-features">
                     <div class="hero-feature">
-                        <div class="feature-icon-small">✓</div>
-                        <div>
+                        <img src="assets/puntualidad.png" alt="Disponible 24/7" class="hero-feature-image">
+                        <div class="hero-feature-text">
                             <strong>Disponible 24/7</strong>
                             <small style="color: #5B8DB8;">Todos los días del año</small>
                         </div>
                     </div>
                     <div class="hero-feature">
-                        <div class="feature-icon-small">⭐</div>
-                        <div>
+                        <img src="assets/seguro-de-auto.png" alt="Flota Confiable" class="hero-feature-image">
+                        <div class="hero-feature-text">
                             <strong>Flota Confiable</strong>
                             <small style="color: #5B8DB8;">Vehículos bien mantenidos</small>
-                        </div>
-                    </div>
-                    <div class="hero-feature">
-                        <div class="feature-icon-small">🛡️</div>
-                        <div>
-                            <strong>100% Seguro</strong>
-                            <small style="color: #5B8DB8;">Totalmente asegurado</small>
-                        </div>
-                    </div>
-                    <div class="hero-feature">
-                        <div class="feature-icon-small">⏰</div>
-                        <div>
-                            <strong>Puntualidad</strong>
-                            <small style="color: #5B8DB8;">Garantizada siempre</small>
                         </div>
                     </div>
                 </div>
@@ -462,7 +613,7 @@
     </section>
 
     <!-- Features Section -->
-    <section class="features">
+    <section class="features" style="background: linear-gradient(135deg, #000000 0%, #0d1a2a 50%, #000000 100%);">
         <div class="features-container">
             <div class="section-header">
                 <h2>¿Por qué elegir Altior?</h2>
@@ -470,59 +621,81 @@
             </div>
 
             <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">⏰</div>
-                    <h3>Puntualidad Garantizada</h3>
-                    <p>Llegamos a tiempo, siempre</p>
+                <!-- Columna 1 -->
+                <div class="feature-column">
+                    <div class="feature-item">
+                        <img src="assets/puntualidad.png" alt="Puntualidad" class="feature-image">
+                        <div class="feature-text">
+                            <h2>Puntualidad</h2>
+                            <p>Llegamos a tiempo, siempre</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <img src="assets/lavado-de-autos.png" alt="Limpieza impecable" class="feature-image">
+                        <div class="feature-text">
+                            <h2>Limpieza impecable</h2>
+                            <p>Vehículos desinfectados y limpios</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <img src="assets/aire-acondicionado.png" alt="Aire Acondicionado" class="feature-image">
+                        <div class="feature-text">
+                            <h2>Aire Acondicionado</h2>
+                            <p>Comodidad climática garantizada</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <img src="assets/equidad.png" alt="Tarifas justas y claras" class="feature-image">
+                        <div class="feature-text">
+                            <h2>Tarifas justas y claras</h2>
+                            <p>Precios transparentes sin cargos ocultos</p>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">✨</div>
-                    <h3>Limpieza Impecable</h3>
-                    <p>Vehículos desinfectados y limpios</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🛡️</div>
-                    <h3>Vehículos en Óptimo Estado</h3>
-                    <p>Mantenimiento preventivo constante</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🌡️</div>
-                    <h3>Aire Acondicionado</h3>
-                    <p>Comodidad climática garantizada</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🧳</div>
-                    <h3>Espacio para Equipaje</h3>
-                    <p>Baúles amplios para su comodidad</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">💰</div>
-                    <h3>Tarifas Justas y Claras</h3>
-                    <p>Precios transparentes sin cargos ocultos</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">💬</div>
-                    <h3>Comunicación Directa</h3>
-                    <p>Respuesta inmediata vía WhatsApp</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">📍</div>
-                    <h3>Conductores Conocedores</h3>
-                    <p>Experiencia en rutas y aeropuertos</p>
+                
+                <!-- Columna 2 -->
+                <div class="feature-column">
+                    <div class="feature-item">
+                        <img src="assets/recorrido-del-cliente.png" alt="Conductores conocedores" class="feature-image">
+                        <div class="feature-text">
+                            <h2>Conductores conocedores</h2>
+                            <p>Experiencia en rutas y aeropuertos</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <img src="assets/seguro-de-auto.png" alt="Vehículos en Óptimo estado" class="feature-image">
+                        <div class="feature-text">
+                            <h2>Vehículos en Óptimo estado</h2>
+                            <p>Mantenimiento preventivo constante</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <img src="assets/equipaje-de-viaje.png" alt="Espacio para Equipaje" class="feature-image">
+                        <div class="feature-text">
+                            <h2>Espacio para Equipaje</h2>
+                            <p>Baúles amplios para su comodidad</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <img src="assets/burbuja-de-dialogo.png" alt="Comunicación directa" class="feature-image">
+                        <div class="feature-text">
+                            <h2>Comunicación directa</h2>
+                            <p>Respuesta inmediata vía WhatsApp</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Fleet Section -->
-    <section class="fleet">
+    <section class="fleet" style="display: flex; justify-content: center; background: linear-gradient(135deg, #000000 0%, #0d1a2a 50%, #000000 100%);">
         <div class="features-container">
             <div class="section-header">
                 <h2>Nuestra Flota</h2>

@@ -2055,7 +2055,7 @@ footer {
         border: 1px solid #334155;
         opacity: 0;
         transform: translateY(-10px);
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         pointer-events: none;
     }
     
@@ -2064,6 +2064,7 @@ footer {
         align-items: center;
         opacity: 1;
         transform: translateY(0);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         pointer-events: auto;
     }
 
